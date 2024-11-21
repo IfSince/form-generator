@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36" version="24.7.12">
+<mxfile host="drawio-plugin" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" modified="2024-11-21T15:03:56.215Z" version="22.1.22" etag="zFG6yJveiRR7UfKu24rS" type="embed">
   <diagram name="Page-1" id="0783ab3e-0a74-02c8-0abd-f7b4e66b4bec">
-    <mxGraphModel dx="1536" dy="819" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" background="none" math="0" shadow="0">
+    <mxGraphModel dx="1511" dy="792" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -29,7 +29,7 @@
         <mxCell id="Kh3jKs6r-VNOBaE9r75T-164" value="Formdefinition eingeben" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
           <mxGeometry x="539.89" y="360" width="140" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="Kh3jKs6r-VNOBaE9r75T-165" value="FormData aus dem Cache laden" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
+        <mxCell id="Kh3jKs6r-VNOBaE9r75T-165" value="FormData aus dem Web Storage laden" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
           <mxGeometry x="719.8900000000001" y="360" width="140" height="40" as="geometry" />
         </mxCell>
         <mxCell id="Kh3jKs6r-VNOBaE9r75T-166" value="Eingabe valide?" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -100,7 +100,7 @@
         <mxCell id="Kh3jKs6r-VNOBaE9r75T-197" value="Vorgang verwerfen/schließen" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
           <mxGeometry x="719.8800000000001" y="1200" width="140" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="Kh3jKs6r-VNOBaE9r75T-198" value="FormData aus Cache löschen" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
+        <mxCell id="Kh3jKs6r-VNOBaE9r75T-198" value="FormData aus Web Storage löschen" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
           <mxGeometry x="719.8800000000001" y="1280" width="140" height="40" as="geometry" />
         </mxCell>
         <mxCell id="Kh3jKs6r-VNOBaE9r75T-199" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#000000;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="Kh3jKs6r-VNOBaE9r75T-197" target="Kh3jKs6r-VNOBaE9r75T-198" edge="1">
@@ -172,7 +172,7 @@
             <mxPoint x="669.99" y="160" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Kh3jKs6r-VNOBaE9r75T-225" value="FormConfig aus&lt;div&gt;Cache laden&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
+        <mxCell id="Kh3jKs6r-VNOBaE9r75T-225" value="FormConfig aus&lt;div&gt;Web Storage laden&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
           <mxGeometry x="1400" y="245" width="140" height="40" as="geometry" />
         </mxCell>
         <mxCell id="Kh3jKs6r-VNOBaE9r75T-226" value="" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -246,7 +246,7 @@
             <mxPoint x="662.38" y="1210" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="bhKMgHc5eAjvrN3hKgKU-20" value="FormData im Cache persistieren" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
+        <mxCell id="bhKMgHc5eAjvrN3hKgKU-20" value="FormData im Web Storage persistieren" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
           <mxGeometry x="539.89" y="680" width="140" height="40" as="geometry" />
         </mxCell>
         <mxCell id="bhKMgHc5eAjvrN3hKgKU-24" value="FormData generieren" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
@@ -282,7 +282,7 @@
         <mxCell id="Kh3jKs6r-VNOBaE9r75T-174" value="" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="589.9" y="600" width="40" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="gfXV21510MfmklzowqW1-9" value="FormConfig im Cache?" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="gfXV21510MfmklzowqW1-9" value="FormConfig im Web Storage?" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1240.01" y="240" width="119.99" height="50" as="geometry" />
         </mxCell>
         <mxCell id="gfXV21510MfmklzowqW1-17" value="" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -337,7 +337,7 @@
         <mxCell id="gfXV21510MfmklzowqW1-60" value="Input&lt;div&gt;valide?&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1530" y="725" width="80" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="gfXV21510MfmklzowqW1-64" value="FormConfig im Cache persistieren" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
+        <mxCell id="gfXV21510MfmklzowqW1-64" value="FormConfig im Web Storage persistieren" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
           <mxGeometry x="1681" y="810" width="140" height="40" as="geometry" />
         </mxCell>
         <mxCell id="gfXV21510MfmklzowqW1-66" value="Änderungen speichern" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
@@ -412,7 +412,7 @@
             <mxPoint x="770" y="680" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="gfXV21510MfmklzowqW1-95" value="FormConfig aus dem Cache löschen" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
+        <mxCell id="gfXV21510MfmklzowqW1-95" value="FormConfig aus dem Web Storage löschen" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;arcSize=50;" parent="1" vertex="1">
           <mxGeometry x="960" y="730" width="140" height="40" as="geometry" />
         </mxCell>
         <mxCell id="gfXV21510MfmklzowqW1-99" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#000000;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="gfXV21510MfmklzowqW1-95" target="Kh3jKs6r-VNOBaE9r75T-226" edge="1">
@@ -534,10 +534,10 @@
             <mxPoint x="2120" y="580" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="5rhJuG0qu33QMeP_jNcS-9" value="" style="shape=mxgraph.bpmn.shape;html=1;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;perimeter=ellipsePerimeter;outline=end;symbol=terminate;rounded=0;shadow=0;comic=0;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" vertex="1" parent="1">
+        <mxCell id="5rhJuG0qu33QMeP_jNcS-9" value="" style="shape=mxgraph.bpmn.shape;html=1;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;perimeter=ellipsePerimeter;outline=end;symbol=terminate;rounded=0;shadow=0;comic=0;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="1" vertex="1">
           <mxGeometry x="589.8800000000001" y="1280" width="40" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="5rhJuG0qu33QMeP_jNcS-10" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#000000;rounded=0;" edge="1" parent="1" source="Kh3jKs6r-VNOBaE9r75T-196" target="5rhJuG0qu33QMeP_jNcS-9">
+        <mxCell id="5rhJuG0qu33QMeP_jNcS-10" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#000000;rounded=0;" parent="1" source="Kh3jKs6r-VNOBaE9r75T-196" target="5rhJuG0qu33QMeP_jNcS-9" edge="1">
           <mxGeometry x="-1" relative="1" as="geometry">
             <mxPoint x="800" y="1330" as="targetPoint" />
             <mxPoint x="800" y="1250" as="sourcePoint" />
