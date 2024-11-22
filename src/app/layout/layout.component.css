@@ -1,0 +1,28 @@
+.container {
+  height: 100%;
+}
+
+.sidenav {
+  width: 240px;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+.mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.content {
+  min-height: calc(100dvh - var(--mat-toolbar-standard-height) - 16px);
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* Change content min-height when toolbar height changes too */
+@media (max-width: 599px) {
+  .content {
+    min-height: calc(100dvh - var(--mat-toolbar-mobile-height) - 16px);
+  }
+}
