@@ -1,0 +1,15 @@
+<div class="mat-tab__content">
+  <mat-form-field appearance="fill">
+    <textarea matInput
+              [formControl]="_control"
+              placeholder="Paste your TypeScript Interface to automatically generate form definition…"></textarea>
+  </mat-form-field>
+</div>
+
+<mat-card-actions align="end">
+  <button mat-flat-button
+          type="button"
+          (click)="onSubmit()">
+    Submit
+  </button>
+</mat-card-actions>

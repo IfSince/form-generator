@@ -2,5 +2,14 @@
 @import 'styles/roboto.scss';
 @import 'styles/material-icons.scss';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* Utilities for canonical layouts and other common use cases around layouting */
+@import 'styles/layout.scss';
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

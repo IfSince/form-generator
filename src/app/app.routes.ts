@@ -1,14 +1,14 @@
-import { Routes } from '@angular/router';
+import { Routes } from '@angular/router'
 
 export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'upload'
+    redirectTo: 'upload',
   },
   {
     path: 'upload',
-    loadComponent: () => import('./upload/upload-view/upload.view').then(c => c.UploadView),
-    title: 'Upload'
-  }
-];
+    loadComponent: () => import('./upload/view/upload.view').then(c => c.UploadView),
+    title: 'Upload',
+  },
+]
