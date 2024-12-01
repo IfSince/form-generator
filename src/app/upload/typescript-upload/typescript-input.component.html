@@ -1,14 +1,45 @@
 <div class="mat-tab__content">
+  <mat-form-field matTooltip="Enter a valid typescript type structure below to select the type used for form generation"
+                  [matTooltipDisabled]="_control.controls.selectedType.enabled"
+                  matTooltipPosition="below">
+    <mat-label>Type to generate form for</mat-label>
+    <mat-select [formControl]="_control.controls.selectedType">
+      @if (!!selectableTypes().interfaces.length) {
+        <mat-optgroup label="Interfaces">
+          @for (type of selectableTypes().interfaces; track type) {
+            <mat-option [value]="type">{{ type }}</mat-option>
+          }
+        </mat-optgroup>
+      }
+
+      @if (!!selectableTypes().classes.length) {
+        <mat-optgroup label="Classes">
+          @for (type of selectableTypes().classes; track type) {
+            <mat-option [value]="type">{{ type }}</mat-option>
+          }
+        </mat-optgroup>
+      }
+
+      @if (!!selectableTypes().typeAliases.length) {
+        <mat-optgroup label="Type Alias">
+          @for (type of selectableTypes().typeAliases; track type) {
+            <mat-option [value]="type">{{ type }}</mat-option>
+          }
+        </mat-optgroup>
+      }
+    </mat-select>
+  </mat-form-field>
+
   <mat-form-field appearance="fill">
     <textarea matInput
-              [formControl]="_control"
+              [formControl]="_control.controls.text"
               placeholder="Paste your TypeScript Interface to automatically generate form definition…"></textarea>
   </mat-form-field>
 </div>
 
 <mat-card-actions align="end">
   <button mat-flat-button
-          type="button"
+          type="submit"
           (click)="onSubmit()">
     Submit
   </button>

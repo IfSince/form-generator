@@ -11,9 +11,11 @@
       </mat-card-subtitle>
     </mat-card-header>
 
-    <mat-tab-group dynamicHeight>
+    <mat-tab-group dynamicHeight
+                   [selectedIndex]="selectedTabIndex"
+                   (selectedIndexChange)="selectedTabIndex.set($event)">
       <mat-tab label="TypeScript Input">
-        <app-typescript-input (submit)="onTypescriptInputSubmit($event)"/>
+        <app-typescript-input (submit)="onSubmit($event.text, $event.selectedType)"/>
       </mat-tab>
 
       <mat-tab label="Manual Input">
