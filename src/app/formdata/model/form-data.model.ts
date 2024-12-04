@@ -5,7 +5,7 @@ export interface CustomFormData {
 }
 
 export enum InputType {
-  TYPESCRIPT= 'TYPESCRIPT',
+  TYPESCRIPT = 'TYPESCRIPT',
   MANUAL_INPUT = 'MANUAL_INPUT',
   FILE_UPLOAD = 'FILE_UPLOAD',
 }
@@ -18,20 +18,37 @@ export interface FormField {
   nestedFields?: FormField[]
   inheritedFields?: FormField[]
   tupleFields?: FormField[]
+
+  // selectedComponent?: AngularMaterialComponent
+  // allowMultiSelect?: boolean
+  defaultValue?: unknown
+}
+
+export enum AngularMaterialComponent {
+  SELECT = 'SELECT',
 }
 
 export enum FieldType {
-  STRING= 'STRING',
-  NUMBER = 'NUMBER',
-  BOOLEAN = 'BOOLEAN',
+  INTERFACE = 'INTERFACE',
+  CLASS = 'CLASS',
   OBJECT = 'OBJECT',
+  ENUM = 'ENUM',
   ARRAY = 'ARRAY',
   TUPLE = 'TUPLE',
-  ENUM = 'ENUM',
-  CLASS = 'CLASS',
-  INTERFACE = 'INTERFACE',
 
   UNION = 'UNION',
   INTERSECTION = 'INTERSECTION',
+  TYPE_PARAMETER = 'TYPE_PARAMETER',
+
+  STRING = 'STRING',
+  NUMBER = 'NUMBER',
+  BOOLEAN = 'BOOLEAN',
   UNKNOWN = 'UNKNOWN', // Defaults to Input type string being generated
+  ANY = 'ANY',
+
+  CYCLIC_REFERENCE = 'CYCLIC_REFERENCE',
+  NOT_RENDERED = 'NOT_RENDERED', // Types like never, void, null
+  NOT_SUPPORTED = 'NOT_SUPPORTED'
 }
+
+export type FieldSelectOption = { displayName: string, value: string | number }

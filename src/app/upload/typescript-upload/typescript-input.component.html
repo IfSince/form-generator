@@ -33,7 +33,15 @@
   <mat-form-field appearance="fill">
     <textarea matInput
               [formControl]="_control.controls.text"
-              placeholder="Paste your TypeScript Interface to automatically generate form definition…"></textarea>
+              placeholder="class Address {
+  street: string
+  country: number
+}
+
+interface Person {
+  name: string
+  address: Address
+}"></textarea>
   </mat-form-field>
 </div>
 

@@ -1,0 +1,12 @@
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.cdk-drag {
+  cursor: move;
+}

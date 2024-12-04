@@ -1,20 +1,75 @@
 import { Injectable } from '@angular/core'
-import { CustomFormData, FieldType, FormField, InputType } from './model/form-data.model'
-import { ClassDeclaration, InterfaceDeclaration, SourceFile, Type } from 'ts-morph'
+import { CustomFormData, FieldSelectOption, FieldType } from './model/form-data.model'
+import { Node, ParameterDeclaration, PropertyDeclaration, PropertySignature, SourceFile, Type } from 'ts-morph'
 import { createTempSourceFile } from '../ts-morph.utils'
 
-interface TypeDetails {
+const logType = (type: Type) => {
+  console.log({
+    text: type.getText(),
+    isInterface: type.isInterface(),
+    isClass: type.isClass(),
+    isEnum: type.isEnum(),
+    isEnumLiteral: type.isEnumLiteral(),
+    isObject: type.isObject(),
+    isArray: type.isArray(),
+    isReadonlyArray: type.isReadonlyArray(),
+    isTuple: type.isTuple(),
+    isUnion: type.isUnion(),
+    isIntersection: type.isIntersection(),
+    isNumber: type.isNumber(),
+    isNumberLiteral: type.isNumberLiteral(),
+    isString: type.isString(),
+    isStringLiteral: type.isStringLiteral(),
+    isBoolean: type.isBoolean(),
+    isBooleanLiteral: type.isBooleanLiteral(),
+    isTypeParameter: type.isTypeParameter(),
+    isNull: type.isNull(),
+    isUndefined: type.isUndefined(),
+    isLiteral: type.isLiteral(),
+    isBigInt: type.isBigInt(),
+    isBigIntLiteral: type.isBigIntLiteral(),
+    isNever: type.isNever(),
+    isUnknown: type.isUnknown(),
+    isTemplateLiteral: type.isTemplateLiteral(),
+    isAny: type.isAny(),
+    isVoid: type.isVoid(),
+  })
+}
+
+interface TypeData {
   fieldType: FieldType,
-  fields: FormField[] | null,
-  options?: { value: unknown, displayName: string }[]
-  tupleFields?: FormField[] | null,
+  originalType: string,
+  fields: TypeData[],
+  name: string,
+  baseTypes: any[],
+  isNullable: boolean,
+  hasExclamationToken: boolean,
+  hasQuestionToken: boolean,
+  // hasFixedValue: boolean,
+  isOptional: boolean,
+  isReadonly: boolean,
+  initializer: unknown,
+  literal: unknown,
+  options: FieldSelectOption[]
+}
+
+interface TypeData2 {
+  name: string,
+  fieldType: FieldType,
+
+  isOptional: boolean,
+  isReadonly: boolean,
+  defaultValue?: unknown,
+  options?: FieldSelectOption[],
+
+  fields: TypeData2[],
+  originalType: string,
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class FormDataCreateByTypeScriptService {
-
   constructor() {
   }
 
@@ -22,130 +77,139 @@ export class FormDataCreateByTypeScriptService {
     const sourceFile = createTempSourceFile(text)
     const targetType = sourceFile.getInterface(selectedType) ?? sourceFile.getClass(selectedType) ?? sourceFile.getTypeAlias(selectedType)
 
-    if (targetType) {
-      return {
-        name: selectedType,
-        inputType: InputType.TYPESCRIPT,
-        fields: this.handleType(targetType.getType(), sourceFile).fields,
-      }
-    } else {
-      throw new Error(`Type with name ${ selectedType } not found in given typescript snippet`)
-    }
+    const result = this.handleType3(targetType.getType(), sourceFile)
+
+    console.log('Result', result)
+
+    return {} as CustomFormData
   }
 
+  // ggf. so anpassen, dass nicht type sondern declaration übergeben wird
+  private handleType3(type: Type, sourceFile: SourceFile, alreadyReferenced: Set<string> = new Set()): TypeData[] | null {
+    if (alreadyReferenced.has(type.getText())) {
+      console.log(`Cyclic reference detected for type ${ type.getText() }, adding placeholder instead of continuing analysis for this tree node`)
+      return null
+    }
 
-  private handleType(type: Type, sourceFile: SourceFile): TypeDetails {
     if (type.isInterface()) {
-      const declaration = sourceFile.getInterface(type.getSymbol().getEscapedName())
-      return { fieldType: FieldType.INTERFACE, fields: this.handleClassOrInterface(declaration, sourceFile) }
+      alreadyReferenced.add(type.getText())
+
+      const name = type.getSymbol().getEscapedName()
+      const declaration = sourceFile.getInterface(name)
+      const properties = declaration.getProperties()
+      const baseTypes = declaration.getBaseTypes()
+
+      const inheritedFields = baseTypes.flatMap(baseType => this.handleType3(baseType, sourceFile, new Set()))
+      const parsedProperties: TypeData[] = properties.map(property => this.createTypeData(property, sourceFile, alreadyReferenced))
+
+      return [...parsedProperties, ...inheritedFields]
     }
 
     if (type.isClass()) {
-      const declaration = sourceFile.getClass(type.getSymbol().getEscapedName())
-      return { fieldType: FieldType.CLASS, fields: this.handleClassOrInterface(declaration, sourceFile) }
+      alreadyReferenced.add(type.getText())
+
+      const name = type.getSymbol().getEscapedName()
+      const declaration = sourceFile.getClass(name)
+      const instanceProperties = declaration.getInstanceProperties()
+      const baseTypes = declaration.getBaseTypes()
+
+      const inheritedFields = baseTypes.flatMap(baseType => this.handleType3(baseType, sourceFile, new Set()))
+
+      const parsedInstanceProperties: TypeData[] = instanceProperties
+        .filter(it => Node.isPropertyDeclaration(it) || Node.isParameterDeclaration(it)) // filter getters and setters
+        .map(property => this.createTypeData(property, sourceFile, alreadyReferenced))
+
+      return [...parsedInstanceProperties, ...inheritedFields]
     }
 
-    if (type.isEnum()) {
-      const declaration = sourceFile.getEnum(type.getSymbol()?.getName() ?? type.getText())
-      return {
-        fieldType: FieldType.ENUM,
-        fields: null,
-        options: declaration.getMembers().map(member => ({ displayName: member.getName(), value: member.getValue() })),
-      }
+    if (this.isObject(type)) {
+      const declarations = type.getSymbol().getDeclarations()
+
+      return declarations.filter(declaration => Node.isTypeLiteral(declaration)).flatMap(declaration =>
+        declaration.getMembers()
+          .filter(declaration => Node.isPropertySignature(declaration))
+          .map(declaration => this.createTypeData(declaration, sourceFile, alreadyReferenced)))
     }
 
     if (type.isIntersection()) {
-      return {
-        fieldType: FieldType.INTERSECTION,
-        fields: type.getIntersectionTypes().flatMap(intersectionType => this.handleType(intersectionType, sourceFile).fields),
-      }
+      return type.getIntersectionTypes().flatMap(intersectionType => this.handleType3(intersectionType, sourceFile, alreadyReferenced))
     }
 
-    if (type.isUnion()) return { fieldType: FieldType.UNION, fields: null }
-
-    if (type.isTuple()) {
-      const tupleFields = type.getTupleElements().map(tupleType => {
-        const { fieldType, fields, options } = this.handleType(tupleType, sourceFile)
-        return {
-          name: tupleType.getText(),
-          fieldType,
-          originalTypeName: tupleType.getText(),
-          nestedFields: fields,
-          inheritedFields: null,
-          options,
-        }
-      })
-
-      return { fieldType: FieldType.TUPLE, tupleFields, fields: null }
-    }
-
-
-    if (type.isArray() || type.isReadonlyArray()) return { fieldType: FieldType.ARRAY, fields: null }
-
-    if (type.isObject()) {
-      const properties = type.getProperties()
-      const fields = properties.map(property => {
-        const propertyType = property.getValueDeclaration().getType()
-
-        const { fieldType, fields, options } = this.handleType(propertyType, sourceFile)
-
-        return {
-          name: property.getName(),
-          fieldType,
-          originalTypeName: propertyType.getText(),
-          nestedFields: fields,
-          inheritedFields: null,
-          options,
-        }
-      })
-
-      return { fieldType: FieldType.OBJECT, fields: fields }
-    }
-
-
-    if (type.isNumber() || type.isNumberLiteral()) return { fieldType: FieldType.NUMBER, fields: null }
-    if (type.isString() || type.isStringLiteral()) return { fieldType: FieldType.STRING, fields: null }
-    if (type.isBoolean() || type.isBooleanLiteral()) return { fieldType: FieldType.BOOLEAN, fields: null }
-
-    return { fieldType: FieldType.UNKNOWN, fields: null }
+    return null
   }
 
+  private createTypeData(
+    property: PropertySignature | PropertyDeclaration | ParameterDeclaration,
+    sourceFile: SourceFile,
+    alreadyReferenced: Set<string>,
+  ): TypeData {
+    const structure = property.getStructure()
+    const propertyType = property.getType()
+    const symbol = property.getSymbol()
 
-  handleClassOrInterface(declaration: InterfaceDeclaration | ClassDeclaration, sourceFile: SourceFile): FormField[] {
-    const properties = declaration instanceof InterfaceDeclaration ? declaration.getProperties() : declaration.getInstanceProperties()
-    const inheritedTypes = declaration.getBaseTypes()
+    const options = propertyType.isEnum()
+      ? sourceFile.getEnum(propertyType.getSymbol().getName()).getMembers().map(member => ({ displayName: member.getName(), value: member.getValue() }))
+      : null
 
-    const baseFields = properties.map((property) => {
-      const type = property.getType()
+    return {
+      fieldType: this.getFieldTypeForType(propertyType, alreadyReferenced),
+      originalType: propertyType.getText(),
+      name: symbol.getEscapedName(),
+      baseTypes: propertyType.getBaseTypes(),
+      isNullable: propertyType.isNullable(),
+      hasExclamationToken: Node.isPropertyDeclaration(property) && property.getStructure().hasExclamationToken,
+      hasQuestionToken: structure.hasQuestionToken,
+      isOptional: symbol.isOptional(),
+      isReadonly: structure.isReadonly || propertyType.isReadonlyArray(), // ReadonlyArray<T> gets converted to "readonly T[]"
+      initializer: structure.initializer,
+      literal: structure.initializer ?? propertyType.getLiteralValue() ?? propertyType.isBooleanLiteral() ? propertyType.getText() : null,
+      fields: this.handleType3(propertyType, sourceFile, alreadyReferenced),
+      options,
+    }
+  }
 
-      const { fieldType, fields, options, tupleFields } = this.handleType(type, sourceFile)
+  private getFieldTypeForType(type: Type, alreadyReferenced: Set<string>): FieldType {
+    // logType(type)
 
-      return {
-        name: property.getName(),
-        fieldType: fieldType,
-        originalTypeName: type.getText(),
-        nestedFields: fields,
-        inheritedFields: null,
-        options,
-        tupleFields,
-      }
-    })
+    switch (true) {
+      case alreadyReferenced.has(type.getText()):
+        return FieldType.CYCLIC_REFERENCE
+      case type.isInterface():
+        return FieldType.INTERFACE
+      case type.isClass():
+        return FieldType.CLASS
+      case type.isEnum() || type.isEnumLiteral():
+        return FieldType.ENUM
+      case type.isArray() && type.isReadonlyArray():
+        return FieldType.ARRAY
+      case type.isTuple():
+        return FieldType.TUPLE
+      case type.isIntersection():
+        return FieldType.INTERSECTION
+      case type.isUnion() && !type.isBoolean():
+        return FieldType.UNION
+      case this.isObject(type):
+        return FieldType.OBJECT
+      case type.isString() || type.isStringLiteral() || type.isTemplateLiteral():
+        return FieldType.STRING
+      case type.isNumber() || type.isNumberLiteral():
+        return FieldType.NUMBER
+      case type.isBoolean() || type.isBooleanLiteral():
+        return FieldType.BOOLEAN
+      case type.isUnknown():
+        return FieldType.UNKNOWN
+      case type.isNever() || type.isVoid() || type.isNull() || type.isUndefined():
+        return FieldType.NOT_RENDERED
+      case type.isAny():
+        return FieldType.ANY
+      case type.isTypeParameter():
+        return FieldType.TYPE_PARAMETER
+      default:
+        return FieldType.NOT_SUPPORTED
+    }
+  }
 
-    const inheritedFields = inheritedTypes.map(type => {
-      const { fieldType, fields, options, tupleFields } = this.handleType(type, sourceFile)
-
-      return {
-        name: `Inherits: ${ type.getText() }`,
-        fieldType: fieldType,
-        originalTypeName: type.getText(),
-        nestedFields: null,
-        inheritedFields: fields,
-        options,
-        tupleFields,
-      }
-    })
-
-    // return [...baseFields, ...inheritedFields.flatMap(it => [...it.nestedFields ?? [], ...it.inheritedFields ?? []])]
-    return [...baseFields, ...inheritedFields]
+  private isObject(type: Type): boolean {
+    return type.isObject() && !type.isClassOrInterface() && !type.isArray() && !type.isReadonlyArray() && !type.isTuple()
   }
 }
