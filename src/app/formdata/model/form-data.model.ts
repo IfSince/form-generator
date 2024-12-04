@@ -11,17 +11,15 @@ export enum InputType {
 }
 
 export interface FormField {
-  name: string
-  fieldType: FieldType
-  originalTypeName: string
-  options?: { value: unknown, displayName: string }[]
-  nestedFields?: FormField[]
-  inheritedFields?: FormField[]
-  tupleFields?: FormField[]
-
-  // selectedComponent?: AngularMaterialComponent
-  // allowMultiSelect?: boolean
-  defaultValue?: unknown
+  name: string,
+  fieldType: FieldType,
+  fields: FormField[],
+  isRequired: boolean,
+  isOptional: boolean,
+  isReadonly: boolean,
+  defaultValue?: unknown,
+  options?: FieldSelectOption[],
+  originalType: string,
 }
 
 export enum AngularMaterialComponent {

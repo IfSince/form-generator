@@ -1,70 +1,7 @@
 import { Injectable } from '@angular/core'
-import { CustomFormData, FieldSelectOption, FieldType } from './model/form-data.model'
+import { CustomFormData, FieldType, FormField, InputType } from './model/form-data.model'
 import { Node, ParameterDeclaration, PropertyDeclaration, PropertySignature, SourceFile, Type } from 'ts-morph'
 import { createTempSourceFile } from '../ts-morph.utils'
-
-const logType = (type: Type) => {
-  console.log({
-    text: type.getText(),
-    isInterface: type.isInterface(),
-    isClass: type.isClass(),
-    isEnum: type.isEnum(),
-    isEnumLiteral: type.isEnumLiteral(),
-    isObject: type.isObject(),
-    isArray: type.isArray(),
-    isReadonlyArray: type.isReadonlyArray(),
-    isTuple: type.isTuple(),
-    isUnion: type.isUnion(),
-    isIntersection: type.isIntersection(),
-    isNumber: type.isNumber(),
-    isNumberLiteral: type.isNumberLiteral(),
-    isString: type.isString(),
-    isStringLiteral: type.isStringLiteral(),
-    isBoolean: type.isBoolean(),
-    isBooleanLiteral: type.isBooleanLiteral(),
-    isTypeParameter: type.isTypeParameter(),
-    isNull: type.isNull(),
-    isUndefined: type.isUndefined(),
-    isLiteral: type.isLiteral(),
-    isBigInt: type.isBigInt(),
-    isBigIntLiteral: type.isBigIntLiteral(),
-    isNever: type.isNever(),
-    isUnknown: type.isUnknown(),
-    isTemplateLiteral: type.isTemplateLiteral(),
-    isAny: type.isAny(),
-    isVoid: type.isVoid(),
-  })
-}
-
-interface TypeData {
-  fieldType: FieldType,
-  originalType: string,
-  fields: TypeData[],
-  name: string,
-  baseTypes: any[],
-  isNullable: boolean,
-  hasExclamationToken: boolean,
-  hasQuestionToken: boolean,
-  // hasFixedValue: boolean,
-  isOptional: boolean,
-  isReadonly: boolean,
-  initializer: unknown,
-  literal: unknown,
-  options: FieldSelectOption[]
-}
-
-interface TypeData2 {
-  name: string,
-  fieldType: FieldType,
-
-  isOptional: boolean,
-  isReadonly: boolean,
-  defaultValue?: unknown,
-  options?: FieldSelectOption[],
-
-  fields: TypeData2[],
-  originalType: string,
-}
 
 @Injectable({
   providedIn: 'root',
@@ -73,19 +10,18 @@ export class FormDataCreateByTypeScriptService {
   constructor() {
   }
 
-  create(text: string, selectedType?: string): CustomFormData {
+  create(text: string, selectedType: string): CustomFormData {
     const sourceFile = createTempSourceFile(text)
     const targetType = sourceFile.getInterface(selectedType) ?? sourceFile.getClass(selectedType) ?? sourceFile.getTypeAlias(selectedType)
 
-    const result = this.handleType3(targetType.getType(), sourceFile)
-
-    console.log('Result', result)
-
-    return {} as CustomFormData
+    return {
+      name: selectedType,
+      inputType: InputType.TYPESCRIPT,
+      fields: this.getFormFieldsForType(targetType.getType(), sourceFile),
+    }
   }
 
-  // ggf. so anpassen, dass nicht type sondern declaration übergeben wird
-  private handleType3(type: Type, sourceFile: SourceFile, alreadyReferenced: Set<string> = new Set()): TypeData[] | null {
+  private getFormFieldsForType(type: Type, sourceFile: SourceFile, alreadyReferenced: Set<string> = new Set()): FormField[] | null {
     if (alreadyReferenced.has(type.getText())) {
       console.log(`Cyclic reference detected for type ${ type.getText() }, adding placeholder instead of continuing analysis for this tree node`)
       return null
@@ -96,13 +32,11 @@ export class FormDataCreateByTypeScriptService {
 
       const name = type.getSymbol().getEscapedName()
       const declaration = sourceFile.getInterface(name)
-      const properties = declaration.getProperties()
-      const baseTypes = declaration.getBaseTypes()
 
-      const inheritedFields = baseTypes.flatMap(baseType => this.handleType3(baseType, sourceFile, new Set()))
-      const parsedProperties: TypeData[] = properties.map(property => this.createTypeData(property, sourceFile, alreadyReferenced))
+      const inheritedFields = declaration.getBaseTypes().flatMap(baseType => this.getFormFieldsForType(baseType, sourceFile, new Set()))
+      const interfaceFields = declaration.getProperties().map(property => this.createFormField(property, sourceFile, alreadyReferenced))
 
-      return [...parsedProperties, ...inheritedFields]
+      return [...interfaceFields, ...inheritedFields]
     }
 
     if (type.isClass()) {
@@ -110,67 +44,60 @@ export class FormDataCreateByTypeScriptService {
 
       const name = type.getSymbol().getEscapedName()
       const declaration = sourceFile.getClass(name)
-      const instanceProperties = declaration.getInstanceProperties()
-      const baseTypes = declaration.getBaseTypes()
 
-      const inheritedFields = baseTypes.flatMap(baseType => this.handleType3(baseType, sourceFile, new Set()))
-
-      const parsedInstanceProperties: TypeData[] = instanceProperties
+      const inheritedFields = declaration.getBaseTypes().flatMap(baseType => this.getFormFieldsForType(baseType, sourceFile, new Set()))
+      const classFields = declaration.getInstanceProperties()
         .filter(it => Node.isPropertyDeclaration(it) || Node.isParameterDeclaration(it)) // filter getters and setters
-        .map(property => this.createTypeData(property, sourceFile, alreadyReferenced))
+        .map(property => this.createFormField(property, sourceFile, alreadyReferenced))
 
-      return [...parsedInstanceProperties, ...inheritedFields]
+      return [...classFields, ...inheritedFields]
     }
 
     if (this.isObject(type)) {
-      const declarations = type.getSymbol().getDeclarations()
-
-      return declarations.filter(declaration => Node.isTypeLiteral(declaration)).flatMap(declaration =>
+      return type.getSymbol().getDeclarations().filter(declaration => Node.isTypeLiteral(declaration)).flatMap(declaration =>
         declaration.getMembers()
           .filter(declaration => Node.isPropertySignature(declaration))
-          .map(declaration => this.createTypeData(declaration, sourceFile, alreadyReferenced)))
+          .map(declaration => this.createFormField(declaration, sourceFile, alreadyReferenced)))
     }
 
     if (type.isIntersection()) {
-      return type.getIntersectionTypes().flatMap(intersectionType => this.handleType3(intersectionType, sourceFile, alreadyReferenced))
+      return type.getIntersectionTypes().flatMap(intersectionType => this.getFormFieldsForType(intersectionType, sourceFile, alreadyReferenced))
     }
+
+    // TODO add other handlings for currently unsupported types like Union Types, Generics. etc.
 
     return null
   }
 
-  private createTypeData(
+  private createFormField(
     property: PropertySignature | PropertyDeclaration | ParameterDeclaration,
     sourceFile: SourceFile,
     alreadyReferenced: Set<string>,
-  ): TypeData {
+  ): FormField {
     const structure = property.getStructure()
     const propertyType = property.getType()
     const symbol = property.getSymbol()
 
-    const options = propertyType.isEnum()
-      ? sourceFile.getEnum(propertyType.getSymbol().getName()).getMembers().map(member => ({ displayName: member.getName(), value: member.getValue() }))
-      : null
-
     return {
-      fieldType: this.getFieldTypeForType(propertyType, alreadyReferenced),
-      originalType: propertyType.getText(),
       name: symbol.getEscapedName(),
-      baseTypes: propertyType.getBaseTypes(),
-      isNullable: propertyType.isNullable(),
-      hasExclamationToken: Node.isPropertyDeclaration(property) && property.getStructure().hasExclamationToken,
-      hasQuestionToken: structure.hasQuestionToken,
-      isOptional: symbol.isOptional(),
-      isReadonly: structure.isReadonly || propertyType.isReadonlyArray(), // ReadonlyArray<T> gets converted to "readonly T[]"
-      initializer: structure.initializer,
-      literal: structure.initializer ?? propertyType.getLiteralValue() ?? propertyType.isBooleanLiteral() ? propertyType.getText() : null,
-      fields: this.handleType3(propertyType, sourceFile, alreadyReferenced),
-      options,
+      fieldType: this.getFieldTypeForType(propertyType, alreadyReferenced),
+      fields: this.getFormFieldsForType(propertyType, sourceFile, alreadyReferenced),
+      isRequired: Node.isPropertyDeclaration(property) && property.getStructure().hasExclamationToken,
+      isOptional: symbol.isOptional() || structure.hasQuestionToken || propertyType.isNullable(),
+      isReadonly: structure.isReadonly || propertyType.isReadonlyArray(), // ReadonlyArray<T> gets converted to "readonly T[]" and wont be "isReadonly" anymore, therefore we also check for isReadonlyArray()
+      defaultValue: structure.initializer
+      ?? propertyType.getLiteralValue()
+      // Boolean Literals (True, False) also act as unique type and therefore are not returned as "Literal Value", which is why we have to check manually
+      ?? propertyType.isBooleanLiteral() ? propertyType.getText() : null,
+      options: propertyType.isEnum()
+        ? sourceFile.getEnum(propertyType.getSymbol().getName()).getMembers().map(member => ({ displayName: member.getName(), value: member.getValue() }))
+        : null,
+      originalType: propertyType.getText(),
     }
   }
 
   private getFieldTypeForType(type: Type, alreadyReferenced: Set<string>): FieldType {
     // logType(type)
-
     switch (true) {
       case alreadyReferenced.has(type.getText()):
         return FieldType.CYCLIC_REFERENCE
@@ -210,6 +137,7 @@ export class FormDataCreateByTypeScriptService {
   }
 
   private isObject(type: Type): boolean {
+    // Specifically check if the type is just an object and not any of the other typings (e.g. an array is also an object, therefore both are true)
     return type.isObject() && !type.isClassOrInterface() && !type.isArray() && !type.isReadonlyArray() && !type.isTuple()
   }
 }
