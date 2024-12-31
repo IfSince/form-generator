@@ -1,0 +1,58 @@
+<div class="flex-layout-container supporting-pane">
+  <form class="supporting-pane__main"
+        style="overflow: hidden"
+        [formGroup]="formGroup"
+        (ngSubmit)="onSubmit()">
+    <mat-card appearance="raised">
+      <mat-card-header class="flex-layout-container flex-layout-container__justify-between flex-layout-container__wrap">
+        <mat-card-title>Preview Form ({{ data.name }})</mat-card-title>
+        <mat-card-subtitle>Select a form field to edit</mat-card-subtitle>
+        <div>
+          <mat-button-toggle-group name="windowSizeClass"
+                                   [hideSingleSelectionIndicator]="true"
+                                   [formControl]="windowSizeClassFormControl">
+            <mat-button-toggle value="600px">Compact</mat-button-toggle>
+            <mat-button-toggle value="840px">Medium</mat-button-toggle>
+            <mat-button-toggle value="1200px">Expanded</mat-button-toggle>
+            <mat-button-toggle value="100%">Full</mat-button-toggle>
+          </mat-button-toggle-group>
+          <button mat-button type="button" (click)="addField()">
+            <mat-icon>add</mat-icon>
+            Add field
+          </button>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <mat-divider/>
+        <div class="scrollable-container">
+          <div class="form-container flex-layout-container flex-layout-container__wrap"
+               [ngStyle]="{ 'width': windowSizeClassFormControl.value }">
+            @for (field of flattenedFields(); track $index) {
+              @if (![FieldType.INTERFACE, FieldType.OBJECT, FieldType.CLASS].includes(field.controls.fieldType.value)) {
+                <app-selectable-form-field [selected]="selectedField() === field"
+                                           (select)="selectedField.set(field)">
+                  <app-material-field [field]="field"/>
+                </app-selectable-form-field>
+              }
+            }
+          </div>
+        </div>
+
+
+      </mat-card-content>
+      <mat-card-actions>
+        <ng-content/>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+
+  @if (selectedField() != null) {
+    <div class="supporting-pane__support">
+      <app-edit-form-field [formFieldFormGroup]="selectedField()"
+                           (remove)="removeSelectedField()"
+                           (save)="updateField($event)"
+                           (close)="selectedField.set(null)"/>
+    </div>
+  }
+</div>

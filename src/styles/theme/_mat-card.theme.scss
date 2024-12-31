@@ -1,0 +1,7 @@
+@use '@angular/material' as mat;
+
+@mixin theme($theme) {
+  .mat-mdc-card-header {
+    padding-bottom: 16px
+  }
+}

@@ -1,0 +1,50 @@
+@switch (field.controls.fieldType.value) {
+  @case (FieldType.STRING) {
+    <mat-form-field appearance="fill">
+      <mat-label>{{ field.controls.name.value | formatLabel }}</mat-label>
+      <input matInput
+             [value]="field.controls.defaultValue.value"
+             [formControl]="field.controls.defaultValue"
+             type="text"
+             [placeholder]="field.controls.name.value"
+             [readonly]="field.controls.isReadonly.value"
+             [required]="field.controls.isRequired.value || !field.controls.isOptional.value"/>
+    </mat-form-field>
+  }
+  @case (FieldType.NUMBER) {
+    <mat-form-field appearance="fill">
+      <mat-label>{{ field.controls.name.value | formatLabel }}</mat-label>
+      <input matInput
+             type="number"
+             [placeholder]="field.controls.name.value"
+             [readonly]="field.controls.isReadonly.value"
+             [required]="field.controls.isRequired.value">
+    </mat-form-field>
+  }
+  @case (FieldType.BOOLEAN) {
+    <mat-checkbox [disabled]="field.controls.isReadonly.value">{{ field.controls.name.value | formatLabel }}</mat-checkbox>
+  }
+  @case (FieldType.ENUM) {
+    <mat-form-field appearance="fill">
+      <mat-label>{{ field.controls.name.value | formatLabel }}</mat-label>
+      <mat-select>
+        @for (option of field.controls.options.getRawValue(); track option.value) {
+          <mat-option [value]="option.value">{{ option.displayName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+  @case (FieldType.INTERFACE) {
+    <!-- Placeholder to be able to use default case, nothing should be rendered -->
+  }
+  @case (FieldType.OBJECT) {
+    <!-- Placeholder to be able to use default case, nothing should be rendered -->
+  }
+  @case (FieldType.CLASS) {
+    <!-- Placeholder to be able to use default case, nothing should be rendered -->
+  }
+
+  @default {
+    <p>Unsupported field type {{ field.controls.fieldType.value }} detected for field {{ field.controls.name.value }}</p>
+  }
+}

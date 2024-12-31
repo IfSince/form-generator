@@ -1,0 +1,14 @@
+mat-card {
+  overflow: hidden;
+}
+
+.scrollable-container {
+  overflow: auto;
+  /*min-width: 375px;*/
+}
+
+.form-container {
+  overflow: auto;
+  resize: horizontal;
+  border: 1px solid black;
+}

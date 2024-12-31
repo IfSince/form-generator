@@ -1,0 +1,47 @@
+<mat-card appearance="raised">
+  <mat-card-header class="flex-layout-container flex-layout-container__justify-between">
+    <mat-card-title>Form Field</mat-card-title>
+    <button mat-icon-button (click)="close.emit()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-card-header>
+
+  @if (_control) {
+    <mat-card-content>
+
+      <mat-divider/>
+      <form [formGroup]="_control" class="flex-layout-container flex-layout-container__column">
+        <mat-form-field appearance="fill">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Field Type</mat-label>
+          <mat-select formControlName="fieldType">
+            @for (type of fieldTypes; track type) {
+              <mat-option [value]="type">{{ type }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Default Value</mat-label>
+          <input matInput formControlName="defaultValue">
+        </mat-form-field>
+
+        <mat-checkbox formControlName="isRequired">Is Required</mat-checkbox>
+        <mat-checkbox formControlName="isOptional">Is Optional</mat-checkbox>
+        <mat-checkbox formControlName="isReadonly">Is Readonly</mat-checkbox>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions class="flex-layout-container flex-layout-container__justify-between">
+      <button mat-stroked-button (click)="this.close.emit()">Cancel</button>
+      <div>
+        <button mat-button (click)="this.remove.emit()">Remove Field</button>
+        <button mat-flat-button (click)="this.onSave()">Save</button>
+      </div>
+    </mat-card-actions>
+  }
+</mat-card>

@@ -5,6 +5,10 @@
 /* Utilities for canonical layouts and other common use cases around layouting */
 @import 'styles/layout.scss';
 
+* {
+  box-sizing: border-box;
+}
+
 html, body {
   height: 100%;
 }

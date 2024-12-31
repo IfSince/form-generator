@@ -1,10 +1,27 @@
 // ----------------- Common -----------------
 .flex-layout-container {
+  width: 100%;
   display: flex;
   gap: 1rem;
 
   &__column {
     flex-direction: column;
+  }
+
+  &__justify-between {
+    justify-content: space-between;
+  }
+
+  &__wrap {
+    flex-wrap: wrap;
+  }
+
+  &__align-center {
+    align-items: center;
+  }
+
+  &__align-end {
+    align-items: flex-end;
   }
 }
 
@@ -14,5 +31,45 @@
 
   &:has(mat-form-field) {
     padding-bottom: 0;
+  }
+}
+
+// Canonical Layout: Supporting Pane
+.supporting-pane__main {
+  flex-grow: 1;
+
+  mat-card {
+    height: 100%;
+
+    mat-card-content {
+      height: 100%;
+    }
+  }
+}
+
+.supporting-pane__support {
+  // Supporting pane should have a fixed with on expanded screens, see https://m3.material.io/foundations/layout/canonical-layouts/supporting-pane#13c3c489-9cc7-4830-b44a-fe6c2d431c1f
+  min-width: 360px;
+  max-width: 360px;
+  width: 100%;
+
+  mat-card {
+    height: 100%;
+
+    mat-card-content {
+      height: 100%;
+    }
+  }
+}
+
+// Media for Window size class "Medium"
+@media (max-width: 840px) {
+  .supporting-pane {
+    flex-direction: column;
+  }
+
+  .supporting-pane__support {
+    max-width: unset;
+    min-width: unset;
   }
 }

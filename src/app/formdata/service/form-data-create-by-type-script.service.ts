@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core'
-import { CustomFormData, FieldType, FormField, InputType } from './model/form-data.model'
 import { Node, ParameterDeclaration, PropertyDeclaration, PropertySignature, SourceFile, Type } from 'ts-morph'
-import { createTempSourceFile } from '../ts-morph.utils'
+import { CustomFormData, InputType } from '../model/custom-form-data.model'
+import { createTempSourceFile } from '../../ts-morph.utils'
+import { FieldType, FormField } from '../model/form-field.model'
 
 @Injectable({
   providedIn: 'root',

@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { RouterLink, RouterLinkActive } from '@angular/router'
-import { routes } from '../../app.routes'
+import { routes } from '../../../app.routes'
 
 @Component({
   selector: 'app-layout',

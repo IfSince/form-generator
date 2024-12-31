@@ -1,0 +1,5 @@
+.selected {
+  background-color: #e0f7fa;
+  border: 1px solid #26c6da;
+  cursor: pointer;
+}

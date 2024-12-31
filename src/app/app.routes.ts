@@ -11,4 +11,9 @@ export const routes: Routes = [
     loadComponent: () => import('./upload/view/upload.view').then(c => c.UploadView),
     title: 'Upload',
   },
+  {
+    path: 'preview',
+    loadComponent: () => import('./preview/view/preview.view').then(c => c.PreviewView),
+    title: 'Preview'
+  },
 ]

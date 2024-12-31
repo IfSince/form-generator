@@ -1,9 +1,10 @@
-import { Store } from './store'
+
 import { inject, Injectable } from '@angular/core'
-import { StorageService } from './storage/storage.service'
 import { map, skip } from 'rxjs/operators'
 import { distinctUntilChanged } from 'rxjs'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { StorageService } from './storage.service'
+import { Store } from '../store'
 
 export interface StorableState<T> {
   data: T | null
