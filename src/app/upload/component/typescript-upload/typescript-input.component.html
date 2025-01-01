@@ -1,9 +1,9 @@
 <div class="mat-tab__content">
   <mat-form-field matTooltip="Enter a valid typescript type structure below to select the type used for form generation"
-                  [matTooltipDisabled]="_control.controls.selectedType.enabled"
+                  [matTooltipDisabled]="formGroup.controls.selectedType.enabled"
                   matTooltipPosition="below">
     <mat-label>Type to generate form for</mat-label>
-    <mat-select [formControl]="_control.controls.selectedType">
+    <mat-select [formControl]="formGroup.controls.selectedType">
       @if (!!selectableTypes().interfaces.length) {
         <mat-optgroup label="Interfaces">
           @for (type of selectableTypes().interfaces; track type) {
@@ -32,7 +32,7 @@
 
   <mat-form-field appearance="fill">
     <textarea matInput
-              [formControl]="_control.controls.text"
+              [formControl]="formGroup.controls.text"
               placeholder="class Address {
   street: string
   country: number

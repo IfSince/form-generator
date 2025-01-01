@@ -4,6 +4,7 @@
 
 /* Utilities for canonical layouts and other common use cases around layouting */
 @import 'styles/layout.scss';
+@import 'styles/utility.scss';
 
 * {
   box-sizing: border-box;

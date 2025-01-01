@@ -7,12 +7,11 @@ import { MatSelect } from '@angular/material/select'
 
 import { MatCheckbox } from '@angular/material/checkbox'
 import { MatButton, MatIconButton } from '@angular/material/button'
-import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card'
+import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card'
 import { MatIcon } from '@angular/material/icon'
 import { FormDataFormBuilderService } from '../../../formdata/service/form-data-form-builder.service'
 import { ReactiveForm } from '../../../formdata/model/reactive-form-control.model'
 import { FieldType, FormField } from '../../../formdata/model/form-field.model'
-import { MatDivider } from '@angular/material/divider'
 
 @Component({
   selector: 'app-edit-form-field',
@@ -33,10 +32,9 @@ import { MatDivider } from '@angular/material/divider'
     MatIconButton,
     MatIcon,
     MatCardTitle,
-    MatDivider,
+    MatCardSubtitle,
   ],
   templateUrl: './edit-form-field.component.html',
-  styleUrl: './edit-form-field.component.css',
 })
 export class EditFormFieldComponent {
   formDataFormBuilderService = inject(FormDataFormBuilderService)

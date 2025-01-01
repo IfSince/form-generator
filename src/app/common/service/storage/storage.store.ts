@@ -41,4 +41,8 @@ export abstract class StorageStore<T extends StorableState<T['data']>> extends S
       this.updateState({ data })
     }
   }
+
+  clearData() {
+    this.updateState({ data: null })
+  }
 }

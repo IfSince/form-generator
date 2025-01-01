@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { RouterLink, RouterLinkActive } from '@angular/router'
-import { routes } from '../../../app.routes'
+import { routes, subRoutes } from '../../../app.routes'
 
 @Component({
   selector: 'app-layout',
@@ -29,6 +29,7 @@ import { routes } from '../../../app.routes'
 })
 export class LayoutComponent {
   protected readonly rootRoutes = routes.filter(r => r.path)
+  protected readonly subRoutes = subRoutes.filter(r => r.path)
 
   private breakpointObserver = inject(BreakpointObserver);
 

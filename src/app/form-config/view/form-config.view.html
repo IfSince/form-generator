@@ -1,0 +1,19 @@
+<h1>Configuration</h1>
+
+@if (formConfigStore.state$ | async; as state) {
+  <app-form-config-form [formGroup]="state.data | asFormConfigFormGroup"
+                        (submitForm)="onSubmit($event)">
+    <div class="btn-group">
+      <div class="btn-group">
+        <button mat-stroked-button (click)="location.back()">Back</button>
+        <button mat-button
+                type="button"
+                [appClearDialog]="onClear">
+          Zurücksetzen
+        </button>
+      </div>
+
+      <button mat-flat-button type="submit">Submit</button>
+    </div>
+  </app-form-config-form>
+}

@@ -15,7 +15,7 @@
                    [selectedIndex]="selectedTabIndex"
                    (selectedIndexChange)="selectedTabIndex.set($event)">
       <mat-tab label="TypeScript Input">
-        <app-typescript-input (submit)="onSubmit($event.text, $event.selectedType)"/>
+        <app-typescript-input (submitForm)="onSubmit($event.text, $event.selectedType)"/>
       </mat-tab>
 
       <mat-tab label="Manual Input">

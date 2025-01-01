@@ -1,14 +1,16 @@
 <h1>Preview</h1>
 
 @if (formDataStore.state$ | async; as state) {
-  <app-preview-form [data]="state.data"
-                 (submitFields)="onSubmit($event)">
-    <div class="flex-layout-container flex-layout-container__justify-between">
-      <div>
+  <app-preview-form [formGroup]="state.data?.fields | asFieldsFormGroup"
+                    (submitForm)="onSubmit($event)">
+    <div class="btn-group">
+      <div class="btn-group">
         <a mat-stroked-button [routerLink]="'/upload'">Back</a>
         <button mat-button
                 type="button"
-                (click)="onCancel()">
+                [appClearDialog]="onClear"
+                appClearDialogTitle="Vorgang verwerfen"
+                appClearDialogText="Willst du die Daten wirklich löschen und den Vorgang verwerfen?">
           <mat-icon>delete</mat-icon>
           Vorgang verwerfen
         </button>

@@ -3,16 +3,20 @@ import { AbstractControl } from '@angular/forms'
 
 @Component({ template: '' })
 export abstract class AbstractSubmitComponent<T> {
-  abstract _control: AbstractControl
+  abstract formGroup: AbstractControl
 
-  @Output() submit = new EventEmitter<T>()
+  @Output() submitForm = new EventEmitter<T>()
 
-  onSubmit(): void {
-    this._control?.markAllAsTouched()
-    this._control?.updateValueAndValidity()
+  onSubmit(shouldValidate = true): void {
+    if (!shouldValidate) {
+      this.submitForm.emit(this.formGroup.getRawValue())
+      return
+    }
 
-    if (this._control?.valid) {
-      this.submit.emit(this._control.getRawValue())
+    this.formGroup?.markAllAsTouched()
+    this.formGroup?.updateValueAndValidity()
+    if (this.formGroup?.valid) {
+      this.submitForm.emit(this.formGroup.getRawValue())
     }
   }
 }

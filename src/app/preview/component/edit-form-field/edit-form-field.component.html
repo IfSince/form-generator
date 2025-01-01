@@ -1,15 +1,16 @@
 <mat-card appearance="raised">
-  <mat-card-header class="flex-layout-container flex-layout-container__justify-between">
+  <mat-card-header class="btn-group">
     <mat-card-title>Form Field</mat-card-title>
-    <button mat-icon-button (click)="close.emit()">
-      <mat-icon>close</mat-icon>
-    </button>
+    <mat-card-subtitle>Test</mat-card-subtitle>
+    <div class="btn-group">
+      <button mat-icon-button (click)="close.emit()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
   </mat-card-header>
 
-  @if (_control) {
-    <mat-card-content>
-
-      <mat-divider/>
+  <mat-card-content>
+    @if (_control) {
       <form [formGroup]="_control" class="flex-layout-container flex-layout-container__column">
         <mat-form-field appearance="fill">
           <mat-label>Name</mat-label>
@@ -34,14 +35,15 @@
         <mat-checkbox formControlName="isOptional">Is Optional</mat-checkbox>
         <mat-checkbox formControlName="isReadonly">Is Readonly</mat-checkbox>
       </form>
-    </mat-card-content>
+    }
+  </mat-card-content>
 
-    <mat-card-actions class="flex-layout-container flex-layout-container__justify-between">
-      <button mat-stroked-button (click)="this.close.emit()">Cancel</button>
-      <div>
-        <button mat-button (click)="this.remove.emit()">Remove Field</button>
-        <button mat-flat-button (click)="this.onSave()">Save</button>
-      </div>
-    </mat-card-actions>
-  }
+  <mat-card-actions class="flex-layout-container flex-layout-container__justify-between">
+    <button mat-stroked-button (click)="this.close.emit()">Cancel</button>
+    <div>
+      <button mat-button (click)="this.remove.emit()">Remove Field</button>
+      <button mat-flat-button (click)="this.onSave()">Save</button>
+    </div>
+  </mat-card-actions>
+
 </mat-card>

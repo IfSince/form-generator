@@ -33,7 +33,7 @@ import { isTypeNode, parseAsSourceFileWithAvailableTypes } from '../../../ts-mor
   styleUrl: './typescript-input.component.css',
 })
 export class TypescriptInputComponent extends AbstractSubmitComponent<{ text: string, selectedType: string }> {
-  _control = new FormGroup({
+  formGroup = new FormGroup({
     text: new FormControl<string | null>(null, [Validators.required]),
     selectedType: new FormControl<string | null>(null, [Validators.required]),
   })
@@ -47,10 +47,10 @@ export class TypescriptInputComponent extends AbstractSubmitComponent<{ text: st
   constructor() {
     super()
 
-    this._control.controls.text.valueChanges.pipe(
+    this.formGroup.controls.text.valueChanges.pipe(
       filter(Boolean),
       map(parseAsSourceFileWithAvailableTypes),
-      distinctUntilChanged(), // TODO doesnt work yet, probably refactor parseAsSourceFileWithAvailableTypes to specifically return needed info instead of doing stuff here
+      distinctUntilChanged(),
       takeUntilDestroyed(),
     ).subscribe(({ classes, interfaces, sourceFile, typeAliases }) => {
       const options = {
@@ -62,9 +62,9 @@ export class TypescriptInputComponent extends AbstractSubmitComponent<{ text: st
       this.selectableTypes.set(options)
 
       if (classes.length > 0 || interfaces.length > 0 || typeAliases.length > 0) {
-        this._control.controls.selectedType.patchValue(this.determineDefaultType(sourceFile))
+        this.formGroup.controls.selectedType.patchValue(this.determineDefaultType(sourceFile))
       } else {
-        this._control.controls.selectedType.patchValue(null)
+        this.formGroup.controls.selectedType.patchValue(null)
       }
 
     })

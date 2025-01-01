@@ -13,8 +13,8 @@ export class FormDataFormBuilderService {
     private fb: FormBuilder,
   ) { }
 
-  buildFormData(fields: FormField[]): FormGroup<{ entries: FormArray<FormGroup<ReactiveForm<FormField>>> }> {
-    return this.fb.group({ entries: this.fb.array(fields.map(it => this.buildFormField(it))) })
+  buildFormData(fields?: FormField[]): FormGroup<{ entries: FormArray<FormGroup<ReactiveForm<FormField>>> }> {
+    return this.fb.group({ entries: this.fb.array((fields || []).map(it => this.buildFormField(it))) })
   }
 
   buildFormField(field: FormField): FormGroup {

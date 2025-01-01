@@ -3,5 +3,5 @@ mat-form-field {
 }
 
 textarea {
-  min-height: clamp(30vh, 30vw, 45vh);
+  min-height: clamp(30vh, 30vw, 40vh);
 }

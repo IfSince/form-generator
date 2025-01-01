@@ -17,3 +17,11 @@ export const routes: Routes = [
     title: 'Preview'
   },
 ]
+
+export const subRoutes: Routes = [
+  {
+    path: 'configuration',
+    loadComponent: () => import('./form-config/view/form-config.view').then(c => c.FormConfigView),
+    title: 'Configuration'
+  },
+]

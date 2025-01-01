@@ -1,0 +1,16 @@
+.btn-group {
+  display: flex;
+  height: fit-content;
+  /*flex-wrap: wrap;*/
+  gap: 8px;
+
+  &:has(> .btn-group) {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  &__space-between {
+    justify-content: space-between;
+  }
+}

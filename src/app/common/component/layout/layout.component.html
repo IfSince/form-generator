@@ -17,6 +17,19 @@
         </a>
       }
     </mat-nav-list>
+
+    <mat-divider/>
+    <mat-nav-list>
+      @for (item of subRoutes; track $index) {
+        <a mat-list-item
+           [routerLink]="item.path"
+           #link="routerLinkActive"
+           routerLinkActive
+           [activated]="link.isActive">
+          {{ item.title }}
+        </a>
+      }
+    </mat-nav-list>
   </mat-sidenav>
 
   <mat-sidenav-content>

@@ -1,5 +1,5 @@
-mat-card {
-  overflow: hidden;
+.supporting-pane__main {
+  overflow-x: hidden;
 }
 
 .scrollable-container {
