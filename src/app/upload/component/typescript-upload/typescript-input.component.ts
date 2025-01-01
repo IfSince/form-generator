@@ -33,7 +33,7 @@ import { isTypeNode, parseAsSourceFileWithAvailableTypes } from '../../../ts-mor
   styleUrl: './typescript-input.component.css',
 })
 export class TypescriptInputComponent extends AbstractSubmitComponent<{ text: string, selectedType: string }> {
-  formGroup = new FormGroup({
+  _formGroup = new FormGroup({
     text: new FormControl<string | null>(null, [Validators.required]),
     selectedType: new FormControl<string | null>(null, [Validators.required]),
   })
@@ -47,7 +47,7 @@ export class TypescriptInputComponent extends AbstractSubmitComponent<{ text: st
   constructor() {
     super()
 
-    this.formGroup.controls.text.valueChanges.pipe(
+    this._formGroup.controls.text.valueChanges.pipe(
       filter(Boolean),
       map(parseAsSourceFileWithAvailableTypes),
       distinctUntilChanged(),
@@ -62,9 +62,9 @@ export class TypescriptInputComponent extends AbstractSubmitComponent<{ text: st
       this.selectableTypes.set(options)
 
       if (classes.length > 0 || interfaces.length > 0 || typeAliases.length > 0) {
-        this.formGroup.controls.selectedType.patchValue(this.determineDefaultType(sourceFile))
+        this._formGroup.controls.selectedType.patchValue(this.determineDefaultType(sourceFile))
       } else {
-        this.formGroup.controls.selectedType.patchValue(null)
+        this._formGroup.controls.selectedType.patchValue(null)
       }
 
     })

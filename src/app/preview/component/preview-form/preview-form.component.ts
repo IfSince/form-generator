@@ -1,9 +1,9 @@
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, signal } from '@angular/core'
+import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core'
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card'
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { MatButton } from '@angular/material/button'
 import { EditFormFieldComponent } from '../edit-form-field/edit-form-field.component'
-import { Subject, takeUntil } from 'rxjs'
+import { takeUntil } from 'rxjs'
 import { MaterialFieldComponent } from '../form-fields/material-field/material-field.component'
 import { FormDataFormBuilderService } from '../../../formdata/service/form-data-form-builder.service'
 import { ReactiveForm } from '../../../formdata/model/reactive-form-control.model'
@@ -13,7 +13,7 @@ import { SelectableFormFieldComponent } from '../form-fields/selectable-form-fie
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle'
 import { MatIcon } from '@angular/material/icon'
 import { NgStyle } from '@angular/common'
-import { AbstractSubmitComponent } from '../../../common/component/abstract-submit.component'
+import { AbstractFormComponent } from '../../../common/component/abstract-form.component'
 
 @Component({
   selector: 'app-preview-form',
@@ -40,28 +40,25 @@ import { AbstractSubmitComponent } from '../../../common/component/abstract-subm
   templateUrl: './preview-form.component.html',
   styleUrl: './preview-form.component.css',
 })
-export class PreviewFormComponent extends AbstractSubmitComponent<{ entries: FormField[] }> implements OnInit, OnDestroy {
-  @Input() formGroup: FormGroup<{ entries: FormArray<FormGroup<ReactiveForm<FormField>>> }>
+export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormField[] }> implements OnInit {
   @Output() select = new EventEmitter()
 
+  _formGroup: FormGroup<{ entries: FormArray<FormGroup<ReactiveForm<FormField>>> }>
   protected readonly FieldType = FieldType
   private formDataFormBuilderService = inject(FormDataFormBuilderService)
-  private destroy$ = new Subject<void>()
 
   windowSizeClassFormControl = new FormControl('100%')
   selectedField = signal<FormGroup<ReactiveForm<FormField>> | null>(null)
   flattenedFields = signal<FormGroup<ReactiveForm<FormField>>[]>([])
 
   ngOnInit(): void {
-    this.flattenedFields.set(getFieldsAsFlatList(this.formGroup.controls.entries))
-    this.formGroup.controls.entries.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.flattenedFields.set(getFieldsAsFlatList(this.formGroup.controls.entries))
-    })
+    this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
   }
 
-  ngOnDestroy() {
-    this.destroy$.next()
-    this.destroy$.complete()
+  override setValueChangesSubscription() {
+    return this._formGroup.controls.entries.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
+    })
   }
 
   updateField(updatedField: FormField) {
@@ -69,7 +66,7 @@ export class PreviewFormComponent extends AbstractSubmitComponent<{ entries: For
 
     index != -1
       ? this.selectedField().patchValue(updatedField)
-      : this.formGroup.controls.entries.push(this.formDataFormBuilderService.buildFormField(updatedField))
+      : this._formGroup.controls.entries.push(this.formDataFormBuilderService.buildFormField(updatedField))
 
     this.selectedField.set(null)
   }

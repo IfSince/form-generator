@@ -1,5 +1,5 @@
 <form class="flex-layout-container flex-layout-container__column"
-      [formGroup]="formGroup"
+      [formGroup]="_formGroup"
       (ngSubmit)="onSubmit()">
   <mat-card appearance="raised">
     <mat-card-header class="btn-group">
@@ -22,7 +22,6 @@
       </div>
     </mat-card-header>
     <mat-card-content>
-
       {{ jsonData() | json }}
 
       <mat-list>

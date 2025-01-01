@@ -1,8 +1,7 @@
-import { Component, computed, Input, OnDestroy, OnInit, Signal, signal } from '@angular/core'
-import { Subject, takeUntil } from 'rxjs'
+import { Component, computed, OnInit, Signal, signal } from '@angular/core'
+import { takeUntil } from 'rxjs'
 import { FormConfig } from '../../model/form-config.model'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
-import { ReactiveForm } from '../../../formdata/model/reactive-form-control.model'
 import { DatePipe, JsonPipe } from '@angular/common'
 import { MatAnchor } from '@angular/material/button'
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card'
@@ -20,10 +19,11 @@ import {
 } from '@angular/material/list'
 import { MatFormField } from '@angular/material/form-field'
 import { MatInput } from '@angular/material/input'
-import { AbstractSubmitComponent } from '../../../common/component/abstract-submit.component'
 import { DropzoneCdkModule, FileInputValidators, FileInputValue } from '@ngx-dropzone/cdk'
 import { CustomDropzoneComponent } from '../../../common/component/custom-dropzone/custom-dropzone.component'
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle'
+import { AbstractFormComponent } from '../../../common/component/abstract-form.component'
+import { ReactiveForm } from '../../../formdata/model/reactive-form-control.model'
 
 @Component({
   selector: 'app-form-config-form',
@@ -57,7 +57,7 @@ import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-
   ],
   templateUrl: './form-config-form.component.html',
 })
-export class FormConfigFormComponent extends AbstractSubmitComponent<FormConfig> implements OnInit, OnDestroy {
+export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> implements OnInit {
   folders = [
     { name: 'Photos', updated: new Date('1/1/16') },
     { name: 'Recipes', updated: new Date('1/17/16') },
@@ -71,10 +71,7 @@ export class FormConfigFormComponent extends AbstractSubmitComponent<FormConfig>
 
   typesOfShoes: string[] = ['Boots', 'Clogs', 'Loafers', 'Moccasins', 'Sneakers']
 
-
-  @Input() formGroup: FormGroup<ReactiveForm<FormConfig>>
-
-  private destroy$ = new Subject<void>()
+  _formGroup: FormGroup<ReactiveForm<FormConfig>>
 
   file = new FormControl<FileInputValue>(null, [FileInputValidators.accept('application/json')])
 
@@ -83,12 +80,7 @@ export class FormConfigFormComponent extends AbstractSubmitComponent<FormConfig>
   jsonBlobUrl: Signal<string> = computed(() => this.jsonBlob() ? window.URL.createObjectURL(this.jsonBlob()) : null)
 
   ngOnInit(): void {
-    this.jsonData.set(this.formGroup.getRawValue())
-
-    this.formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((data) => {
-      console.log(data)
-      this.jsonData.set({ ...this.jsonData(), ...data })
-    })
+    this.jsonData.set(this._formGroup.getRawValue())
 
     this.file.valueChanges.subscribe(value => {
       if (this.file.valid && value instanceof File) {
@@ -100,9 +92,10 @@ export class FormConfigFormComponent extends AbstractSubmitComponent<FormConfig>
     })
   }
 
-  ngOnDestroy() {
-    this.destroy$.next()
-    this.destroy$.complete()
+  override setValueChangesSubscription() {
+    return this._formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.jsonData.set(this._formGroup.getRawValue())
+    })
   }
 
   private readJsonFile(file: File): void {
@@ -118,7 +111,7 @@ export class FormConfigFormComponent extends AbstractSubmitComponent<FormConfig>
         const parsedData = JSON.parse(e.target?.result as string)
 
         if (this.isFormConfig(parsedData)) {
-          this.formGroup.setValue(parsedData)
+          this._formGroup.setValue(parsedData)
           console.log('Importierte Daten:', this.jsonData())
         } else {
           console.log('Die übergebenen Daten stimmen nicht mit der Struktur von FormConfig überein und konnte nicht eingelesen werden')
