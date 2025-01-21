@@ -27,11 +27,7 @@
 
 .mat-tab__content {
   overflow: auto;
-  padding: 16px;
-
-  &:has(mat-form-field) {
-    padding-bottom: 0;
-  }
+  padding: 16px 0 0;
 }
 
 // Canonical Layout: Supporting Pane

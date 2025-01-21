@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core'
+import { Component, EventEmitter, inject, OnInit, Output, signal } from '@angular/core'
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card'
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { MatButton } from '@angular/material/button'
@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs'
 import { MaterialFieldComponent } from '../form-fields/material-field/material-field.component'
 import { FormDataFormBuilderService } from '../../../formdata/service/form-data-form-builder.service'
 import { ReactiveForm } from '../../../formdata/model/reactive-form-control.model'
-import { FieldType, FormField } from '../../../formdata/model/form-field.model'
+import { FieldType, FormField, MaterialComponentType } from '../../../formdata/model/form-field.model'
 import { getFieldsAsFlatList } from '../../get-fields-as-flat-list'
 import { SelectableFormFieldComponent } from '../form-fields/selectable-form-field/selectable-form-field.component'
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle'
@@ -63,10 +63,19 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
 
   updateField(updatedField: FormField) {
     const index = this.flattenedFields().indexOf(this.selectedField())
+    const control = this.formDataFormBuilderService.buildFormField(updatedField)
 
     index != -1
-      ? this.selectedField().patchValue(updatedField)
-      : this._formGroup.controls.entries.push(this.formDataFormBuilderService.buildFormField(updatedField))
+      ? this.selectedField().patchValue(updatedField, { emitEvent: false })
+      : this._formGroup.controls.entries.push(control)
+
+    // unfortunately patchValue does not override the formArrays itself but only the underlying form controls, which is why we have to override it manually every time the length changes (created/deleted)
+    if (updatedField.fieldSelectOptions?.length !== this.selectedField().getRawValue().fieldSelectOptions?.length) {
+      this.selectedField().controls.fieldSelectOptions.clear({ emitEvent: false })
+      updatedField.fieldSelectOptions.forEach(option => {
+        this.selectedField().controls.fieldSelectOptions.push(this.formDataFormBuilderService.buildFieldSelectOptionFormGroup(option), { emitEvent: false })
+      })
+    }
 
     this.selectedField.set(null)
   }
@@ -74,13 +83,15 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
   addField() {
     const newField: FormField = {
       name: '',
+      label: '',
       fieldType: FieldType.STRING,
+      componentType: MaterialComponentType.TEXT,
       fields: [],
-      isRequired: false,
-      isOptional: false,
-      isReadonly: false,
-      defaultValue: '',
-      originalType: null,
+      required: false,
+      readonly: false,
+      disabled: false,
+      hidden: false,
+      defaultValue: null,
     }
 
     this.selectedField.set(this.formDataFormBuilderService.buildFormField(newField))

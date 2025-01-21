@@ -33,7 +33,7 @@ export class UploadView {
   constructor(
     private formDataCreateByTypeScriptService: FormDataCreateByTypeScriptService,
     private formDataStore: FormDataStore,
-    private router: Router
+    private router: Router,
   ) {
   }
 

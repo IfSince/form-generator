@@ -12,6 +12,7 @@ import { SourceFile } from 'ts-morph'
 import { map } from 'rxjs/operators'
 import { AbstractSubmitComponent } from '../../../common/component/abstract-submit.component'
 import { isTypeNode, parseAsSourceFileWithAvailableTypes } from '../../../ts-morph.utils'
+import { CdkTextareaAutosize } from '@angular/cdk/text-field'
 
 @Component({
   selector: 'app-typescript-input',
@@ -28,14 +29,18 @@ import { isTypeNode, parseAsSourceFileWithAvailableTypes } from '../../../ts-mor
     MatLabel,
     MatOptgroup,
     MatTooltip,
+    CdkTextareaAutosize,
   ],
   templateUrl: './typescript-input.component.html',
   styleUrl: './typescript-input.component.css',
 })
 export class TypescriptInputComponent extends AbstractSubmitComponent<{ text: string, selectedType: string }> {
   _formGroup = new FormGroup({
-    text: new FormControl<string | null>(null, [Validators.required]),
-    selectedType: new FormControl<string | null>(null, [Validators.required]),
+    text: new FormControl<string | null>(`export class Person {
+  firstName?: string
+  lastName: string
+}`, [Validators.required]),
+    selectedType: new FormControl<string | null>('Person', [Validators.required]),
   })
 
   selectableTypes = signal<{ interfaces: string[], classes: string[], typeAliases: string[] }>({

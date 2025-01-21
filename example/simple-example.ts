@@ -1,6 +1,6 @@
 enum Country {
-  GERMANY,
-  FOREIGN
+  GERMANY = 'GERMANY',
+  FOREIGN = 'FOREIGN'
 }
 
 interface Address {
@@ -15,4 +15,9 @@ export class Person {
   age: number
   readonly isVerified: boolean
   address: Address
+}
+
+class DateTestClass {
+  dateField?: Date
+  dateTimeField: string = '2023-01-02T10:00:00Z'
 }

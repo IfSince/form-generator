@@ -1,7 +1,7 @@
 <mat-card appearance="raised">
   <mat-card-header class="btn-group">
     <mat-card-title>Form Field</mat-card-title>
-    <mat-card-subtitle>Test</mat-card-subtitle>
+    <mat-card-subtitle>{{ _control.controls.componentType.value }}</mat-card-subtitle>
     <div class="btn-group">
       <button mat-icon-button (click)="close.emit()">
         <mat-icon>close</mat-icon>
@@ -10,37 +10,530 @@
   </mat-card-header>
 
   <mat-card-content>
-    @if (_control) {
-      <form [formGroup]="_control" class="flex-layout-container flex-layout-container__column">
-        <mat-form-field appearance="fill">
-          <mat-label>Name</mat-label>
-          <input matInput formControlName="name">
-        </mat-form-field>
+    <form [formGroup]="_control">
+      @let componentType = _control.controls.componentType.value;
+      <mat-tab-group dynamicHeight>
+        <mat-tab label="Field">
+          <div class="form-container">
+            <mat-form-field appearance="fill">
+              <mat-label>Material Component</mat-label>
+              <mat-select formControlName="componentType">
+                @for (optGroup of materialComponentOptGroups; track optGroup.groupName) {
+                  <mat-optgroup [label]="optGroup.groupName">
+                    @for (component of optGroup.components; track component) {
+                      <mat-option [value]="component">{{ component }}</mat-option>
+                    }
+                  </mat-optgroup>
+                }
+              </mat-select>
+            </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Field Type</mat-label>
-          <mat-select formControlName="fieldType">
-            @for (type of fieldTypes; track type) {
-              <mat-option [value]="type">{{ type }}</mat-option>
+            <div class="row">
+              <mat-form-field appearance="fill">
+                <mat-label>Field name</mat-label>
+                <input matInput formControlName="name">
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Label</mat-label>
+                <input matInput formControlName="label">
+              </mat-form-field>
+            </div>
+
+            <div class="row">
+              <mat-checkbox formControlName="required">Required</mat-checkbox>
+              <mat-checkbox formControlName="disabled">Disabled</mat-checkbox>
+            </div>
+
+            <div class="row">
+              <mat-checkbox formControlName="readonly"
+                            [disabled]="[
+                            MaterialComponentType.COLOR,
+                            MaterialComponentType.CHECKBOX,
+                            MaterialComponentType.SLIDER,
+                            MaterialComponentType.SLIDE_TOGGLE,
+                            MaterialComponentType.RADIO_BUTTON,
+                            MaterialComponentType.SELECT,
+                            MaterialComponentType.BUTTON_TOGGLE,
+                          ].includes(componentType)">
+                Readonly
+              </mat-checkbox>
+
+              <mat-checkbox formControlName="hidden"
+                            [disabled]="[
+                            MaterialComponentType.CHECKBOX,
+                            MaterialComponentType.SLIDER,
+                            MaterialComponentType.SLIDE_TOGGLE,
+                            MaterialComponentType.RADIO_BUTTON,
+                            MaterialComponentType.SELECT,
+                            MaterialComponentType.BUTTON_TOGGLE,
+                          ].includes(componentType)">
+                Hidden
+              </mat-checkbox>
+            </div>
+          </div>
+
+
+        </mat-tab>
+
+        <mat-tab label="Value">
+          <div class="form-container">
+            <div class="row">
+              @if (!noPlaceholder.includes(componentType)) {
+                <mat-form-field appearance="fill">
+                  <mat-label>Placeholder</mat-label>
+                  <input matInput formControlName="placeholder">
+                </mat-form-field>
+              }
+
+              @if (!noDefault.includes(componentType)) {
+                <mat-form-field appearance="fill">
+                  <mat-label>Default value</mat-label>
+                  <input matInput
+                         formControlName="defaultValue"
+                         [type]="componentType | getInputType"
+                  >
+                </mat-form-field>
+              }
+            </div>
+
+            @if (componentType == MaterialComponentType.TEXTAREA) {
+              <mat-form-field>
+                <mat-label>Placeholder</mat-label>
+                <textarea matInput
+                          formControlName="placeholder"
+                          cdkTextareaAutosize
+                          cdkAutosizeMinRows="1"
+                          cdkAutosizeMaxRows="5"></textarea>
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Default value</mat-label>
+                <textarea matInput
+                          formControlName="defaultValue"
+                          cdkTextareaAutosize
+                          cdkAutosizeMinRows="1"
+                          cdkAutosizeMaxRows="5"></textarea>
+              </mat-form-field>
             }
-          </mat-select>
-        </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Default Value</mat-label>
-          <input matInput formControlName="defaultValue">
-        </mat-form-field>
+            @if (componentType == MaterialComponentType.DATE) {
+              <mat-form-field>
+                <mat-label>Placeholder</mat-label>
+                <input matInput
+                       [matDatepicker]="placeholderPicker"
+                       formControlName="placeholder">
+                <mat-datepicker-toggle matIconSuffix [for]="placeholderPicker"/>
+                <mat-datepicker #placeholderPicker/>
+              </mat-form-field>
 
-        <mat-checkbox formControlName="isRequired">Is Required</mat-checkbox>
-        <mat-checkbox formControlName="isOptional">Is Optional</mat-checkbox>
-        <mat-checkbox formControlName="isReadonly">Is Readonly</mat-checkbox>
-      </form>
-    }
+              <mat-form-field>
+                <mat-label>Default value</mat-label>
+                <input matInput
+                       [matDatepicker]="valuePicker"
+                       formControlName="defaultValue">
+                <mat-datepicker-toggle matIconSuffix [for]="valuePicker"/>
+                <mat-datepicker #valuePicker/>
+              </mat-form-field>
+            }
+
+            @if ([MaterialComponentType.CHECKBOX, MaterialComponentType.SLIDE_TOGGLE].includes(componentType)) {
+              <mat-checkbox formControlName="defaultValue">Checked per default</mat-checkbox>
+            }
+
+            @if ([MaterialComponentType.SELECT, MaterialComponentType.BUTTON_TOGGLE].includes(componentType)) {
+              <div class="row">
+                <mat-form-field appearance="fill">
+                  <mat-label>Default Value</mat-label>
+                  @if (_control.controls.multiple.value) {
+                    <mat-select formControlName="defaultValue"
+                                hideSingleSelectionIndicator
+                                multiple>
+                      @for (option of _control.controls.fieldSelectOptions.getRawValue(); track option.selectableValue; let index = $index) {
+                        <span class="deletable-option">
+                      <mat-option [value]="option.selectableValue">{{ option.displayName }}</mat-option>
+                      <button mat-icon-button
+                              (click)="removeOption(index)">
+                        <mat-icon>clear</mat-icon>
+                      </button>
+                    </span>
+                      }
+                    </mat-select>
+                  } @else {
+                    <mat-select formControlName="defaultValue"
+                                hideSingleSelectionIndicator>
+                      <mat-option>None</mat-option>
+                      @for (option of _control.controls.fieldSelectOptions.getRawValue(); track option.selectableValue; let index = $index) {
+                        <span class="deletable-option">
+                      <mat-option [value]="option.selectableValue">{{ option.displayName }}</mat-option>
+                      <button mat-icon-button
+                              (click)="removeOption(index)">
+                        <mat-icon>clear</mat-icon>
+                      </button>
+                    </span>
+                      }
+                    </mat-select>
+                  }
+                </mat-form-field>
+
+                <button mat-icon-button
+                        (click)="addToOptions()">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+
+              <mat-checkbox formControlName="multiple">Allow multi-select</mat-checkbox>
+            }
+
+            @if (componentType == MaterialComponentType.RADIO_BUTTON) {
+              <div class="row">
+                <mat-form-field appearance="fill">
+                  <mat-label>Default Value</mat-label>
+                  <mat-select formControlName="defaultValue"
+                              hideSingleSelectionIndicator>
+                    <mat-option>None</mat-option>
+                    @for (option of _control.controls.fieldSelectOptions.getRawValue(); track option.selectableValue; let index = $index) {
+                      <span class="deletable-option">
+                      <mat-option [value]="option.selectableValue">{{ option.displayName }}</mat-option>
+                      <button mat-icon-button
+                              (click)="removeOption(index)">
+                        <mat-icon>clear</mat-icon>
+                      </button>
+                    </span>
+                    }
+                  </mat-select>
+                </mat-form-field>
+
+                <button mat-icon-button
+                        (click)="addToOptions()">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            }
+
+            @if ([MaterialComponentType.SELECT, MaterialComponentType.RADIO_BUTTON, MaterialComponentType.BUTTON_TOGGLE].includes(
+              componentType)) {
+              <span>Add option</span>
+              <div class="row" [formGroup]="optionFormGroup">
+                <mat-form-field appearance="fill">
+                  <mat-label>Value</mat-label>
+                  <input matInput
+                         formControlName="displayName">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                  <mat-label>Display name</mat-label>
+                  <input matInput
+                         formControlName="selectableValue">
+                </mat-form-field>
+              </div>
+            }
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Advanced">
+          <div class="form-container">
+            @let renderableComponent = componentType | getComponentToRender;
+
+            @switch (renderableComponent) {
+              @case (RenderableMatComponent.INPUT) {
+                <span>Appearance</span>
+                <mat-radio-group formControlName="formFieldAppearance">
+                  <mat-radio-button [value]="'fill'">Fill</mat-radio-button>
+                  <mat-radio-button [value]="'outline'">Outline</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-checkbox formControlName="hideRequiredMarker">Hide required marker (asteriks)</mat-checkbox>
+
+                <span>Float label</span>
+                <mat-radio-group formControlName="floatLabel">
+                  <mat-radio-button [value]="'auto'">Auto</mat-radio-button>
+                  <mat-radio-button [value]="'always'">Always</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-form-field>
+                  <mat-label>Hint start</mat-label>
+                  <input matInput formControlName="hintStart">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Hint end</mat-label>
+                  <input matInput formControlName="hintEnd">
+                </mat-form-field>
+
+                <span>Subscript sizing</span>
+                <mat-radio-group formControlName="subscriptSizing">
+                  <mat-radio-button [value]="'fixed'">Fixed</mat-radio-button>
+                  <mat-radio-button [value]="'dynamic'">Dynamic</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-form-field>
+                  <mat-label>Text prefix</mat-label>
+                  <input matInput formControlName="textPrefix">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Text suffix</mat-label>
+                  <input matInput formControlName="textSuffix">
+                </mat-form-field>
+              }
+
+              @case (RenderableMatComponent.TEXTAREA) {
+                <span>Appearance</span>
+                <mat-radio-group formControlName="formFieldAppearance">
+                  <mat-radio-button [value]="'fill'">Fill</mat-radio-button>
+                  <mat-radio-button [value]="'outline'">Outline</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-checkbox formControlName="textareaAutosize">Autosize textarea</mat-checkbox>
+
+                <div class="row">
+                  <mat-form-field appearance="fill">
+                    <mat-label>Min Rows</mat-label>
+                    <input matInput
+                           formControlName="autosizeMinRows">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="fill">
+                    <mat-label>Max Rows</mat-label>
+                    <input matInput
+                           formControlName="autosizeMaxRows">
+                  </mat-form-field>
+                </div>
+
+                <mat-checkbox formControlName="hideRequiredMarker">Hide required marker (asteriks)</mat-checkbox>
+
+                <span>Float label</span>
+                <mat-radio-group formControlName="formFieldAppearance">
+                  <mat-radio-button [value]="'auto'">Auto</mat-radio-button>
+                  <mat-radio-button [value]="'always'">Always</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-form-field>
+                  <mat-label>Hint start</mat-label>
+                  <input matInput formControlName="hintStart">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Hint end</mat-label>
+                  <input matInput formControlName="hintEnd">
+                </mat-form-field>
+              }
+              @case (RenderableMatComponent.SLIDER) {
+                <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+
+                <div class="row">
+                  <mat-form-field>
+                    <mat-label>Slider min</mat-label>
+                    <input matInput
+                           type="number"
+                           formControlName="sliderMin">
+                  </mat-form-field>
+
+                  <mat-form-field>
+                    <mat-label>Slider max</mat-label>
+                    <input matInput
+                           type="number"
+                           formControlName="sliderMax">
+                  </mat-form-field>
+
+                  <mat-form-field>
+                    <mat-label>Step</mat-label>
+                    <input matInput
+                           type="number"
+                           formControlName="sliderStep">
+                  </mat-form-field>
+                </div>
+
+                <mat-checkbox formControlName="sliderDiscrete">Discrete</mat-checkbox>
+                <mat-checkbox formControlName="sliderShowTickMarks">Show tick marks</mat-checkbox>
+              }
+
+              @case (RenderableMatComponent.CHECKBOX) {
+                <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+
+                <span>Label position</span>
+                <mat-radio-group formControlName="labelPosition">
+                  <mat-radio-button [value]="'after'">After</mat-radio-button>
+                  <mat-radio-button [value]="'before'">Before</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-checkbox formControlName="disabledInteractive">Interactable when disabled</mat-checkbox>
+              }
+
+              @case (RenderableMatComponent.SLIDE_TOGGLE) {
+                <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+
+                <span>Label position</span>
+                <mat-radio-group formControlName="labelPosition">
+                  <mat-radio-button [value]="'after'">After</mat-radio-button>
+                  <mat-radio-button [value]="'before'">Before</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-checkbox formControlName="disabledInteractive">Interactable when disabled</mat-checkbox>
+                <mat-checkbox formControlName="slideToggleHideIcon">Hide icon</mat-checkbox>
+              }
+
+              @case (RenderableMatComponent.SELECT) {
+                <span>Appearance</span>
+                <mat-radio-group formControlName="formFieldAppearance">
+                  <mat-radio-button [value]="'fill'">Fill</mat-radio-button>
+                  <mat-radio-button [value]="'outline'">Outline</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-checkbox formControlName="hideRequiredMarker">Hide required marker (asteriks)</mat-checkbox>
+
+                <span>Float label</span>
+                <mat-radio-group formControlName="floatLabel">
+                  <mat-radio-button [value]="'auto'">Auto</mat-radio-button>
+                  <mat-radio-button [value]="'always'">Always</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-form-field>
+                  <mat-label>Hint start</mat-label>
+                  <input matInput formControlName="hintStart">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Hint end</mat-label>
+                  <input matInput formControlName="hintEnd">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Text prefix</mat-label>
+                  <input matInput formControlName="textPrefix">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Text suffix</mat-label>
+                  <input matInput formControlName="textSuffix">
+                </mat-form-field>
+
+                <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+                <mat-checkbox formControlName="selectDisableOptionCentering">Disable option centering</mat-checkbox>
+                <mat-checkbox formControlName="hideSingleSelectionIndicator">Hide single selection indicator</mat-checkbox>
+
+                <mat-form-field>
+                  <mat-label>Panel class</mat-label>
+                  <input matInput formControlName="panelClass">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Panel width</mat-label>
+                  <input matInput formControlName="selectPanelWidth">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Typeahead debounce interval</mat-label>
+                  <input matInput formControlName="typeaheadDebounceInterval">
+                </mat-form-field>
+
+                <mat-checkbox formControlName="selectAddNullOption">Add null as selectable option</mat-checkbox>
+              }
+
+              @case (RenderableMatComponent.RADIO_BUTTON) {
+                <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+
+                <span>Label position</span>
+                <mat-radio-group formControlName="labelPosition">
+                  <mat-radio-button [value]="'after'">After</mat-radio-button>
+                  <mat-radio-button [value]="'before'">Before</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-checkbox formControlName="disabledInteractive">Interactable when disabled</mat-checkbox>
+              }
+
+              @case (RenderableMatComponent.DATEPICKER) {
+                <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+
+                <div class="row">
+                  <mat-form-field>
+                    <mat-label>Min date</mat-label>
+                    <input matInput
+                           [matDatepicker]="minPicker"
+                           formControlName="minDate">
+                    <mat-datepicker-toggle matIconSuffix [for]="minPicker"/>
+                    <mat-datepicker #minPicker/>
+                  </mat-form-field>
+
+                  <mat-form-field>
+                    <mat-label>Max date</mat-label>
+                    <input matInput
+                           [matDatepicker]="maxPicker"
+                           formControlName="maxDate">
+                    <mat-datepicker-toggle matIconSuffix [for]="maxPicker"/>
+                    <mat-datepicker #maxPicker/>
+                  </mat-form-field>
+                </div>
+
+                <mat-form-field>
+                  <mat-label>Panel class</mat-label>
+                  <input matInput formControlName="panelClass">
+                </mat-form-field>
+
+                <mat-checkbox formControlName="restoreFocus">Restore focus</mat-checkbox>
+
+                <mat-form-field>
+                  <mat-label>Initial date when opening</mat-label>
+                  <input matInput
+                         [matDatepicker]="startAtPicker"
+                         formControlName="startAt"
+                         [min]="_control.controls.minDate.value"
+                         [max]="_control.controls.maxDate.value">
+                  <mat-datepicker-toggle matIconSuffix [for]="startAtPicker"/>
+                  <mat-datepicker #startAtPicker/>
+                </mat-form-field>
+
+                <span>Start view</span>
+                <mat-radio-group formControlName="startView">
+                  <mat-radio-button [value]="'month'">Month</mat-radio-button>
+                  <mat-radio-button [value]="'year'">Year</mat-radio-button>
+                  <mat-radio-button [value]="'multi-year'">Multi year</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-checkbox formControlName="touchUi">Touch UI</mat-checkbox>
+
+                <span>X-Position</span>
+                <mat-radio-group formControlName="xPosition">
+                  <mat-radio-button [value]="'start'">Start</mat-radio-button>
+                  <mat-radio-button [value]="'end'">End</mat-radio-button>
+                </mat-radio-group>
+
+                <span>Y-Position</span>
+                <mat-radio-group formControlName="yPosition">
+                  <mat-radio-button [value]="'below'">Below</mat-radio-button>
+                  <mat-radio-button [value]="'above'">Above</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-checkbox formControlName="disableDateButton">Disable date picker</mat-checkbox>
+              }
+
+              @case (RenderableMatComponent.BUTTON_TOGGLE) {
+                <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+                <mat-checkbox formControlName="disabledInteractive">Interactable when disabled</mat-checkbox>
+                <mat-checkbox formControlName="orientateVertical">Orientate vertical</mat-checkbox>
+                <mat-checkbox formControlName="hideSingleSelectionIndicator">Hide single selection indicator</mat-checkbox>
+                <mat-checkbox formControlName="hideMultiSelectionIndicator">Hide multi selection indicator</mat-checkbox>
+
+                <span>Button appearance</span>
+                <mat-radio-group formControlName="buttonToggleAppearance">
+                  <mat-radio-button [value]="'standard'">Standard</mat-radio-button>
+                  <mat-radio-button [value]="'legacy'">Legacy</mat-radio-button>
+                </mat-radio-group>
+
+              }
+            }
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+
+    </form>
+
   </mat-card-content>
 
-  <mat-card-actions class="flex-layout-container flex-layout-container__justify-between">
+  <mat-card-actions class="btn-group">
     <button mat-stroked-button (click)="this.close.emit()">Cancel</button>
-    <div>
+    <div class="btn-group">
       <button mat-button (click)="this.remove.emit()">Remove Field</button>
       <button mat-flat-button (click)="this.onSave()">Save</button>
     </div>

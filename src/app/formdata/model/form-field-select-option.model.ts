@@ -1,1 +1,1 @@
-export type FieldSelectOption = { displayName: string, value: unknown }
+export type FieldSelectOption = { displayName: string, selectableValue: string }

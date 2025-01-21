@@ -3,25 +3,23 @@
         [formGroup]="_formGroup"
         (ngSubmit)="onSubmit(false)">
     <mat-card appearance="raised">
-      <mat-card-header class="btn-group">
+      <mat-card-header class="btn-group btn-group__space-between">
         <mat-card-title>Preview Form</mat-card-title>
         <mat-card-subtitle>Select a form field to edit</mat-card-subtitle>
-        <div class="btn-group">
-          <mat-button-toggle-group name="windowSizeClass"
-                                   [hideSingleSelectionIndicator]="true"
-                                   [formControl]="windowSizeClassFormControl">
-            <mat-button-toggle value="600px">Compact</mat-button-toggle>
-            <mat-button-toggle value="840px">Medium</mat-button-toggle>
-            <mat-button-toggle value="1200px">Expanded</mat-button-toggle>
-            <mat-button-toggle value="100%">Full</mat-button-toggle>
-          </mat-button-toggle-group>
-          <button mat-button type="button" (click)="addField()">
-            <mat-icon>add</mat-icon>
-            Add field
-          </button>
-        </div>
+        <button mat-button type="button" (click)="addField()">
+          <mat-icon>add</mat-icon>
+          Add field
+        </button>
       </mat-card-header>
       <mat-card-content>
+        <mat-button-toggle-group name="windowSizeClass"
+                                 [hideSingleSelectionIndicator]="true"
+                                 [formControl]="windowSizeClassFormControl">
+          <mat-button-toggle value="600px">Compact</mat-button-toggle>
+          <mat-button-toggle value="840px">Medium</mat-button-toggle>
+          <mat-button-toggle value="1200px">Expanded</mat-button-toggle>
+          <mat-button-toggle value="100%">Full</mat-button-toggle>
+        </mat-button-toggle-group>
         <div class="scrollable-container">
           <div class="form-container flex-layout-container flex-layout-container__wrap"
                [ngStyle]="{ 'width': windowSizeClassFormControl.value }">
@@ -29,14 +27,12 @@
               @if (![FieldType.INTERFACE, FieldType.OBJECT, FieldType.CLASS].includes(field.controls.fieldType.value)) {
                 <app-selectable-form-field [selected]="selectedField() === field"
                                            (select)="selectedField.set(field)">
-                  <app-material-field [field]="field"/>
+                  <app-material-field [matField]="field.getRawValue()"/>
                 </app-selectable-form-field>
               }
             }
           </div>
         </div>
-
-
       </mat-card-content>
       <mat-card-actions>
         <ng-content/>

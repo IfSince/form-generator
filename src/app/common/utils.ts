@@ -1,5 +1,3 @@
-import { Pipe, PipeTransform } from '@angular/core'
-
 /**
  * Konvertiert technische Namen wie `firstName` in Labels wie `First Name`.
  */
@@ -11,14 +9,4 @@ export const formatLabel = (name: string): string => {
     .split(' ')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
-}
-
-@Pipe({
-  name: 'formatLabel',
-  standalone: true
-})
-export class FormatLabelPipe implements PipeTransform {
-  transform(text: string): string {
-    return formatLabel(text);
-  }
 }

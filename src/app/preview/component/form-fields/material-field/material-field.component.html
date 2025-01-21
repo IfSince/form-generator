@@ -1,50 +1,258 @@
-@switch (field.controls.fieldType.value) {
-  @case (FieldType.STRING) {
-    <mat-form-field appearance="fill">
-      <mat-label>{{ field.controls.name.value | formatLabel }}</mat-label>
+@switch (matField.componentType | getComponentToRender) {
+  @case (RenderableMatComponent.INPUT) {
+    <mat-form-field [appearance]="matField.formFieldAppearance"
+                    [hideRequiredMarker]="matField.hideRequiredMarker"
+                    [floatLabel]="matField.floatLabel"
+                    [hintLabel]="matField.hintStart"
+                    [subscriptSizing]="matField.subscriptSizing">
+      @if (matField.label) {
+        <mat-label>{{ matField.label }}</mat-label>
+      }
       <input matInput
-             [value]="field.controls.defaultValue.value"
-             [formControl]="field.controls.defaultValue"
-             type="text"
-             [placeholder]="field.controls.name.value"
-             [readonly]="field.controls.isReadonly.value"
-             [required]="field.controls.isRequired.value || !field.controls.isOptional.value"/>
-    </mat-form-field>
-  }
-  @case (FieldType.NUMBER) {
-    <mat-form-field appearance="fill">
-      <mat-label>{{ field.controls.name.value | formatLabel }}</mat-label>
-      <input matInput
-             type="number"
-             [placeholder]="field.controls.name.value"
-             [readonly]="field.controls.isReadonly.value"
-             [required]="field.controls.isRequired.value">
-    </mat-form-field>
-  }
-  @case (FieldType.BOOLEAN) {
-    <mat-checkbox [disabled]="field.controls.isReadonly.value">{{ field.controls.name.value | formatLabel }}</mat-checkbox>
-  }
-  @case (FieldType.ENUM) {
-    <mat-form-field appearance="fill">
-      <mat-label>{{ field.controls.name.value | formatLabel }}</mat-label>
-      <mat-select>
-        @for (option of field.controls.options.getRawValue(); track option.value) {
-          <mat-option [value]="option.value">{{ option.displayName }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  }
-  @case (FieldType.INTERFACE) {
-    <!-- Placeholder to be able to use default case, nothing should be rendered -->
-  }
-  @case (FieldType.OBJECT) {
-    <!-- Placeholder to be able to use default case, nothing should be rendered -->
-  }
-  @case (FieldType.CLASS) {
-    <!-- Placeholder to be able to use default case, nothing should be rendered -->
-  }
+             [type]="matField.componentType | getInputType"
+             [value]="matField.defaultValue"
+             [placeholder]="matField.placeholder"
+             [readonly]="matField.readonly"
+             [required]="matField.required"
+             [disabled]="matField.disabled"
+             [hidden]="matField.hidden"
+      />
 
-  @default {
-    <p>Unsupported field type {{ field.controls.fieldType.value }} detected for field {{ field.controls.name.value }}</p>
+      @if (matField.hintEnd) {
+        <mat-hint align="end">{{ matField.hintEnd }}</mat-hint>
+      }
+
+      @if (matField.textPrefix) {
+        <span matTextPrefix>{{ matField.textPrefix }}</span>
+      }
+      @if (matField.textSuffix) {
+        <span matTextSuffix>{{ matField.textSuffix }}</span>
+      }
+
+    </mat-form-field>
   }
+  @case (RenderableMatComponent.TEXTAREA) {
+    <mat-form-field [appearance]="matField.formFieldAppearance"
+                    [hideRequiredMarker]="matField.hideRequiredMarker"
+                    [floatLabel]="matField.floatLabel"
+                    [hintLabel]="matField.hintStart"
+                    [subscriptSizing]="matField.subscriptSizing">
+      @if (matField.label) {
+        <mat-label>{{ matField.label }}</mat-label>
+      }
+      <textarea matInput
+                [value]="matField.defaultValue"
+                [placeholder]="matField.placeholder"
+                [readonly]="matField.readonly"
+                [required]="matField.required"
+                [disabled]="matField.disabled"
+                [hidden]="matField.hidden"
+                [cdkTextareaAutosize]="matField.textareaAutosize"
+                [cdkAutosizeMinRows]="matField.autosizeMinRows"
+                [cdkAutosizeMaxRows]="matField.autosizeMaxRows"
+      ></textarea>
+
+      @if (matField.hintEnd) {
+        <mat-hint align="end">{{ matField.hintEnd }}</mat-hint>
+      }
+      @if (matField.textPrefix) {
+        <span matTextPrefix>{{ matField.textPrefix }}</span>
+      }
+      @if (matField.textSuffix) {
+        <span matTextSuffix>{{ matField.textSuffix }}</span>
+      }
+    </mat-form-field>
+  }
+  @case (RenderableMatComponent.CHECKBOX) {
+    <mat-checkbox [checked]="matField.defaultValue"
+                  [required]="matField.required"
+                  [disabled]="matField.disabled"
+                  [disableRipple]="matField.disableRipple"
+                  [disabledInteractive]="matField.disabledInteractive"
+                  [labelPosition]="matField.labelPosition">
+      {{ matField.label }}
+    </mat-checkbox>
+  }
+  @case (RenderableMatComponent.SLIDE_TOGGLE) {
+    <mat-slide-toggle [checked]="matField.defaultValue"
+                      [required]="matField.required"
+                      [disabled]="matField.disabled"
+                      [disableRipple]="matField.disableRipple"
+                      [disabledInteractive]="matField.disabledInteractive"
+                      [labelPosition]="matField.labelPosition"
+                      [hideIcon]="matField.slideToggleHideIcon">
+      {{ matField.label }}
+    </mat-slide-toggle>
+  }
+  @case (RenderableMatComponent.SLIDER) {
+    <mat-slider [disabled]="matField.disabled"
+                [min]="matField.sliderMin"
+                [max]="matField.sliderMax"
+                [step]="matField.sliderStep"
+                [discrete]="matField.sliderDiscrete"
+                [showTickMarks]="matField.sliderShowTickMarks"
+                [disableRipple]="matField.disableRipple">
+      <input matSliderThumb
+             [value]="matField.defaultValue"
+             [required]="matField.required">
+    </mat-slider>
+  }
+  @case (RenderableMatComponent.DATEPICKER) {
+    <mat-form-field [appearance]="matField.formFieldAppearance"
+                    [hideRequiredMarker]="matField.hideRequiredMarker"
+                    [floatLabel]="matField.floatLabel"
+                    [hintLabel]="matField.hintStart"
+                    [subscriptSizing]="matField.subscriptSizing">
+      <mat-label>{{ matField.label }}</mat-label>
+      <input matInput
+             [matDatepicker]="picker"
+             [value]="matField.defaultValue"
+             [readonly]="matField.readonly"
+             [required]="matField.required"
+             [disabled]="matField.disabled"
+             [hidden]="matField.hidden"
+             [placeholder]="matField.placeholder"
+             [min]="matField.minDate"
+             [max]="matField.maxDate">
+      <mat-datepicker-toggle matIconSuffix
+                             [for]="picker"
+                             [disableRipple]="matField.disableRipple"
+                             [disabled]="matField.disableDateButton"
+      />
+      <mat-datepicker #picker
+                      [panelClass]="matField.panelClass"
+                      [restoreFocus]="matField.restoreFocus"
+                      [startAt]="matField.startAt"
+                      [startView]="matField.startView"
+                      [touchUi]="matField.touchUi"
+                      [xPosition]="matField.xPosition"
+                      [yPosition]="matField.yPosition"
+      />
+
+      @if (matField.hintEnd) {
+        <mat-hint align="end">{{ matField.hintEnd }}</mat-hint>
+      }
+      @if (matField.textPrefix) {
+        <span matTextPrefix>{{ matField.textPrefix }}</span>
+      }
+      @if (matField.textSuffix) {
+        <span matTextSuffix>{{ matField.textSuffix }}</span>
+      }
+    </mat-form-field>
+  }
+  @case (RenderableMatComponent.RADIO_BUTTON) {
+    <mat-radio-group [value]="matField.defaultValue"
+                     [disabled]="matField.disabled"
+                     [required]="matField.required"
+                     [disabledInteractive]="matField.disabledInteractive">
+      @for (option of matField.fieldSelectOptions; track option.selectableValue) {
+        <mat-radio-button [value]="option.selectableValue"
+                          [disableRipple]="matField.disableRipple"
+                          [labelPosition]="matField.labelPosition">{{ option.displayName }}
+        </mat-radio-button>
+      } @empty {
+        <mat-radio-button>No options provided</mat-radio-button>
+      }
+    </mat-radio-group>
+  }
+  @case (RenderableMatComponent.SELECT) {
+    <mat-form-field [appearance]="matField.formFieldAppearance"
+                    [hideRequiredMarker]="matField.hideRequiredMarker"
+                    [floatLabel]="matField.floatLabel"
+                    [hintLabel]="matField.hintStart">
+      <mat-label>{{ matField.label }}</mat-label>
+      @if (matField.multiple) {
+        <mat-select [value]="matField.defaultValue"
+                    [disabled]="matField.disabled"
+                    [required]="matField.required"
+                    [placeholder]="matField.placeholder"
+                    [disableRipple]="matField.disableRipple"
+                    [disableOptionCentering]="matField.selectDisableOptionCentering"
+                    [hideSingleSelectionIndicator]="matField.hideSingleSelectionIndicator"
+                    [panelClass]="matField.panelClass"
+                    [panelWidth]="matField.selectPanelWidth"
+                    [typeaheadDebounceInterval]="matField.typeaheadDebounceInterval"
+                    multiple>
+          @if (matField.selectAddNullOption) {
+            <mat-option>None</mat-option>
+          }
+          @for (option of matField.fieldSelectOptions; track option.selectableValue) {
+            <mat-option [value]="option.selectableValue">{{ option.displayName }}</mat-option>
+          }
+        </mat-select>
+      } @else {
+        <mat-select [value]="matField.defaultValue"
+                    [disabled]="matField.disabled"
+                    [required]="matField.required"
+                    [placeholder]="matField.placeholder"
+                    [disableRipple]="matField.disableRipple"
+                    [disableOptionCentering]="matField.selectDisableOptionCentering"
+                    [hideSingleSelectionIndicator]="matField.hideSingleSelectionIndicator"
+                    [panelClass]="matField.panelClass"
+                    [panelWidth]="matField.selectPanelWidth"
+                    [typeaheadDebounceInterval]="matField.typeaheadDebounceInterval">
+          @if (matField.selectAddNullOption) {
+            <mat-option>None</mat-option>
+          }
+          @for (option of matField.fieldSelectOptions; track option.selectableValue) {
+            <mat-option [value]="option.selectableValue">{{ option.displayName }}</mat-option>
+          }
+        </mat-select>
+      }
+
+      @if (matField.hintEnd) {
+        <mat-hint align="end">{{ matField.hintEnd }}</mat-hint>
+      }
+      @if (matField.textPrefix) {
+        <span matTextPrefix>{{ matField.textPrefix }}</span>
+      }
+      @if (matField.textSuffix) {
+        <span matTextSuffix>{{ matField.textSuffix }}</span>
+      }
+    </mat-form-field>
+  }
+  @case (RenderableMatComponent.BUTTON_TOGGLE) {
+    @if (matField.multiple) {
+      <mat-button-toggle-group [value]="matField.defaultValue"
+                               [disabled]="matField.disabled"
+                               [hideSingleSelectionIndicator]="matField.hideSingleSelectionIndicator"
+                               [hideMultipleSelectionIndicator]="matField.hideMultiSelectionIndicator"
+                               [vertical]="matField.orientateVertical"
+                               [appearance]="matField.buttonToggleAppearance"
+                               multiple>
+        @for (option of matField.fieldSelectOptions; track option.selectableValue) {
+          <mat-button-toggle [value]="option.selectableValue"
+                             [disableRipple]="matField.disableRipple"
+                             [disabledInteractive]="matField.disabledInteractive">{{ option.displayName }}
+          </mat-button-toggle>
+        } @empty {
+          <mat-button-toggle [disableRipple]="matField.disableRipple"
+                             [disabledInteractive]="matField.disabledInteractive">No options provided
+          </mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+    } @else {
+      <mat-button-toggle-group [value]="matField.defaultValue"
+                               [disabled]="matField.disabled"
+                               [hideSingleSelectionIndicator]="matField.hideSingleSelectionIndicator"
+                               [hideMultipleSelectionIndicator]="matField.hideMultiSelectionIndicator"
+                               [vertical]="matField.orientateVertical"
+                               [appearance]="matField.buttonToggleAppearance">
+        @for (option of matField.fieldSelectOptions; track option.selectableValue) {
+          <mat-button-toggle [value]="option.selectableValue"
+                             [disableRipple]="matField.disableRipple"
+                             [disabledInteractive]="matField.disabledInteractive"
+          >{{ option.displayName }}
+          </mat-button-toggle>
+        } @empty {
+          <mat-button-toggle [disableRipple]="matField.disableRipple"
+                             [disabledInteractive]="matField.disabledInteractive">No options provided
+          </mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+    }
+  }
+  <!--  @case (RenderableMatComponent.CHIPS) {-->
+    <!--    TODO-->
+    <!--  }-->
 }

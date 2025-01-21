@@ -11,4 +11,5 @@
   overflow: auto;
   resize: horizontal;
   border: 1px solid black;
+  padding-top: 16px;
 }

@@ -11,20 +11,22 @@
       </mat-card-subtitle>
     </mat-card-header>
 
-    <mat-tab-group dynamicHeight
-                   [selectedIndex]="selectedTabIndex"
-                   (selectedIndexChange)="selectedTabIndex.set($event)">
-      <mat-tab label="TypeScript Input">
-        <app-typescript-input (submitForm)="onSubmit($event.text, $event.selectedType)"/>
-      </mat-tab>
+    <mat-card-content>
+      <mat-tab-group dynamicHeight
+                     [selectedIndex]="selectedTabIndex"
+                     (selectedIndexChange)="selectedTabIndex.set($event)">
+        <mat-tab label="TypeScript Input">
+          <app-typescript-input (submitForm)="onSubmit($event.text, $event.selectedType)"/>
+        </mat-tab>
 
-      <mat-tab label="Manual Input">
-        Manual input goes here
-      </mat-tab>
+        <mat-tab label="Manual Input">
+          Manual input goes here
+        </mat-tab>
 
-      <mat-tab label="File Upload">
-        File upload goes here
-      </mat-tab>
-    </mat-tab-group>
+        <mat-tab label="File Upload">
+          File upload goes here
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
   </mat-card>
 </div>
