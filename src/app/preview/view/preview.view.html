@@ -6,13 +6,11 @@
     <div class="btn-group">
       <div class="btn-group">
         <a mat-stroked-button [routerLink]="'/upload'">Back</a>
-        <button mat-button
+        <button mat-stroked-button
                 type="button"
-                [appClearDialog]="onClear"
-                appClearDialogTitle="Vorgang verwerfen"
-                appClearDialogText="Willst du die Daten wirklich löschen und den Vorgang verwerfen?">
+                [appClearDialog]="onClear">
           <mat-icon>delete</mat-icon>
-          Vorgang verwerfen
+          Discard process
         </button>
       </div>
 

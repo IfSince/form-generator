@@ -1,32 +1,19 @@
 <h1>Upload</h1>
 <div class="flex-layout-container flex-layout-container__column">
-  <mat-card appearance="raised">
-    <mat-card-header>
-      <mat-card-title>
-        Card Title
-      </mat-card-title>
+  @if (formDataStore.state$ | async; as state) {
+    <app-typescript-input [formGroup]="state.data | asTypeScriptInputFormGroup"
+                          (submitForm)="onSubmit($event.text, $event.selectedType)">
+      <div class="btn-group btn-group__between">
+        <button mat-stroked-button
+                type="button"
+                [appClearDialog]="onClear"
+                [disabled]="state.data == null">
+          <mat-icon>delete</mat-icon>
+          Discard process
+        </button>
 
-      <mat-card-subtitle>
-        Create form data
-      </mat-card-subtitle>
-    </mat-card-header>
-
-    <mat-card-content>
-      <mat-tab-group dynamicHeight
-                     [selectedIndex]="selectedTabIndex"
-                     (selectedIndexChange)="selectedTabIndex.set($event)">
-        <mat-tab label="TypeScript Input">
-          <app-typescript-input (submitForm)="onSubmit($event.text, $event.selectedType)"/>
-        </mat-tab>
-
-        <mat-tab label="Manual Input">
-          Manual input goes here
-        </mat-tab>
-
-        <mat-tab label="File Upload">
-          File upload goes here
-        </mat-tab>
-      </mat-tab-group>
-    </mat-card-content>
-  </mat-card>
+        <button mat-flat-button type="submit">Next</button>
+      </div>
+    </app-typescript-input>
+  }
 </div>

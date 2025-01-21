@@ -4,7 +4,13 @@
   /*flex-wrap: wrap;*/
   gap: 8px;
 
-  &:has(> .btn-group) {
+  &__between {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  &:has(> .btn-group), &__between {
     width: 100%;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -17,4 +23,8 @@
   &__align-center {
     align-items: center;
   }
+}
+
+.w-full {
+  width: 100%;
 }

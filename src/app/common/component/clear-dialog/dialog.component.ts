@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms'
 interface ClearDialog {
   title: string
   text: string
+  denyText: string
+  confirmText: string
 }
 
 @Component({
@@ -18,11 +20,10 @@ interface ClearDialog {
     MatButton,
     MatDialogClose,
     FormsModule,
-
   ],
-  templateUrl: './clear-dialog.component.html',
-  styleUrl: './clear-dialog.component.css',
+  templateUrl: './dialog.component.html',
+  styleUrl: './dialog.component.css',
 })
-export class ClearDialogComponent {
+export class DialogComponent {
   data = inject<ClearDialog>(MAT_DIALOG_DATA)
 }

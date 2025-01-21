@@ -1,37 +1,54 @@
-<div class="mat-tab__content">
-  <mat-form-field matTooltip="Enter a valid typescript type structure below to select the type"
-                  [matTooltipDisabled]="!!selectableTypes().interfaces.length || !!selectableTypes().classes.length || !!selectableTypes().classes.length"
-                  matTooltipPosition="below"
-                  matTooltipShowDelay="200">
-    <mat-label>Selected Type</mat-label>
-    <mat-select [formControl]="_formGroup.controls.selectedType">
-      @if (!!selectableTypes().interfaces.length) {
-        <mat-optgroup label="Interfaces">
-          @for (type of selectableTypes().interfaces; track type) {
-            <mat-option [value]="type">{{ type }}</mat-option>
-          }
-        </mat-optgroup>
-      }
+<form class="flex-layout-container flex-layout-container__column"
+      [formGroup]="_formGroup"
+      (ngSubmit)="onSubmit(true)">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        Type definition
+      </mat-card-title>
 
-      @if (!!selectableTypes().classes.length) {
-        <mat-optgroup label="Classes">
-          @for (type of selectableTypes().classes; track type) {
-            <mat-option [value]="type">{{ type }}</mat-option>
-          }
-        </mat-optgroup>
-      }
+      <mat-card-subtitle>
+        Insert your type definition and select the type you want to generate the form for:
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="mat-tab__content">
+        <mat-form-field matTooltip="Enter a valid typescript type structure below to select the type"
+                        [matTooltipDisabled]="!!selectableTypes().interfaces.length || !!selectableTypes().classes.length || !!selectableTypes().classes.length"
+                        matTooltipPosition="below"
+                        matTooltipShowDelay="200">
+          <mat-label>Selected Type</mat-label>
+          <mat-select [formControl]="_formGroup.controls.selectedType">
+            @if (!!selectableTypes().interfaces.length) {
+              <mat-optgroup label="Interfaces">
+                <mat-option>None</mat-option>
+                @for (type of selectableTypes().interfaces; track type) {
+                  <mat-option [value]="type">{{ type }}</mat-option>
+                }
+              </mat-optgroup>
+            }
+            @if (!!selectableTypes().classes.length) {
+              <mat-optgroup label="Classes">
+                @for (type of selectableTypes().classes; track type) {
+                  <mat-option [value]="type">{{ type }}</mat-option>
+                }
+              </mat-optgroup>
+            }
+            @if (!!selectableTypes().typeAliases.length) {
+              <mat-optgroup label="Type Alias">
+                @for (type of selectableTypes().typeAliases; track type) {
+                  <mat-option [value]="type">{{ type }}</mat-option>
+                }
+              </mat-optgroup>
+            }
+          </mat-select>
 
-      @if (!!selectableTypes().typeAliases.length) {
-        <mat-optgroup label="Type Alias">
-          @for (type of selectableTypes().typeAliases; track type) {
-            <mat-option [value]="type">{{ type }}</mat-option>
+          @if (_formGroup.controls.selectedType.invalid) {
+            <mat-error>This field is required</mat-error>
           }
-        </mat-optgroup>
-      }
-    </mat-select>
-  </mat-form-field>
+        </mat-form-field>
 
-  <mat-form-field appearance="fill">
+        <mat-form-field [subscriptSizing]="'dynamic'">
     <textarea matInput
               cdkTextareaAutosize
               cdkAutosizeMinRows="5"
@@ -46,13 +63,17 @@ interface Person {
   name: string
   address: Address
 }"></textarea>
-  </mat-form-field>
-</div>
+          @if (_formGroup.controls.text.invalid) {
+            <mat-error>This field is required</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+  </mat-card>
 
-<mat-card-actions align="end">
-  <button mat-flat-button
-          type="submit"
-          (click)="onSubmit()">
-    Submit
-  </button>
-</mat-card-actions>
+  <mat-card>
+    <mat-card-actions>
+      <ng-content/>
+    </mat-card-actions>
+  </mat-card>
+</form>

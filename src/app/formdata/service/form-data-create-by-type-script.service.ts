@@ -19,6 +19,7 @@ export class FormDataCreateByTypeScriptService {
 
     return {
       name: selectedType,
+      originalText: text,
       inputType: InputType.TYPESCRIPT,
       fields: this.getFieldsForType(targetType.getType(), sourceFile, new Set()),
     }

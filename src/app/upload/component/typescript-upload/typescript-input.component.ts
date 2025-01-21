@@ -1,18 +1,24 @@
-import { Component, signal } from '@angular/core'
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
-import { MatFormField, MatLabel } from '@angular/material/form-field'
+import { Component, OnInit, signal } from '@angular/core'
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field'
 import { MatInput } from '@angular/material/input'
-import { MatButton } from '@angular/material/button'
-import { MatCardActions } from '@angular/material/card'
-import { MatOptgroup, MatOption, MatSelect } from '@angular/material/select'
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { MatSelect } from '@angular/material/select'
 import { MatTooltip } from '@angular/material/tooltip'
-import { distinctUntilChanged, filter } from 'rxjs'
-import { SourceFile } from 'ts-morph'
+import { distinctUntilChanged, filter, takeUntil } from 'rxjs'
+import { ClassDeclaration, InterfaceDeclaration, SourceFile, TypeAliasDeclaration } from 'ts-morph'
 import { map } from 'rxjs/operators'
-import { AbstractSubmitComponent } from '../../../common/component/abstract-submit.component'
 import { isTypeNode, parseAsSourceFileWithAvailableTypes } from '../../../ts-morph.utils'
 import { CdkTextareaAutosize } from '@angular/cdk/text-field'
+import { DropzoneCdkModule } from '@ngx-dropzone/cdk'
+import { MatCardModule } from '@angular/material/card'
+import { AbstractFormComponent } from '../../../common/component/abstract-form.component'
+import { ReactiveForm } from '../../../formdata/model/reactive-form-control.model'
+import { MatOptgroup, MatOption } from '@angular/material/core'
+
+export interface TypeScriptInput {
+  text: string | null
+  selectedType: string | null
+}
 
 @Component({
   selector: 'app-typescript-input',
@@ -22,26 +28,21 @@ import { CdkTextareaAutosize } from '@angular/cdk/text-field'
     MatFormField,
     MatInput,
     ReactiveFormsModule,
-    MatButton,
-    MatCardActions,
     MatSelect,
     MatOption,
     MatLabel,
     MatOptgroup,
     MatTooltip,
     CdkTextareaAutosize,
+    DropzoneCdkModule,
+    MatCardModule,
+    MatError,
   ],
   templateUrl: './typescript-input.component.html',
   styleUrl: './typescript-input.component.css',
 })
-export class TypescriptInputComponent extends AbstractSubmitComponent<{ text: string, selectedType: string }> {
-  _formGroup = new FormGroup({
-    text: new FormControl<string | null>(`export class Person {
-  firstName?: string
-  lastName: string
-}`, [Validators.required]),
-    selectedType: new FormControl<string | null>('Person', [Validators.required]),
-  })
+export class TypescriptInputComponent extends AbstractFormComponent<TypeScriptInput> implements OnInit {
+  _formGroup: FormGroup<ReactiveForm<TypeScriptInput>>
 
   selectableTypes = signal<{ interfaces: string[], classes: string[], typeAliases: string[] }>({
     interfaces: [],
@@ -49,22 +50,19 @@ export class TypescriptInputComponent extends AbstractSubmitComponent<{ text: st
     typeAliases: [],
   })
 
-  constructor() {
-    super()
+  ngOnInit(): void {
+    const { interfaces, classes, typeAliases } = parseAsSourceFileWithAvailableTypes(this._formGroup.getRawValue().text)
+    this.setSelectableTypes(interfaces, classes, typeAliases)
+  }
 
-    this._formGroup.controls.text.valueChanges.pipe(
+  override setValueChangesSubscription() {
+    return this._formGroup.controls.text.valueChanges.pipe(
       filter(Boolean),
       map(parseAsSourceFileWithAvailableTypes),
       distinctUntilChanged(),
-      takeUntilDestroyed(),
+      takeUntil(this.destroy$),
     ).subscribe(({ classes, interfaces, sourceFile, typeAliases }) => {
-      const options = {
-        interfaces: interfaces?.map(it => it.getName()) ?? [],
-        classes: classes?.map(it => it.getName()).filter(it => it != null) ?? [],
-        typeAliases: typeAliases?.map(it => it.getName()) ?? [],
-      }
-
-      this.selectableTypes.set(options)
+      this.setSelectableTypes(interfaces, classes, typeAliases)
 
       if (classes.length > 0 || interfaces.length > 0 || typeAliases.length > 0) {
         this._formGroup.controls.selectedType.patchValue(this.determineDefaultType(sourceFile))
@@ -73,6 +71,16 @@ export class TypescriptInputComponent extends AbstractSubmitComponent<{ text: st
       }
 
     })
+  }
+
+  private setSelectableTypes(interfaces: InterfaceDeclaration[], classes: ClassDeclaration[], typeAliases: TypeAliasDeclaration[]) {
+    const options = {
+      interfaces: interfaces?.map(it => it.getName()) ?? [],
+      classes: classes?.map(it => it.getName()).filter(it => it != null) ?? [],
+      typeAliases: typeAliases?.map(it => it.getName()) ?? [],
+    }
+
+    this.selectableTypes.set(options)
   }
 
   /**
@@ -85,7 +93,7 @@ export class TypescriptInputComponent extends AbstractSubmitComponent<{ text: st
    * 3. Last type
    * 4. Null (no supported types found)
    */
-  determineDefaultType(sourceFile: SourceFile): string {
+  private determineDefaultType(sourceFile: SourceFile): string {
     const defaultExportTypeName = sourceFile.getDefaultExportSymbol()?.getDeclarations().find(isTypeNode)?.getName()
     if (defaultExportTypeName) return defaultExportTypeName
 

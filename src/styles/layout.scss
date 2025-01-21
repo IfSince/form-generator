@@ -69,3 +69,24 @@
     min-width: unset;
   }
 }
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+
+  mat-form-field {
+    flex-grow: 1;
+  }
+
+  mat-checkbox {
+    flex-grow: 1;
+    width: 100%;
+  }
+
+  > button {
+    margin-bottom: 16px;
+    margin-left: -8px;
+  }
+}

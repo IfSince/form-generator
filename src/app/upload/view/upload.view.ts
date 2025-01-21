@@ -1,12 +1,17 @@
-import { Component, computed, signal } from '@angular/core'
+import { Component, inject } from '@angular/core'
 import { MatCardModule } from '@angular/material/card'
 import { ReactiveFormsModule } from '@angular/forms'
-import { MatTab, MatTabGroup } from '@angular/material/tabs'
-import { CustomFormData, InputType } from '../../formdata/model/custom-form-data.model'
 import { Router } from '@angular/router'
 import { TypescriptInputComponent } from '../component/typescript-upload/typescript-input.component'
 import { FormDataCreateByTypeScriptService } from '../../formdata/service/form-data-create-by-type-script.service'
 import { FormDataStore } from '../../formdata/service/form-data.store'
+import { MatButton } from '@angular/material/button'
+import { AsyncPipe } from '@angular/common'
+import { AsTypeScriptInputFormGroupPipe } from '../as-type-script-input-form-group.pipe'
+import { MatIcon } from '@angular/material/icon'
+import { ClearDialogDirective } from '../../common/directive/clear-dialog.directive'
+import { DialogComponent } from '../../common/component/clear-dialog/dialog.component'
+import { MatDialog } from '@angular/material/dialog'
 
 @Component({
   selector: 'app-upload-view',
@@ -15,38 +20,51 @@ import { FormDataStore } from '../../formdata/service/form-data.store'
     MatCardModule,
     ReactiveFormsModule,
     TypescriptInputComponent,
-    MatTabGroup,
-    MatTab,
+    MatButton,
+    AsyncPipe,
+    AsTypeScriptInputFormGroupPipe,
+    MatIcon,
+    ClearDialogDirective,
   ],
   templateUrl: './upload.view.html',
 })
 export class UploadView {
-
-  selectedTabIndex = signal(0)
-  selectedInputType = computed(() => [
-      InputType.TYPESCRIPT,
-      InputType.MANUAL_INPUT,
-      InputType.FILE_UPLOAD,
-    ][this.selectedTabIndex()],
-  )
+  private dialog = inject(MatDialog)
 
   constructor(
     private formDataCreateByTypeScriptService: FormDataCreateByTypeScriptService,
-    private formDataStore: FormDataStore,
+    protected formDataStore: FormDataStore,
     private router: Router,
   ) {
   }
 
   onSubmit(inputString: string, selectedType: string) {
-    const createData: Record<InputType, CustomFormData> = {
-      [InputType.TYPESCRIPT]: this.formDataCreateByTypeScriptService.create(inputString, selectedType),
-      [InputType.MANUAL_INPUT]: { inputType: InputType.MANUAL_INPUT } as CustomFormData,
-      [InputType.FILE_UPLOAD]: { inputType: InputType.TYPESCRIPT } as CustomFormData,
+    // Show dialog when an active process already exists that would be overridden
+    if (this.formDataStore.state.data != null) {
+      const dialogRef = this.dialog.open(DialogComponent, {
+        width: '350px',
+        data: {
+          title: 'Careful',
+          text: 'There is already an active process. Do you want to re-generate and lose the previous changes, or just continue to the preview?',
+          denyText: 'Continue',
+          confirmText: 'Re-generate',
+        },
+      })
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          const data = this.formDataCreateByTypeScriptService.create(inputString, selectedType)
+          this.formDataStore.setState({ data })
+          void this.router.navigate(['preview'])
+        } else if (result === false) {
+          void this.router.navigate(['preview'])
+        }
+      })
+    } else {
+      const data = this.formDataCreateByTypeScriptService.create(inputString, selectedType)
+      this.formDataStore.setState({ data })
+      void this.router.navigate(['preview'])
     }
-
-    const data = createData[this.selectedInputType()]
-
-    this.formDataStore.setState({ data })
-    void this.router.navigate(['preview'])
   }
+
+  onClear = () => this.formDataStore.clearData()
 }
