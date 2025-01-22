@@ -14,6 +14,17 @@ import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-
 import { MatIcon } from '@angular/material/icon'
 import { NgStyle } from '@angular/common'
 import { AbstractFormComponent } from '../../../common/component/abstract-form.component'
+import { MatFormField, MatLabel } from '@angular/material/form-field'
+import { MatOption } from '@angular/material/core'
+import { MatSelect } from '@angular/material/select'
+
+export const Breakpoints = [
+  { name: 'XSmall', width: '600px'},
+  { name: 'Small', width: '960px'},
+  { name: 'Medium', width: '1280px'},
+  { name: 'Large', width: '1920px'},
+  { name: 'Full', width: '100%'},
+]
 
 @Component({
   selector: 'app-preview-form',
@@ -36,23 +47,30 @@ import { AbstractFormComponent } from '../../../common/component/abstract-form.c
     MatIcon,
     NgStyle,
     MatCardSubtitle,
+    MatFormField,
+    MatLabel,
+    MatOption,
+    MatSelect,
   ],
   templateUrl: './preview-form.component.html',
   styleUrl: './preview-form.component.css',
 })
 export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormField[] }> implements OnInit {
-  @Output() select = new EventEmitter()
-
-  _formGroup: FormGroup<{ entries: FormArray<FormGroup<ReactiveForm<FormField>>> }>
   protected readonly FieldType = FieldType
   private formDataFormBuilderService = inject(FormDataFormBuilderService)
 
-  windowSizeClassFormControl = new FormControl('100%')
+  @Output() select = new EventEmitter()
+
+  _formGroup: FormGroup<{ entries: FormArray<FormGroup<ReactiveForm<FormField>>> }>
+  breakpointControl = new FormControl('100%')
+
   selectedField = signal<FormGroup<ReactiveForm<FormField>> | null>(null)
   flattenedFields = signal<FormGroup<ReactiveForm<FormField>>[]>([])
 
   ngOnInit(): void {
     this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
+
+    this.selectedField.set(this.flattenedFields()[0])
   }
 
   override setValueChangesSubscription() {
@@ -125,4 +143,6 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
       }
     }
   }
+
+  protected readonly Breakpoints = Breakpoints
 }

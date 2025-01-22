@@ -140,12 +140,6 @@ export class EditFormFieldComponent {
     MaterialComponentType.DATE,
   ]
 
-
-  onSave() {
-    this.save.emit(this._control.getRawValue())
-  }
-
-  protected readonly FieldType = FieldType
   protected readonly Object = Object
   protected readonly MaterialComponentType = MaterialComponentType
 

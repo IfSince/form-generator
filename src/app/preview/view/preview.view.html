@@ -5,16 +5,16 @@
                     (submitForm)="onSubmit($event)">
     <div class="btn-group">
       <div class="btn-group">
-        <a mat-stroked-button [routerLink]="'/upload'">Back</a>
         <button mat-stroked-button
                 type="button"
                 [appClearDialog]="onClear">
           <mat-icon>delete</mat-icon>
           Discard process
         </button>
+        <a mat-stroked-button [routerLink]="'/upload'">Back</a>
       </div>
 
-      <button mat-flat-button type="submit">Submit</button>
+      <button mat-flat-button type="submit">Save</button>
     </div>
   </app-preview-form>
 }

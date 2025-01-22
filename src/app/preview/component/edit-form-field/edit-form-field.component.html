@@ -1,7 +1,7 @@
 <mat-card appearance="raised">
   <mat-card-header class="btn-group">
     <mat-card-title>Form Field</mat-card-title>
-    <mat-card-subtitle>{{ _control.controls.componentType.value }}</mat-card-subtitle>
+    <mat-card-subtitle>Type: {{ _control.controls.componentType.value }}</mat-card-subtitle>
     <div class="btn-group">
       <button mat-icon-button (click)="close.emit()">
         <mat-icon>close</mat-icon>
@@ -530,13 +530,13 @@
     </form>
 
   </mat-card-content>
+</mat-card>
 
-  <mat-card-actions class="btn-group">
+<mat-card class="action-card">
+  <mat-card-actions class="btn-group btn-group__between">
     <button mat-stroked-button (click)="this.close.emit()">Cancel</button>
-    <div class="btn-group">
-      <button mat-button (click)="this.remove.emit()">Remove Field</button>
-      <button mat-flat-button (click)="this.onSave()">Save</button>
-    </div>
+    <button mat-flat-button (click)="this.remove.emit()">
+      Delete
+    </button>
   </mat-card-actions>
-
 </mat-card>

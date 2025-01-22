@@ -8,8 +8,19 @@
 }
 
 .form-container {
-  overflow: auto;
-  resize: horizontal;
+  /*overflow: auto;*/
+  /*resize: horizontal;*/
   border: 1px solid black;
-  padding-top: 16px;
+}
+
+.action-card {
+  flex-grow: 0;
+  height: fit-content;
+}
+
+.test {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }

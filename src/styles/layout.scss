@@ -27,14 +27,13 @@
 
 .mat-tab__content {
   overflow: auto;
-  padding: 16px 0 0;
 }
 
 // Canonical Layout: Supporting Pane
 .supporting-pane__main {
   flex-grow: 1;
 
-  mat-card {
+  .content {
     height: 100%;
 
     mat-card-content {
