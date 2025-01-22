@@ -58,7 +58,17 @@ import { MatRadioButton, MatRadioGroup } from '@angular/material/radio'
 })
 export class EditFormFieldComponent {
   fb = inject(FormBuilder)
-  optionFormGroup: FormGroup<ReactiveForm<FieldSelectOption>>
+
+  // necessary if saving needs to be additional step, otherwise just use formFieldFormGroup and remove _control
+  @Input() set formFieldFormGroup(value: FormGroup<ReactiveForm<FormField>>) {
+    this._control = value
+    this.originalField = value.getRawValue() // remember original value for cancel/reset
+  }
+  @Input() inCreationMode: boolean = false
+
+  @Output() save = new EventEmitter<FormField>()
+  @Output() remove = new EventEmitter<void>()
+  @Output() close = new EventEmitter<FormField>()
 
   constructor() {
     this.optionFormGroup = this.fb.group({
@@ -66,6 +76,26 @@ export class EditFormFieldComponent {
       selectableValue: this.fb.control(null, [Validators.required]),
     })
   }
+
+  _control: FormGroup<ReactiveForm<FormField>>
+  originalField: FormField
+  optionFormGroup: FormGroup<ReactiveForm<FieldSelectOption>>
+
+  onSave() {
+    this.save.emit(this._control.getRawValue())
+  }
+
+  onRemove() {
+    this.remove.emit()
+  }
+
+  onClose() {
+    this.inCreationMode
+      ? this.remove.emit()
+      : this.close.emit(this.originalField)
+  }
+
+
 
   addToOptions() {
     this.optionFormGroup.updateValueAndValidity()
@@ -95,16 +125,10 @@ export class EditFormFieldComponent {
     this._control.controls.fieldSelectOptions.removeAt(index)
   }
 
-  // necessary if saving needs to be additional step, otherwise just use formFieldFormGroup and remove _control
-  @Input() set formFieldFormGroup(value: FormGroup<ReactiveForm<FormField>>) {
-    this._control = value
-  }
 
-  @Output() save = new EventEmitter<FormField>()
-  @Output() remove = new EventEmitter<void>()
-  @Output() close = new EventEmitter<void>()
 
-  _control: FormGroup<ReactiveForm<FormField>>
+
+
 
   protected readonly noPlaceholder = [
     MaterialComponentType.COLOR,
@@ -143,7 +167,7 @@ export class EditFormFieldComponent {
   protected readonly Object = Object
   protected readonly MaterialComponentType = MaterialComponentType
 
-  readonly materialComponentOptGroups = [
+  protected readonly materialComponentOptGroups = [
     {
       groupName: 'String',
       components: [

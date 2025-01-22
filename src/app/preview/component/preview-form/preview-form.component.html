@@ -4,7 +4,7 @@
         (ngSubmit)="onSubmit(false)">
     <mat-card>
       <mat-card-header class="btn-group btn-group__between">
-        <mat-card-title>Preview Form</mat-card-title>
+        <mat-card-title>Preview form</mat-card-title>
         <mat-card-subtitle>Select a form field to edit</mat-card-subtitle>
 
         <div class="test">
@@ -51,8 +51,9 @@
   @if (selectedField() != null) {
     <app-edit-form-field class="supporting-pane__support flex-layout-container flex-layout-container__column"
                          [formFieldFormGroup]="selectedField()"
+                         [inCreationMode]="inCreationMode()"
                          (remove)="removeSelectedField()"
                          (save)="updateField($event)"
-                         (close)="selectedField.set(null)"/>
+                         (close)="onClose($event)"/>
   }
 </div>

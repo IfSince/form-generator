@@ -10,7 +10,6 @@ import { ReactiveForm } from '../../../formdata/model/reactive-form-control.mode
 import { FieldType, FormField, MaterialComponentType } from '../../../formdata/model/form-field.model'
 import { getFieldsAsFlatList } from '../../get-fields-as-flat-list'
 import { SelectableFormFieldComponent } from '../form-fields/selectable-form-field/selectable-form-field.component'
-import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle'
 import { MatIcon } from '@angular/material/icon'
 import { NgStyle } from '@angular/common'
 import { AbstractFormComponent } from '../../../common/component/abstract-form.component'
@@ -42,8 +41,6 @@ export const Breakpoints = [
     MaterialFieldComponent,
     SelectableFormFieldComponent,
     SelectableFormFieldComponent,
-    MatButtonToggleGroup,
-    MatButtonToggle,
     MatIcon,
     NgStyle,
     MatCardSubtitle,
@@ -67,6 +64,8 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
   selectedField = signal<FormGroup<ReactiveForm<FormField>> | null>(null)
   flattenedFields = signal<FormGroup<ReactiveForm<FormField>>[]>([])
 
+  inCreationMode = signal(false)
+
   ngOnInit(): void {
     this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
 
@@ -77,6 +76,26 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
     return this._formGroup.controls.entries.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
     })
+  }
+
+  addField() {
+    const newField: FormField = {
+      name: '',
+      label: '',
+      fieldType: FieldType.STRING,
+      componentType: MaterialComponentType.TEXT,
+      fields: [],
+      required: false,
+      readonly: false,
+      disabled: false,
+      hidden: false,
+      defaultValue: null,
+    }
+    const newFieldControl = this.formDataFormBuilderService.buildFormField(newField)
+
+    this._formGroup.controls.entries.push(newFieldControl)
+    this.inCreationMode.set(true)
+    this.selectedField.set(newFieldControl)
   }
 
   updateField(updatedField: FormField) {
@@ -95,24 +114,8 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
       })
     }
 
+    this.inCreationMode.set(false)
     this.selectedField.set(null)
-  }
-
-  addField() {
-    const newField: FormField = {
-      name: '',
-      label: '',
-      fieldType: FieldType.STRING,
-      componentType: MaterialComponentType.TEXT,
-      fields: [],
-      required: false,
-      readonly: false,
-      disabled: false,
-      hidden: false,
-      defaultValue: null,
-    }
-
-    this.selectedField.set(this.formDataFormBuilderService.buildFormField(newField))
   }
 
   removeSelectedField() {
@@ -127,6 +130,14 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
       }
     }
 
+    this.inCreationMode.set(false)
+    this.selectedField.set(null)
+  }
+
+  onClose(originalField: FormField) {
+    this.inCreationMode.set(false)
+
+    this.updateField(originalField) // revert potential changes made
     this.selectedField.set(null)
   }
 
