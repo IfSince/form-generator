@@ -1,11 +1,13 @@
 <form class="flex-layout-container flex-layout-container__column"
       [formGroup]="_formGroup"
       (ngSubmit)="onSubmit()">
-  <mat-card appearance="raised">
+  <mat-card>
     <mat-card-header class="btn-group">
-      <mat-card-title>General</mat-card-title>
+      <mat-card-title>Default values</mat-card-title>
+      <mat-card-subtitle>Configure default values for different field types</mat-card-subtitle>
       <div class="btn-group">
-        <app-dropzone text="Import">
+        <app-dropzone text="Import"
+                      icon="upload">
           <input type="file"
                  fileInput
                  [formControl]="file"
@@ -13,85 +15,193 @@
                  [mode]="'replace'"/>
         </app-dropzone>
 
-        <a mat-button
+        <a mat-stroked-button
            [disabled]="jsonBlobUrl() === null"
            [href]="jsonBlobUrl()"
            [attr.download]="'formData.json'">
+          <mat-icon>download</mat-icon>
           Export
         </a>
       </div>
     </mat-card-header>
-    <mat-card-content>
-      {{ jsonData() | json }}
 
+    <mat-card-content>
       <mat-list>
-        <div mat-subheader>Example</div>
+        <div mat-subheader>Form Field</div>
+        <app-list-item-toggle [field]="_formGroup.controls.formFieldAppearance"
+                              label="Appearance"
+                              description="Default appearance of form fields"
+                              [options]="formFieldAppearanceOptions"/>
+
+        <app-list-item-toggle [field]="_formGroup.controls.floatLabel"
+                              label="Float label"
+                              description="Floating behavior of form field labels"
+                              [options]="floatLabelOptions"/>
+
+        <app-list-item-toggle [field]="_formGroup.controls.subscriptSizing"
+                              label="Subscript sizing"
+                              description="Behavior of space for hint/error text below form fields"
+                              [options]="subscriptSizingOptions"/>
+
         <mat-list-item>
-          <mat-icon matListItemIcon>folder</mat-icon>
-          <span matListItemTitle>Test</span>
-          <span matListItemLine>Dummy Description</span>
+          <span matListItemTitle>Hide required marker</span>
+          <span matListItemLine>Toggle trailing asteriks at label</span>
+          <div matListItemMeta>
+            <mat-checkbox formControlName="hideRequiredMarker"/>
+          </div>
+        </mat-list-item>
+
+        <div mat-subheader>Checkbox, SlideToggle, RadioButton, Select</div>
+        <mat-list-item>
+          <span matListItemTitle>Disable ripple</span>
+          <span matListItemLine>Whether the ripple effect is shown (e. g. for checkboxes)</span>
+          <div matListItemMeta>
+            <mat-checkbox formControlName="disableRipple"/>
+          </div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <span matListItemTitle>Interactive when disabled</span>
+          <span matListItemLine>Whether the field is interactable despite being disabled (e.g. for checkboxes)</span>
+          <div matListItemMeta>
+            <mat-checkbox formControlName="disabledInteractive"/>
+          </div>
+        </mat-list-item>
+
+        <app-list-item-toggle [field]="_formGroup.controls.labelPosition"
+                              label="Label position"
+                              description="Default position of labels (e.g. for checkboxes)"
+                              [options]="labelPositionOptions"/>
+
+        <div mat-subheader>Select, Button Toggle</div>
+        <mat-list-item>
+          <span matListItemTitle>Hide single selection indicator</span>
+          <span matListItemLine>Whether the selection indicator is shown for single selection (e. g. for selects)</span>
+          <div matListItemMeta>
+            <mat-checkbox formControlName="hideSingleSelectionIndicator"/>
+          </div>
+        </mat-list-item>
+
+        <div mat-subheader>Select, Datepicker</div>
+        <mat-list-item>
+          <span matListItemTitle>Panel class</span>
+          <span matListItemLine>Classes to add to modal panels (e.g. select, datepicker)</span>
           <div matListItemMeta>
             <mat-form-field>
-              <input matInput formControlName="test"/>
+              <input matInput formControlName="panelClass"/>
             </mat-form-field>
           </div>
         </mat-list-item>
 
-        <div mat-subheader>Folders</div>
-        @for (folder of folders; track folder) {
-          <mat-list-item>
-            <mat-icon matListItemIcon>folder</mat-icon>
-            <div matListItemTitle>{{ folder.name }}</div>
-            <div matListItemLine>{{ folder.updated | date }}</div>
-          </mat-list-item>
-        }
+        <div mat-subheader>Textarea</div>
+        <mat-list-item>
+          <span matListItemTitle>Autosize</span>
+          <span matListItemLine>Whether text areas should be autosize per default</span>
+          <div matListItemMeta>
+            <mat-checkbox formControlName="textareaAutosize"/>
+          </div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <span matListItemTitle>Min rows</span>
+          <span matListItemLine>Minimum rows shown for auto-sizing text areas</span>
+          <div matListItemMeta>
+            <mat-form-field>
+              <input matInput formControlName="textareaMinRows" type="number"/>
+            </mat-form-field>
+          </div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <span matListItemTitle>Min rows</span>
+          <span matListItemLine>Maximum rows shown for auto-sizing text areas</span>
+          <div matListItemMeta>
+            <mat-form-field>
+              <input matInput formControlName="textareaMaxRows" type="number"/>
+            </mat-form-field>
+          </div>
+        </mat-list-item>
+
+        <div mat-subheader>Slider</div>
+        <mat-list-item>
+          <span matListItemTitle>Discrete</span>
+          <span matListItemLine>Whether the slider thumb shows selected value when dragging</span>
+          <div matListItemMeta>
+            <mat-checkbox formControlName="sliderDiscrete"/>
+          </div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <span matListItemTitle>Show tick marks</span>
+          <span matListItemLine>Whether tick marks are shown</span>
+          <div matListItemMeta>
+            <mat-checkbox formControlName="sliderShowTickMarks"/>
+          </div>
+        </mat-list-item>
+
+        <div mat-subheader>Slide toggle</div>
+        <mat-list-item>
+          <span matListItemTitle>Hide icon</span>
+          <span matListItemLine>Whether the "check" icon is shown inside toggle</span>
+          <div matListItemMeta>
+            <mat-checkbox formControlName="slideToggleHideIcon"/>
+          </div>
+        </mat-list-item>
+
+        <div mat-subheader>Select</div>
+        <mat-list-item>
+          <span matListItemTitle>Disable option centering</span>
+          <span matListItemLine>Whether option centering is enabled per default</span>
+          <div matListItemMeta>
+            <mat-checkbox formControlName="slideToggleHideIcon"/>
+          </div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <span matListItemTitle>Add null option</span>
+          <span matListItemLine>Whether to add an option without value per default</span>
+          <div matListItemMeta>
+            <mat-checkbox formControlName="selectAddNullOption"/>
+          </div>
+        </mat-list-item>
+
+        <div mat-subheader>Datepicker</div>
+        <mat-list-item>
+          <span matListItemTitle>Restore focus</span>
+          <span matListItemLine>Whether focus is restored upon closing datepicker</span>
+          <div matListItemMeta>
+            <mat-checkbox formControlName="datepickerRestoreFocus"/>
+          </div>
+        </mat-list-item>
+
+        <mat-list-item>
+          <span matListItemTitle>Touch UI</span>
+          <span matListItemLine>Whether the datepicker is shown as full page modal</span>
+          <div matListItemMeta>
+            <mat-checkbox formControlName="datepickerTouchUi"/>
+          </div>
+        </mat-list-item>
+
+        <div mat-subheader>ButtonToggle</div>
+        <mat-list-item>
+          <span matListItemTitle>Hide multi selection indicator</span>
+          <span matListItemLine>Whether the selection indicator is shown for multi selection</span>
+          <div matListItemMeta>
+            <mat-checkbox formControlName="buttonToggleHideMultiSelectionIndicator"/>
+          </div>
+        </mat-list-item>
+
+        <app-list-item-toggle [field]="_formGroup.controls.buttonToggleAppearance"
+                              label="Appearance"
+                              description="Default appearance of button toggle components"
+                              [options]="buttonToggleAppearanceOptions"/>
       </mat-list>
     </mat-card-content>
+  </mat-card>
+
+  <mat-card>
     <mat-card-actions>
       <ng-content/>
     </mat-card-actions>
-  </mat-card>
-
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Others</mat-card-title>
-    </mat-card-header>
-
-    <mat-card-content>
-      <mat-list>
-        @for (note of notes; track note) {
-          <mat-list-item>
-            <mat-icon matListItemIcon>note</mat-icon>
-            <div matListItemTitle>{{ note.name }}</div>
-            <div matListItemLine>{{ note.updated | date }}</div>
-            <div matListItemMeta>
-              <mat-button-toggle-group name="windowSizeClass"
-                                       [hideSingleSelectionIndicator]="true">
-                <mat-button-toggle value="reactive">Reactive</mat-button-toggle>
-                <mat-button-toggle value="dynamic">Dynamic</mat-button-toggle>
-              </mat-button-toggle-group>
-            </div>
-          </mat-list-item>
-        }
-      </mat-list>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Third Configs</mat-card-title>
-    </mat-card-header>
-
-    <mat-card-content>
-      <mat-selection-list #shoes>
-        @for (shoe of typesOfShoes; track shoe) {
-          <mat-list-option>{{ shoe }}</mat-list-option>
-        }
-      </mat-selection-list>
-
-      <p>
-        Options selected: {{ shoes.selectedOptions.selected.length }}
-      </p>
-    </mat-card-content>
   </mat-card>
 </form>

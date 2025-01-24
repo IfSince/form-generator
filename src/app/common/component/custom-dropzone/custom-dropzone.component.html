@@ -1,4 +1,9 @@
-<button mat-button (click)="onContainerClick()">
+<button mat-stroked-button
+        type="button"
+        (click)="onContainerClick()">
   <ng-content select="[fileInput]"></ng-content>
+  @if (icon) {
+    <mat-icon>{{ icon }}</mat-icon>
+  }
   {{ text }}
 </button>

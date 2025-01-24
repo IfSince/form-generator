@@ -8,12 +8,14 @@
         <button mat-stroked-button (click)="location.back()">Back</button>
         <button mat-button
                 type="button"
-                [appClearDialog]="onClear">
+                [appClearDialog]="onClear"
+                appClearDialogTitle="Reset configurations"
+                appClearDialogText="Do you really want to reset the form configurations?">
           Zurücksetzen
         </button>
       </div>
 
-      <button mat-flat-button type="submit">Submit</button>
+      <button mat-flat-button type="submit">Save</button>
     </div>
   </app-form-config-form>
 }

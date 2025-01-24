@@ -74,8 +74,6 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
 
   ngOnInit(): void {
     this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
-
-    this.selectedField.set(this.flattenedFields()[1])
   }
 
   override valueChangesSubscription() {
@@ -121,8 +119,8 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
     }
 
     this.onSubmit(false, 'none')
-    // this.inCreationMode.set(false)
-    // this.selectedField.set(null)
+    this.inCreationMode.set(false)
+    this.selectedField.set(null)
   }
 
   removeSelectedField() {

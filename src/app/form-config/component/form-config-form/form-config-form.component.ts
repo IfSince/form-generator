@@ -2,34 +2,27 @@ import { Component, computed, OnInit, Signal, signal } from '@angular/core'
 import { takeUntil } from 'rxjs'
 import { FormConfig } from '../../model/form-config.model'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
-import { DatePipe, JsonPipe } from '@angular/common'
+import { JsonPipe } from '@angular/common'
 import { MatAnchor } from '@angular/material/button'
-import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card'
+import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card'
 import { MatIcon } from '@angular/material/icon'
-import {
-  MatList,
-  MatListItem,
-  MatListItemIcon,
-  MatListItemLine,
-  MatListItemMeta,
-  MatListItemTitle,
-  MatListOption,
-  MatListSubheaderCssMatStyler,
-  MatSelectionList,
-} from '@angular/material/list'
+import { MatList, MatListItem, MatListItemLine, MatListItemMeta, MatListItemTitle, MatListSubheaderCssMatStyler } from '@angular/material/list'
 import { MatFormField } from '@angular/material/form-field'
 import { MatInput } from '@angular/material/input'
 import { DropzoneCdkModule, FileInputValidators, FileInputValue } from '@ngx-dropzone/cdk'
 import { CustomDropzoneComponent } from '../../../common/component/custom-dropzone/custom-dropzone.component'
-import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle'
 import { AbstractFormComponent } from '../../../common/component/abstract-form.component'
 import { ReactiveForm } from '../../../formdata/model/reactive-form-control.model'
+import { provideNativeDateAdapter } from '@angular/material/core'
+import { MatCheckbox } from '@angular/material/checkbox'
+import { ListItemButtonToggleComponent } from './list-item-button-toggle/list-item-button-toggle.component'
+import { FieldSelectOption } from '../../../formdata/model/form-field-select-option.model'
 
 @Component({
   selector: 'app-form-config-form',
   standalone: true,
+  providers: [provideNativeDateAdapter()],
   imports: [
-    DatePipe,
     MatAnchor,
     MatCard,
     MatCardContent,
@@ -38,38 +31,49 @@ import { ReactiveForm } from '../../../formdata/model/reactive-form-control.mode
     MatIcon,
     MatList,
     MatListItem,
-    MatListItemIcon,
     MatListItemLine,
     MatListItemTitle,
-    MatListOption,
     MatListSubheaderCssMatStyler,
-    MatSelectionList,
     MatCardActions,
     MatFormField,
     MatInput,
     ReactiveFormsModule,
     DropzoneCdkModule,
     CustomDropzoneComponent,
-    MatButtonToggle,
-    MatButtonToggleGroup,
     MatListItemMeta,
     JsonPipe,
+    MatCardSubtitle,
+    MatCheckbox,
+    ListItemButtonToggleComponent,
   ],
   templateUrl: './form-config-form.component.html',
+  styleUrls: ['./form-config-form.component.css'],
 })
 export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> implements OnInit {
-  folders = [
-    { name: 'Photos', updated: new Date('1/1/16') },
-    { name: 'Recipes', updated: new Date('1/17/16') },
-    { name: 'Work', updated: new Date('1/28/16') },
+  formFieldAppearanceOptions: FieldSelectOption[] = [
+    { displayName: 'Fill', selectableValue: 'outline' },
+    { displayName: 'Outline', selectableValue: 'fill' },
   ]
 
-  notes = [
-    { name: 'Vacation Itinerary', updated: new Date('2/20/16') },
-    { name: 'Kitchen Remodel', updated: new Date('1/18/16') },
+  floatLabelOptions: FieldSelectOption[] = [
+    { displayName: 'Always', selectableValue: 'always' },
+    { displayName: 'Auto', selectableValue: 'auto' },
   ]
 
-  typesOfShoes: string[] = ['Boots', 'Clogs', 'Loafers', 'Moccasins', 'Sneakers']
+  subscriptSizingOptions: FieldSelectOption[] = [
+    { displayName: 'Fixed', selectableValue: 'fixed' },
+    { displayName: 'Dynamic', selectableValue: 'dynamic' },
+  ]
+
+  labelPositionOptions: FieldSelectOption[] = [
+    { displayName: 'Before', selectableValue: 'before' },
+    { displayName: 'After', selectableValue: 'after' },
+  ]
+
+  buttonToggleAppearanceOptions: FieldSelectOption[] = [
+    { displayName: 'Standard', selectableValue: 'standard' },
+    { displayName: 'Legacy', selectableValue: 'legacy' },
+  ]
 
   _formGroup: FormGroup<ReactiveForm<FormConfig>>
 
@@ -87,7 +91,7 @@ export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> i
         this.readJsonFile(value)
       } else {
         this.file.setValue(null, { emitEvent: false })
-        console.log('Form invalid or value is not instance of File')
+        this.globalMessageStore.addError('An error occurred while trying to import the file.')
       }
     })
   }
@@ -100,11 +104,6 @@ export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> i
 
   private readJsonFile(file: File): void {
     const reader = new FileReader()
-    if (file.type !== 'application/json') {
-      console.error('Die ausgewählte Datei ist keine gültige JSON-Datei.')
-      this.file.setValue(null, { emitEvent: false })
-      return
-    }
 
     reader.onload = (e: ProgressEvent<FileReader>) => {
       try {
@@ -112,13 +111,14 @@ export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> i
 
         if (this.isFormConfig(parsedData)) {
           this._formGroup.setValue(parsedData)
-          console.log('Importierte Daten:', this.jsonData())
+          this.onSubmit(false, 'none')
+          this.globalMessageStore.addSuccess('The form data was imported successfully.')
         } else {
-          console.log('Die übergebenen Daten stimmen nicht mit der Struktur von FormConfig überein und konnte nicht eingelesen werden')
+          this.globalMessageStore.addError('The uploaded data does not match the structure of form data and therefore was not imported.')
           this.file.setValue(null, { emitEvent: false })
         }
       } catch (error) {
-        console.error('Fehler beim Parsen der JSON-Datei:', error)
+        this.globalMessageStore.addError('An error occurred while trying to import the file.')
         this.file.setValue(null, { emitEvent: false })
       }
     }
@@ -126,6 +126,6 @@ export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> i
   }
 
   private isFormConfig(data: any): data is FormConfig {
-    return data && typeof data.test === 'string'
+    return data != null && typeof data == 'object'
   }
 }
