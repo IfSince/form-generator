@@ -5,6 +5,7 @@ import { distinctUntilChanged } from 'rxjs'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { StorageService } from './storage.service'
 import { Store } from '../store'
+import { GlobalMessageStore } from '../global-message.store'
 
 export interface StorableState<T> {
   data: T | null
@@ -15,6 +16,7 @@ export interface StorableState<T> {
 })
 export abstract class StorageStore<T extends StorableState<T['data']>> extends Store<StorableState<T['data']>> {
   private readonly storageService = inject(StorageService)
+  private readonly globalMessageStore = inject(GlobalMessageStore)
   private readonly storageKey: string
 
   protected constructor(initialState: T, storageKey: string) {
@@ -44,5 +46,6 @@ export abstract class StorageStore<T extends StorableState<T['data']>> extends S
 
   clearData() {
     this.updateState({ data: null })
+    this.globalMessageStore.addSuccess('The data was cleared successfully.')
   }
 }

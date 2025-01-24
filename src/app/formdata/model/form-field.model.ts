@@ -54,7 +54,7 @@ export enum MaterialComponentType {
   // CHIPS = 'Chips',
 }
 
-export const fieldTypeToMaterialFieldDefaults: Record<FieldType, MaterialComponentType | null> = {
+export const FIELD_TYPE_TO_MATERIAL_FIELD_DEFAULTS: Record<FieldType, MaterialComponentType | null> = {
   [FieldType.STRING]: MaterialComponentType.TEXT,
   [FieldType.NUMBER]: MaterialComponentType.NUMBER,
   [FieldType.BOOLEAN]: MaterialComponentType.CHECKBOX,
@@ -69,6 +69,22 @@ export const fieldTypeToMaterialFieldDefaults: Record<FieldType, MaterialCompone
   [FieldType.CYCLIC_REFERENCE]: null,
   [FieldType.UNSUPPORTED]: null,
 }
+
+export const MATERIAL_INPUT_COMPONENT_TYPES = [
+  MaterialComponentType.COLOR,
+  MaterialComponentType.DATETIME_LOCAL,
+  MaterialComponentType.EMAIL,
+  MaterialComponentType.MONTH,
+  MaterialComponentType.NUMBER,
+  MaterialComponentType.PASSWORD,
+  MaterialComponentType.TELEPHONE,
+  MaterialComponentType.TEXT,
+  MaterialComponentType.TIME,
+  MaterialComponentType.URL,
+  MaterialComponentType.WEEK,
+  MaterialComponentType.WEEK,
+
+]
 
 export interface FormField {
   name: string

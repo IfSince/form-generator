@@ -1,0 +1,20 @@
+<cdk-accordion class="accordion">
+  <cdk-accordion-item #accordionItem="cdkAccordionItem"
+                      class="accordion-item"
+                      role="button"
+                      tabindex="0">
+    <div class="accordion-header"
+         (click)="accordionItem.toggle()"
+         matRipple>
+      {{ title }}
+      <mat-icon>{{ accordionItem.expanded ? 'arrow_drop_up' : 'arrow_drop_down' }}</mat-icon>
+    </div>
+    <div class="form-container"
+         role="region"
+         [style.display]="accordionItem.expanded ? '' : 'none'"
+         [attr.id]="'accordion-body' + title"
+         [attr.aria-labelledby]="'accordion-header'">
+      <ng-content/>
+    </div>
+  </cdk-accordion-item>
+</cdk-accordion>

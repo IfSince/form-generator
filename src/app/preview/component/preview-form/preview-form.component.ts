@@ -11,18 +11,20 @@ import { FieldType, FormField, MaterialComponentType } from '../../../formdata/m
 import { getFieldsAsFlatList } from '../../get-fields-as-flat-list'
 import { SelectableFormFieldComponent } from '../form-fields/selectable-form-field/selectable-form-field.component'
 import { MatIcon } from '@angular/material/icon'
-import { NgStyle } from '@angular/common'
+import { JsonPipe, NgStyle } from '@angular/common'
 import { AbstractFormComponent } from '../../../common/component/abstract-form.component'
 import { MatFormField, MatLabel } from '@angular/material/form-field'
 import { MatOption } from '@angular/material/core'
 import { MatSelect } from '@angular/material/select'
+import { RouterLink } from '@angular/router'
+import { GetRawValuePipe } from '../../../common/get-raw-value.pipe'
 
 export const Breakpoints = [
   { name: 'XSmall', width: '600px'},
   { name: 'Small', width: '960px'},
   { name: 'Medium', width: '1280px'},
   { name: 'Large', width: '1920px'},
-  { name: 'Full', width: '100%'},
+  { name: 'Responsive', width: '100%'},
 ]
 
 @Component({
@@ -48,11 +50,15 @@ export const Breakpoints = [
     MatLabel,
     MatOption,
     MatSelect,
+    RouterLink,
+    GetRawValuePipe,
+    JsonPipe,
   ],
   templateUrl: './preview-form.component.html',
   styleUrl: './preview-form.component.css',
 })
 export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormField[] }> implements OnInit {
+  protected readonly Breakpoints = Breakpoints
   protected readonly FieldType = FieldType
   private formDataFormBuilderService = inject(FormDataFormBuilderService)
 
@@ -69,10 +75,10 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
   ngOnInit(): void {
     this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
 
-    this.selectedField.set(this.flattenedFields()[0])
+    this.selectedField.set(this.flattenedFields()[1])
   }
 
-  override setValueChangesSubscription() {
+  override valueChangesSubscription() {
     return this._formGroup.controls.entries.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
     })
@@ -114,8 +120,9 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
       })
     }
 
-    this.inCreationMode.set(false)
-    this.selectedField.set(null)
+    this.onSubmit(false, 'none')
+    // this.inCreationMode.set(false)
+    // this.selectedField.set(null)
   }
 
   removeSelectedField() {
@@ -132,6 +139,7 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
 
     this.inCreationMode.set(false)
     this.selectedField.set(null)
+    this.globalMessageStore.addSuccess('The field was removed successfully.')
   }
 
   onClose(originalField: FormField) {
@@ -154,6 +162,4 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
       }
     }
   }
-
-  protected readonly Breakpoints = Breakpoints
 }

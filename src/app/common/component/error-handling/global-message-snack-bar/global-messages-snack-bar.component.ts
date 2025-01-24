@@ -16,14 +16,21 @@ export class GlobalMessagesSnackBarComponent {
 
   constructor() {
     this.globalErrorStore.state$.pipe(
-      filter(({ errors }) => errors.length > 0),
+      filter(({ errors, success }) => errors.length > 0 || success.length > 0),
       takeUntilDestroyed(),
-    ).subscribe(({ errors }) => {
+    ).subscribe(({ errors, success }) => {
       errors.forEach(error => {
         this._snackBar.openFromComponent(SnackBarMessageComponent, {
           duration: 2500,
           data: error,
         }).afterDismissed().subscribe(() => this.globalErrorStore.removeError(error))
+      })
+
+      success.forEach(success => {
+        this._snackBar.openFromComponent(SnackBarMessageComponent, {
+          duration: 2500,
+          data: success,
+        }).afterDismissed().subscribe(() => this.globalErrorStore.removeSuccess(success))
       })
     })
   }

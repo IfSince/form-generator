@@ -1,0 +1,88 @@
+@let componentType = form.controls.componentType.value;
+<ng-container [formGroup]="form">
+  <div class="form-container">
+    <mat-form-field>
+      <mat-label>Component</mat-label>
+      <mat-select formControlName="componentType">
+        @for (optGroup of materialComponentOptGroups; track optGroup.groupName) {
+          <mat-optgroup [label]="optGroup.groupName">
+            @for (component of optGroup.components; track component) {
+              <mat-option [value]="component">{{ component }}</mat-option>
+            }
+          </mat-optgroup>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Field name</mat-label>
+        <input matInput formControlName="name">
+
+        @if (form.controls.name.invalid) {
+          <mat-error>This field is required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Label</mat-label>
+        <input matInput formControlName="label">
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-checkbox formControlName="required">Required</mat-checkbox>
+      <mat-checkbox formControlName="disabled">Disabled</mat-checkbox>
+    </div>
+
+    <div class="row">
+      <mat-checkbox formControlName="readonly">Readonly</mat-checkbox>
+      <mat-checkbox formControlName="hidden">Hidden</mat-checkbox>
+    </div>
+  </div>
+
+  <mat-divider/>
+
+  @if (DEFAULT_EXPANDED_FIELD_OPTION_COMPONENT_TYPES.includes(componentType)) {
+    <app-accordion title="Extended">
+      <mat-form-field>
+        <mat-label>Hint start</mat-label>
+        <input matInput formControlName="hintStart">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Hint end</mat-label>
+        <input matInput formControlName="hintEnd">
+      </mat-form-field>
+
+      <div class="row">
+        <mat-form-field>
+          <mat-label>Text prefix</mat-label>
+          <input matInput formControlName="textPrefix">
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Text suffix</mat-label>
+          <input matInput formControlName="textSuffix">
+        </mat-form-field>
+      </div>
+
+      @if (componentType == MaterialComponentType.TEXTAREA) {
+        <mat-checkbox formControlName="textareaAutosize">Autosize textarea</mat-checkbox>
+        <div class="row">
+          <mat-form-field appearance="fill">
+            <mat-label>Min Rows</mat-label>
+            <input matInput
+                   formControlName="autosizeMinRows">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Max Rows</mat-label>
+            <input matInput
+                   formControlName="autosizeMaxRows">
+          </mat-form-field>
+        </div>
+      }
+    </app-accordion>
+  }
+</ng-container>

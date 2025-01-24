@@ -18,9 +18,16 @@
   height: fit-content;
 }
 
-.test {
+.header-actions {
   display: flex;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
+}
+
+.empty-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }

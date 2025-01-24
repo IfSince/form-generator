@@ -1,0 +1,30 @@
+<form [formGroup]="optionFormGroup"
+      (ngSubmit)="onSubmit()">
+  <h3 mat-dialog-title>Add option</h3>
+  <mat-dialog-content>
+    <mat-form-field appearance="fill">
+      <mat-label>Displayname</mat-label>
+      <input matInput formControlName="displayName">
+      @if (optionFormGroup.controls.displayName.invalid) {
+        <mat-error>This field is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Value</mat-label>
+      <input matInput formControlName="selectableValue">
+      @let selectableValue = optionFormGroup.controls.selectableValue;
+
+      @if (selectableValue.invalid && selectableValue.hasError('uniqueSelectableValue')) {
+        <mat-error>The value must be unique. Already existing values are: {{ data.currentOptions | mapToValues }}</mat-error>
+      } @else if (selectableValue.invalid) {
+        <mat-error>This field is required</mat-error>
+      }
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button mat-button type="submit">Add</button>
+  </mat-dialog-actions>
+</form>

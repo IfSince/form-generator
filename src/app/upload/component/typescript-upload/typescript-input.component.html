@@ -1,6 +1,6 @@
 <form class="flex-layout-container flex-layout-container__column"
       [formGroup]="_formGroup"
-      (ngSubmit)="onSubmit(true)">
+      (ngSubmit)="onSubmit(true, 'error')">
   <mat-card>
     <mat-card-header>
       <mat-card-title>
@@ -13,7 +13,27 @@
     </mat-card-header>
     <mat-card-content>
       <div class="mat-tab__content">
-        <mat-form-field matTooltip="Enter a valid typescript type structure below to select the type"
+        <mat-form-field>
+    <textarea matInput
+              cdkTextareaAutosize
+              cdkAutosizeMinRows="5"
+              cdkAutosizeMaxRows="25"
+              [formControl]="_formGroup.controls.text"
+              placeholder="class Address {
+  street: string
+  country: number
+}
+
+interface Person {
+  name: string
+  address: Address
+}"></textarea>
+          @if (_formGroup.controls.text.invalid) {
+            <mat-error>This field is required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field matTooltip="Enter a valid typescript type structure to select the type"
                         [matTooltipDisabled]="!!selectableTypes().interfaces.length || !!selectableTypes().classes.length || !!selectableTypes().classes.length"
                         matTooltipPosition="below"
                         matTooltipShowDelay="200">
@@ -44,26 +64,6 @@
           </mat-select>
 
           @if (_formGroup.controls.selectedType.invalid) {
-            <mat-error>This field is required</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field>
-    <textarea matInput
-              cdkTextareaAutosize
-              cdkAutosizeMinRows="5"
-              cdkAutosizeMaxRows="25"
-              [formControl]="_formGroup.controls.text"
-              placeholder="class Address {
-  street: string
-  country: number
-}
-
-interface Person {
-  name: string
-  address: Address
-}"></textarea>
-          @if (_formGroup.controls.text.invalid) {
             <mat-error>This field is required</mat-error>
           }
         </mat-form-field>

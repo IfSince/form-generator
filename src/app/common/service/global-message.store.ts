@@ -3,6 +3,7 @@ import { Store } from './store'
 
 export interface GlobalMessageState {
   errors: string[]
+  success: string[]
 }
 
 @Injectable({
@@ -11,6 +12,7 @@ export interface GlobalMessageState {
 export class GlobalMessageStore extends Store<GlobalMessageState> {
   static INITIAL_STATE: GlobalMessageState = {
     errors: [],
+    success: [],
   }
 
   constructor() {
@@ -23,5 +25,13 @@ export class GlobalMessageStore extends Store<GlobalMessageState> {
 
   removeError(message: string): void {
     this.updateState(({ errors: this.state.errors.filter(error => error != message) }))
+  }
+
+  addSuccess(message: string): void {
+    this.updateState({ success: [...this.state.success, message] })
+  }
+
+  removeSuccess(message: string): void {
+    this.updateState(({ success: this.state.success.filter(success => success != message) }))
   }
 }

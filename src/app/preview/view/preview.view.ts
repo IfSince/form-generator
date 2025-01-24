@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
-import { RouterLink } from '@angular/router'
+import { Router, RouterLink } from '@angular/router'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 import { MatAnchor, MatButton } from '@angular/material/button'
@@ -32,10 +32,18 @@ import { ClearDialogDirective } from '../../common/directive/clear-dialog.direct
 })
 export class PreviewView {
   protected formDataStore = inject(FormDataStore)
+  private router = inject(Router)
 
   onSubmit(data: { entries: FormField[] }): void {
     this.formDataStore.updateState({ data: { ...this.formDataStore.state.data, fields: data.entries } })
   }
 
-  onClear = () => this.formDataStore.clearData()
+  onClear = () => {
+    this.formDataStore.clearData()
+    void this.router.navigate(['upload'])
+  }
+
+  generateCode() {
+    console.log(this.formDataStore.state.data)
+  }
 }

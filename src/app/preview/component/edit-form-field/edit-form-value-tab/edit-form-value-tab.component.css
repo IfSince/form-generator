@@ -1,0 +1,42 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.deletable-option {
+  display: flex;
+  position: relative;
+  overflow: hidden;
+
+  > mat-option {
+    flex-grow: 1;
+    margin: 0;
+  }
+
+  button {
+    --icon-size: 18px;
+
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .mat-icon {
+      width: var(--icon-size);
+      height: var(--icon-size);
+      font-size: var(--icon-size);
+      line-height: var(--icon-size);
+    }
+
+    mat-button-ripple {
+      font-size: inherit;
+      width: inherit;
+      height: inherit;
+      line-height: inherit;
+    }
+  }
+}

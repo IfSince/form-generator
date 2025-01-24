@@ -4,7 +4,7 @@ import { CustomFormData, InputType } from '../model/custom-form-data.model'
 import { createTempSourceFile } from '../../ts-morph.utils'
 import { formatLabel } from '../../common/utils'
 import { FieldSelectOption } from '../model/form-field-select-option.model'
-import { FieldType, fieldTypeToMaterialFieldDefaults, FormField, MaterialComponentType } from '../model/form-field.model'
+import { FieldType, FIELD_TYPE_TO_MATERIAL_FIELD_DEFAULTS, FormField, MaterialComponentType } from '../model/form-field.model'
 
 @Injectable({
   providedIn: 'root',
@@ -139,7 +139,7 @@ export class FormDataCreateByTypeScriptService {
   }
 
   private getDefaultComponent(fieldType: FieldType): MaterialComponentType | null {
-    return fieldTypeToMaterialFieldDefaults[fieldType]
+    return FIELD_TYPE_TO_MATERIAL_FIELD_DEFAULTS[fieldType]
   }
 
   private isObject(type: Type): boolean {

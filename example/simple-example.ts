@@ -17,7 +17,7 @@ export class Person {
   address: Address
 }
 
-class DateTestClass {
-  dateField?: Date
-  dateTimeField: string = '2023-01-02T10:00:00Z'
-}
+// class DateTestClass {
+//   dateField?: Date
+//   dateTimeField: string = '2023-01-02T10:00:00Z'
+// }

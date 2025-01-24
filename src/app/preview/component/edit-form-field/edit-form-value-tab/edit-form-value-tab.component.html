@@ -1,0 +1,200 @@
+@let componentType = form.controls.componentType.value;
+<div class="form-container"
+     [formGroup]="form">
+  @switch (true) {
+    @case ((componentType | getComponentToRender) == RenderableMatComponent.INPUT) {
+      @if (!INPUT_COMPONENT_TYPES_WITHOUT_PLACEHOLDER.includes(componentType)) {
+        <mat-form-field>
+          <mat-label>Placeholder</mat-label>
+          <input matInput
+                 formControlName="placeholder"
+                 [type]="componentType | getInputType">
+        </mat-form-field>
+      }
+
+      <mat-form-field>
+        <mat-label>Default value</mat-label>
+        <input matInput
+               formControlName="defaultValue"
+               [type]="componentType | getInputType">
+      </mat-form-field>
+    }
+    @case (componentType == MaterialComponentType.TEXTAREA) {
+      <mat-form-field>
+        <mat-label>Placeholder</mat-label>
+        <textarea matInput
+                  formControlName="placeholder"
+                  cdkTextareaAutosize
+                  cdkAutosizeMinRows="1"
+                  cdkAutosizeMaxRows="5"></textarea>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Default value</mat-label>
+        <textarea matInput
+                  formControlName="defaultValue"
+                  cdkTextareaAutosize
+                  cdkAutosizeMinRows="1"
+                  cdkAutosizeMaxRows="5"></textarea>
+      </mat-form-field>
+    }
+    @case (componentType == MaterialComponentType.DATE) {
+      <mat-form-field>
+        <mat-label>Placeholder</mat-label>
+        <input matInput
+               [matDatepicker]="placeholderPicker"
+               formControlName="placeholder">
+        <mat-datepicker-toggle matIconSuffix [for]="placeholderPicker"/>
+        <mat-datepicker #placeholderPicker/>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Default value</mat-label>
+        <input matInput
+               [matDatepicker]="valuePicker"
+               formControlName="defaultValue">
+        <mat-datepicker-toggle matIconSuffix [for]="valuePicker"/>
+        <mat-datepicker #valuePicker/>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Min date</mat-label>
+        <input matInput
+               [matDatepicker]="minPicker"
+               formControlName="minDate">
+        <mat-datepicker-toggle matIconSuffix [for]="minPicker"/>
+        <mat-datepicker #minPicker/>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Max date</mat-label>
+        <input matInput
+               [matDatepicker]="maxPicker"
+               formControlName="maxDate">
+        <mat-datepicker-toggle matIconSuffix [for]="maxPicker"/>
+        <mat-datepicker #maxPicker/>
+      </mat-form-field>
+    }
+    @case (CHECKABLE_TYPES.includes(componentType)) {
+      <mat-checkbox formControlName="defaultValue">Checked per default</mat-checkbox>
+    }
+    @case (MULTISELECT_TYPES.includes(componentType)) {
+      <div class="row">
+        <mat-form-field>
+          <mat-label>Default Value</mat-label>
+          @if (form.controls.multiple.value) {
+            <mat-select formControlName="defaultValue"
+                        hideSingleSelectionIndicator
+                        multiple>
+              @for (option of form.controls.fieldSelectOptions.getRawValue(); track option.selectableValue; let index = $index) {
+                <span class="deletable-option">
+                  <mat-option [value]="option.selectableValue">{{ option.displayName }}</mat-option>
+                  <button mat-icon-button (click)="removeOption(index)">
+                    <mat-icon>clear</mat-icon>
+                  </button>
+                </span>
+              }
+            </mat-select>
+          } @else {
+            <mat-select formControlName="defaultValue"
+                        hideSingleSelectionIndicator>
+              <mat-option>None</mat-option>
+              @for (option of form.controls.fieldSelectOptions.getRawValue(); track option.selectableValue; let index = $index) {
+                <span class="deletable-option">
+                  <mat-option [value]="option.selectableValue">{{ option.displayName }}</mat-option>
+                  <button mat-icon-button
+                          type="button"
+                          (click)="removeOption(index)">
+                    <mat-icon>clear</mat-icon>
+                  </button>
+                </span>
+              }
+            </mat-select>
+          }
+        </mat-form-field>
+
+        <button mat-icon-button
+                type="button"
+                (click)="openOptionDialog()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+
+      <mat-checkbox formControlName="multiple">Allow multi-select</mat-checkbox>
+
+      @if (MaterialComponentType.SELECT == componentType) {
+        <mat-checkbox formControlName="selectAddNullOption" class="mb-2">Add null as selectable option</mat-checkbox>
+        <mat-form-field>
+          <mat-label>Placeholder</mat-label>
+          <input matInput
+                 formControlName="placeholder"
+                 [type]="componentType | getInputType">
+        </mat-form-field>
+      }
+    }
+    @case (MaterialComponentType.RADIO_BUTTON == componentType) {
+      <div class="row">
+        <mat-form-field>
+          <mat-label>Default Value</mat-label>
+          <mat-select formControlName="defaultValue"
+                      hideSingleSelectionIndicator>
+            <mat-option>None</mat-option>
+            @for (option of form.controls.fieldSelectOptions.getRawValue(); track option.selectableValue; let index = $index) {
+              <span class="deletable-option">
+                  <mat-option [value]="option.selectableValue">{{ option.displayName }}</mat-option>
+                  <button mat-icon-button
+                          type="button"
+                          (click)="removeOption(index)">
+                    <mat-icon>clear</mat-icon>
+                  </button>
+                </span>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-icon-button
+                type="button"
+                (click)="openOptionDialog()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    }
+    @case (MaterialComponentType.SLIDER == componentType) {
+      <mat-form-field>
+        <mat-label>Default value</mat-label>
+        <input matInput
+               formControlName="defaultValue"
+               type="number">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Minimal value</mat-label>
+        <input matInput
+               type="number"
+               formControlName="sliderMin">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Maximal value</mat-label>
+        <input matInput
+               type="number"
+               formControlName="sliderMax">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Steps</mat-label>
+        <input matInput
+               type="number"
+               formControlName="sliderStep">
+      </mat-form-field>
+    }
+    @default {
+      <mat-form-field>
+        <mat-label>Default value</mat-label>
+        <input matInput
+               formControlName="defaultValue"
+               [type]="componentType | getInputType">
+      </mat-form-field>
+    }
+  }
+</div>

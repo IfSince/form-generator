@@ -55,7 +55,7 @@ export class TypescriptInputComponent extends AbstractFormComponent<TypeScriptIn
     this.setSelectableTypes(interfaces, classes, typeAliases)
   }
 
-  override setValueChangesSubscription() {
+  override valueChangesSubscription() {
     return this._formGroup.controls.text.valueChanges.pipe(
       filter(Boolean),
       map(parseAsSourceFileWithAvailableTypes),

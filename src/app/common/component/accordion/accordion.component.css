@@ -1,0 +1,28 @@
+.accordion {
+  display: block;
+  padding-bottom: 16px;
+}
+
+.accordion-item {
+  display: block;
+}
+
+.accordion-header {
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.accordion-header:hover {
+  cursor: pointer;
+  /*background-color: var(--mat-tab-header-active-ripple-color);*/
+  background-color: rgba(32, 26, 27, 0.04);
+  /*opacity: .04;*/
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}

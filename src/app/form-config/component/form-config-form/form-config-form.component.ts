@@ -92,7 +92,7 @@ export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> i
     })
   }
 
-  override setValueChangesSubscription() {
+  override valueChangesSubscription() {
     return this._formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.jsonData.set(this._formGroup.getRawValue())
     })

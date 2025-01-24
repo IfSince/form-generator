@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core'
-import { MaterialComponentType } from '../../../../formdata/model/form-field.model'
+import { MaterialComponentType, MATERIAL_INPUT_COMPONENT_TYPES } from '../../../../formdata/model/form-field.model'
 
 export enum RenderableMatComponent {
   INPUT = 'INPUT',
@@ -24,23 +24,9 @@ export enum RenderableMatComponent {
   standalone: true,
 })
 export class GetComponentToRenderPipe implements PipeTransform {
-  inputComponentType = [
-    MaterialComponentType.COLOR,
-    MaterialComponentType.DATETIME_LOCAL,
-    MaterialComponentType.EMAIL,
-    MaterialComponentType.MONTH,
-    MaterialComponentType.NUMBER,
-    MaterialComponentType.PASSWORD,
-    MaterialComponentType.TELEPHONE,
-    MaterialComponentType.TEXT,
-    MaterialComponentType.TIME,
-    MaterialComponentType.URL,
-    MaterialComponentType.WEEK,
-  ]
-
   transform(matComponentType: MaterialComponentType): RenderableMatComponent {
     switch (true) {
-      case this.inputComponentType.includes(matComponentType):
+      case MATERIAL_INPUT_COMPONENT_TYPES.includes(matComponentType):
         return RenderableMatComponent.INPUT
       case matComponentType === MaterialComponentType.TEXTAREA:
         return RenderableMatComponent.TEXTAREA

@@ -1,0 +1,167 @@
+@let componentType = form.controls.componentType.value;
+<ng-container [formGroup]="form">
+  @let renderableComponent = componentType | getComponentToRender;
+
+  <ng-template #defaultConfigs>
+    <div class="form-container">
+      <label>Appearance</label>
+      <mat-radio-group formControlName="formFieldAppearance" class="mb-2">
+        <mat-radio-button [value]="'fill'">Fill</mat-radio-button>
+        <mat-radio-button [value]="'outline'">Outline</mat-radio-button>
+      </mat-radio-group>
+
+      <label>Float label</label>
+      <mat-radio-group formControlName="floatLabel" class="mb-2">
+        <mat-radio-button [value]="'auto'">Auto</mat-radio-button>
+        <mat-radio-button [value]="'always'">Always</mat-radio-button>
+      </mat-radio-group>
+
+      @if (componentType != MaterialComponentType.SELECT) {
+        <label>Subscript sizing</label>
+        <mat-radio-group formControlName="subscriptSizing" class="mb-2">
+          <mat-radio-button [value]="'fixed'">Fixed</mat-radio-button>
+          <mat-radio-button [value]="'dynamic'">Dynamic</mat-radio-button>
+        </mat-radio-group>
+      }
+
+      <mat-checkbox formControlName="hideRequiredMarker">Hide required marker (asteriks)</mat-checkbox>
+    </div>
+  </ng-template>
+
+  @switch (renderableComponent) {
+    @case (RenderableMatComponent.INPUT) {
+      <ng-container *ngTemplateOutlet="defaultConfigs"/>
+    }
+    @case (RenderableMatComponent.TEXTAREA) {
+      <ng-container *ngTemplateOutlet="defaultConfigs"/>
+    }
+    @case (RenderableMatComponent.SLIDER) {
+      <div class="form-container">
+        <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+        <mat-checkbox formControlName="sliderDiscrete">Discrete</mat-checkbox>
+        <mat-checkbox formControlName="sliderShowTickMarks">Show tick marks</mat-checkbox>
+      </div>
+    }
+    @case (RenderableMatComponent.CHECKBOX) {
+      <div class="form-container">
+        <span>Label position</span>
+        <mat-radio-group formControlName="labelPosition" class="mb-2">
+          <mat-radio-button [value]="'after'">After</mat-radio-button>
+          <mat-radio-button [value]="'before'">Before</mat-radio-button>
+        </mat-radio-group>
+
+        <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+        <mat-checkbox formControlName="disabledInteractive">Interactable when disabled</mat-checkbox>
+      </div>
+    }
+    @case (RenderableMatComponent.SLIDE_TOGGLE) {
+      <div class="form-container">
+        <span>Label position</span>
+        <mat-radio-group formControlName="labelPosition" class="mb-2">
+          <mat-radio-button [value]="'after'">After</mat-radio-button>
+          <mat-radio-button [value]="'before'">Before</mat-radio-button>
+        </mat-radio-group>
+
+        <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+        <mat-checkbox formControlName="disabledInteractive">Interactable when disabled</mat-checkbox>
+        <mat-checkbox formControlName="slideToggleHideIcon">Hide icon</mat-checkbox>
+      </div>
+    }
+    @case (RenderableMatComponent.SELECT) {
+      <ng-container *ngTemplateOutlet="defaultConfigs"/>
+      <div class="form-container pt-0">
+        <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+        <mat-checkbox formControlName="selectDisableOptionCentering">Disable option centering</mat-checkbox>
+        <mat-checkbox formControlName="hideSingleSelectionIndicator">Hide single selection indicator</mat-checkbox>
+      </div>
+
+      <app-accordion title="Advanced">
+        <mat-form-field>
+          <mat-label>Panel class</mat-label>
+          <input matInput formControlName="panelClass">
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Panel width</mat-label>
+          <input matInput formControlName="selectPanelWidth">
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Typeahead debounce interval</mat-label>
+          <input matInput formControlName="typeaheadDebounceInterval">
+        </mat-form-field>
+      </app-accordion>
+    }
+    @case (RenderableMatComponent.RADIO_BUTTON) {
+      <div class="form-container">
+        <span>Label position</span>
+        <mat-radio-group formControlName="labelPosition" class="mb-2">
+          <mat-radio-button [value]="'after'">After</mat-radio-button>
+          <mat-radio-button [value]="'before'">Before</mat-radio-button>
+        </mat-radio-group>
+
+        <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+        <mat-checkbox formControlName="disabledInteractive">Interactable when disabled</mat-checkbox>
+      </div>
+    }
+    @case (RenderableMatComponent.DATEPICKER) {
+      <div class="form-container">
+        <mat-form-field>
+          <mat-label>Initial date</mat-label>
+          <input matInput
+                 [matDatepicker]="startAtPicker"
+                 formControlName="startAt"
+                 [min]="form.controls.minDate.value"
+                 [max]="form.controls.maxDate.value">
+          <mat-datepicker-toggle matIconSuffix [for]="startAtPicker"/>
+          <mat-datepicker #startAtPicker/>
+        </mat-form-field>
+
+        <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+        <mat-checkbox formControlName="disableDateButton">Disable date picker</mat-checkbox>
+        <mat-checkbox formControlName="restoreFocus">Restore focus</mat-checkbox>
+        <mat-checkbox formControlName="touchUi">Touch UI</mat-checkbox>
+      </div>
+      <app-accordion title="Advanced">
+        <span>Start view</span>
+        <mat-radio-group formControlName="startView" class="mb-2">
+          <mat-radio-button [value]="'month'">Month</mat-radio-button>
+          <mat-radio-button [value]="'year'">Year</mat-radio-button>
+          <mat-radio-button [value]="'multi-year'">Multi year</mat-radio-button>
+        </mat-radio-group>
+
+        <span>X-Position</span>
+        <mat-radio-group formControlName="xPosition" class="mb-2">
+          <mat-radio-button [value]="'start'">Start</mat-radio-button>
+          <mat-radio-button [value]="'end'">End</mat-radio-button>
+        </mat-radio-group>
+
+        <span>Y-Position</span>
+        <mat-radio-group formControlName="yPosition" class="mb-2">
+          <mat-radio-button [value]="'below'">Below</mat-radio-button>
+          <mat-radio-button [value]="'above'">Above</mat-radio-button>
+        </mat-radio-group>
+
+        <mat-form-field>
+          <mat-label>Panel class</mat-label>
+          <input matInput formControlName="panelClass">
+        </mat-form-field>
+      </app-accordion>
+    }
+    @case (RenderableMatComponent.BUTTON_TOGGLE) {
+      <div class="form-container">
+        <span>Button appearance</span>
+        <mat-radio-group formControlName="buttonToggleAppearance" class="mb-2">
+          <mat-radio-button [value]="'standard'">Standard</mat-radio-button>
+          <mat-radio-button [value]="'legacy'">Legacy</mat-radio-button>
+        </mat-radio-group>
+
+        <mat-checkbox formControlName="disableRipple">Disable ripple</mat-checkbox>
+        <mat-checkbox formControlName="disabledInteractive">Interactable when disabled</mat-checkbox>
+        <mat-checkbox formControlName="orientateVertical">Orientate vertical</mat-checkbox>
+        <mat-checkbox formControlName="hideSingleSelectionIndicator">Hide single selection indicator</mat-checkbox>
+        <mat-checkbox formControlName="hideMultiSelectionIndicator">Hide multi selection indicator</mat-checkbox>
+      </div>
+    }
+  }
+</ng-container>

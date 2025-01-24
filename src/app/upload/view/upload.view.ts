@@ -12,6 +12,7 @@ import { MatIcon } from '@angular/material/icon'
 import { ClearDialogDirective } from '../../common/directive/clear-dialog.directive'
 import { DialogComponent } from '../../common/component/clear-dialog/dialog.component'
 import { MatDialog } from '@angular/material/dialog'
+import { GlobalMessageStore } from '../../common/service/global-message.store'
 
 @Component({
   selector: 'app-upload-view',
@@ -30,6 +31,7 @@ import { MatDialog } from '@angular/material/dialog'
 })
 export class UploadView {
   private dialog = inject(MatDialog)
+  private globalMessageStore = inject(GlobalMessageStore)
 
   constructor(
     private formDataCreateByTypeScriptService: FormDataCreateByTypeScriptService,
@@ -52,18 +54,21 @@ export class UploadView {
       })
       dialogRef.afterClosed().subscribe(result => {
         if (result === true) {
-          const data = this.formDataCreateByTypeScriptService.create(inputString, selectedType)
-          this.formDataStore.setState({ data })
-          void this.router.navigate(['preview'])
+          this.setFormData(inputString, selectedType, 'The form data was re-generated successfully.')
         } else if (result === false) {
           void this.router.navigate(['preview'])
         }
       })
     } else {
-      const data = this.formDataCreateByTypeScriptService.create(inputString, selectedType)
-      this.formDataStore.setState({ data })
-      void this.router.navigate(['preview'])
+      this.setFormData(inputString, selectedType, 'The form data was created successfully.')
     }
+  }
+
+  setFormData(inputString: string, selectedType: string, message: string) {
+    const data = this.formDataCreateByTypeScriptService.create(inputString, selectedType)
+    this.formDataStore.setState({ data })
+    this.globalMessageStore.addSuccess(message)
+    void this.router.navigate(['preview'])
   }
 
   onClear = () => this.formDataStore.clearData()

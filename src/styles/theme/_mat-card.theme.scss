@@ -2,4 +2,8 @@
   .mat-mdc-card-header {
     padding-bottom: 16px
   }
+
+  .mat-divider {
+    border-color: var(--mat-tab-header-divider-color);
+  }
 }
