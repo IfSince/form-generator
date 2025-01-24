@@ -2,7 +2,6 @@ import { Component, computed, OnInit, Signal, signal } from '@angular/core'
 import { takeUntil } from 'rxjs'
 import { FormConfig } from '../../model/form-config.model'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
-import { JsonPipe } from '@angular/common'
 import { MatAnchor } from '@angular/material/button'
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card'
 import { MatIcon } from '@angular/material/icon'
@@ -41,7 +40,6 @@ import { FieldSelectOption } from '../../../formdata/model/form-field-select-opt
     DropzoneCdkModule,
     CustomDropzoneComponent,
     MatListItemMeta,
-    JsonPipe,
     MatCardSubtitle,
     MatCheckbox,
     ListItemButtonToggleComponent,
