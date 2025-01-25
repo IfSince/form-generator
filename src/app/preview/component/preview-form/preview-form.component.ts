@@ -74,6 +74,8 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
 
   ngOnInit(): void {
     this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
+
+    this.selectedField.set(this.flattenedFields()[0])
   }
 
   override valueChangesSubscription() {

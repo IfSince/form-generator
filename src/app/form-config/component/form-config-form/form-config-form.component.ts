@@ -49,8 +49,8 @@ import { FieldSelectOption } from '../../../formdata/model/form-field-select-opt
 })
 export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> implements OnInit {
   formFieldAppearanceOptions: FieldSelectOption[] = [
-    { displayName: 'Fill', selectableValue: 'outline' },
-    { displayName: 'Outline', selectableValue: 'fill' },
+    { displayName: 'Fill', selectableValue: 'fill' },
+    { displayName: 'Outline', selectableValue: 'outline' },
   ]
 
   floatLabelOptions: FieldSelectOption[] = [
