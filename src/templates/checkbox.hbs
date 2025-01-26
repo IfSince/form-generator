@@ -1,0 +1,16 @@
+<mat-checkbox formControlName="{{name}}"
+  {{#if (isDefined required)}}
+              [required]="{{required}}"
+  {{/if}}
+  {{#if (isDefined disabled)}}
+              [disabled]="{{disabled}}"
+  {{/if}}
+  {{#if (isDefined disableRipple)}}
+              [disableRipple]="{{disableRipple}}"
+  {{/if}}
+  {{#if (isDefined disabledInteractive)}}
+              [disabledInteractive]="{{disabledInteractive}}"
+  {{/if}}
+  {{#if (isDefined labelPosition)}}
+              [labelPosition]="{{labelPosition}}"
+  {{/if}}>{{ label }}</mat-checkbox>

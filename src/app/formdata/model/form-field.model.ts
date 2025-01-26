@@ -100,10 +100,10 @@ export interface FormField {
   defaultValue?: any
   placeholder?: string
 
-  required: boolean
-  readonly: boolean
-  disabled: boolean
-  hidden: boolean
+  required?: boolean
+  readonly?: boolean
+  disabled?: boolean
+  hidden?: boolean
 
   // Form Field (Input, Textarea, Select, Datepicker)
   formFieldAppearance?: 'fill' | 'outline'

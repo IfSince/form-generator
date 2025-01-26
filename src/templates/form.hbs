@@ -1,0 +1,6 @@
+<form [formGroup]="formGroup">
+  {{#each fields}}
+  {{> (getComponentTemplate this.componentType) this }}
+
+  {{/each}}
+</form>

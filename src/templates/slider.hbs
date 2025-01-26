@@ -1,0 +1,25 @@
+<mat-slider {{#if (isDefined disabled)}}[disabled]="{{disabled}}"{{/if}}
+  {{#if (isDefined sliderMin)}}
+            [min]="{{sliderMin}}"
+  {{/if}}
+  {{#if (isDefined sliderMax)}}
+            [max]="{{sliderMax}}"
+  {{/if}}
+  {{#if (isDefined sliderStep)}}
+            [step]="{{sliderStep}}"
+  {{/if}}
+  {{#if (isDefined sliderDiscrete)}}
+            [discrete]="{{sliderDiscrete}}"
+  {{/if}}
+  {{#if (isDefined sliderShowTickMarks)}}
+            [showTickMarks]="{{sliderShowTickMarks}}"
+  {{/if}}
+  {{#if (isDefined disableRipple)}}
+            [disableRipple]="{{disableRipple}}"
+  {{/if}}>
+  <input matSliderThumb
+         formControlName="{{name}}"
+    {{#if (isDefined required)}}
+         [required]="{{required}}"
+    {{/if}}>
+</mat-slider>

@@ -60,7 +60,7 @@
                          [rawValue]="selectedField() | getRawValue"
                          [formGroup]="selectedField()"
                          [inCreationMode]="inCreationMode()"
-                         (submitForm)="updateField($event)"
+                         (submitForm)="saveFormDataAndResetEditing()"
                          (remove)="removeSelectedField()"
                          (close)="onClose($event)">
     </app-edit-form-field>

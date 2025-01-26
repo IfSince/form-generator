@@ -1,0 +1,52 @@
+<mat-form-field {{#if (isDefined formFieldAppearance)}}[appearance]="{{formFieldAppearance}}"{{/if}}
+  {{#if (isDefined hideRequiredMarker)}}
+                [hideRequiredMarker]="{{hideRequiredMarker}}"
+  {{/if}}
+  {{#if (isDefined floatLabel)}}
+                [floatLabel]="{{floatLabel}}"
+  {{/if}}
+  {{#if (isDefined hintStart)}}
+                [hintLabel]="'{{hintStart}}'"
+  {{/if}}
+  {{#if (isDefined subscriptSizing)}}
+                [subscriptSizing]="{{subscriptSizing}}"
+  {{/if}}>
+  {{#if label}}
+  <mat-label>{{ label }}</mat-label>
+  {{/if}}
+  <textarea matInput
+            formControlName="{{name}}"
+    {{#if (isDefined placeholder)}}
+            placeholder="{{placeholder}}"
+    {{/if}}
+    {{#if (isDefined readonly)}}
+            [readonly]="{{readonly}}"
+    {{/if}}
+    {{#if (isDefined required)}}
+            [required]="{{required}}"
+    {{/if}}
+    {{#if (isDefined disabled)}}
+            [disabled]="{{disabled}}"
+    {{/if}}
+    {{#if (isDefined hidden)}}
+            [hidden]="{{hidden}}"
+    {{/if}}
+    {{#if (isDefined textareaAutosize)}}
+            [cdkTextareaAutosize]="{{textareaAutosize}}"
+    {{/if}}
+    {{#if (isDefined autosizeMinRows)}}
+            [cdkAutosizeMinRows]="{{autosizeMinRows}}"
+    {{/if}}
+    {{#if (isDefined autosizeMaxRows)}}
+            [cdkAutosizeMaxRows]="{{autosizeMaxRows}}"
+    {{/if}}></textarea>
+  {{#if (isDefined hintEnd)}}
+  <mat-hint align="end">{{hintEnd}}</mat-hint>
+  {{/if}}
+  {{#if (isDefined textPrefix)}}
+  <span matTextPrefix>{{textPrefix}}</span>
+  {{/if}}
+  {{#if (isDefined textSuffix)}}
+  <span matTextSuffix>{{textSuffix}}</span>
+  {{/if}}
+</mat-form-field>

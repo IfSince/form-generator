@@ -45,7 +45,7 @@ export class FormConfigFormBuilderService {
       datepickerTouchUi: [config?.datepickerTouchUi],
 
       buttonToggleHideMultiSelectionIndicator: [config?.buttonToggleHideMultiSelectionIndicator],
-      buttonToggleAppearance: [config?.buttonToggleAppearance],
+      buttonToggleAppearance: [config?.buttonToggleAppearance ?? 'standard'],
     }) as FormGroup<ReactiveForm<FormConfig>>
   }
 }

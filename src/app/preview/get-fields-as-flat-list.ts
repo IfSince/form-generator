@@ -8,7 +8,7 @@ export const getFieldsAsFlatList = (entries: FormArray): FormGroup<ReactiveForm<
       flatList.push(control)
       const fields = control.get('fields')
       if (fields instanceof FormArray) {
-        flatList.push(...getFieldsAsFlatList(fields)) // Rekursive Verarbeitung
+        flatList.push(...getFieldsAsFlatList(fields))
       }
     }
     return flatList

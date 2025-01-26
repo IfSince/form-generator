@@ -1,0 +1,77 @@
+<mat-form-field {{#if (isDefined formFieldAppearance)}}[appearance]="{{formFieldAppearance}}"{{/if}}
+  {{#if (isDefined hideRequiredMarker)}}
+                [hideRequiredMarker]="{{hideRequiredMarker}}"
+  {{/if}}
+  {{#if (isDefined floatLabel)}}
+                [floatLabel]="{{floatLabel}}"
+  {{/if}}
+  {{#if (isDefined hintStart)}}
+                [hintLabel]="'{{hintStart}}'"
+  {{/if}}
+  {{#if (isDefined subscriptSizing)}}
+                [subscriptSizing]="{{subscriptSizing}}"
+  {{/if}}>
+  {{#if label}}
+  <mat-label>{{ label }}</mat-label>
+  {{/if}}
+  <input matInput
+         formControlName="{{name}}"
+         [matDatepicker]="datepicker"
+    {{#if (isDefined placeholder)}}
+         placeholder="{{placeholder}}"
+    {{/if}}
+    {{#if (isDefined readonly)}}
+         [readonly]="{{readonly}}"
+    {{/if}}
+    {{#if (isDefined required)}}
+         [required]="{{required}}"
+    {{/if}}
+    {{#if (isDefined disabled)}}
+         [disabled]="{{disabled}}"
+    {{/if}}
+    {{#if (isDefined hidden)}}
+         [hidden]="{{hidden}}"
+    {{/if}}
+    {{#if (isDefined min)}}
+         [min]="{{min}}"
+    {{/if}}
+    {{#if (isDefined max)}}
+         [max]="{{max}}"
+    {{/if}}>
+  <mat-datepicker-toggle matIconSuffix
+                         [for]="datepicker"
+    {{#if (isDefined disableRipple)}}
+                         [disableRipple]="{{disableRipple}}"
+    {{/if}}
+    {{#if (isDefined disabled)}}
+                         [disabled]="{{disabled}}"
+    {{/if}}/>
+  <mat-datepicker #datepicker
+    {{#if (isDefined panelClass)}}
+                  [panelClass]="{{panelClass}}"
+    {{/if}}
+    {{#if (isDefined restoreFocus)}}
+                  [restoreFocus]="{{restoreFocus}}"
+    {{/if}}
+    {{#if (isDefined startAt)}}
+                  [startAt]="{{startAt}}"
+    {{/if}}
+    {{#if (isDefined startView)}}
+                  [startView]="{{startView}}"
+    {{/if}}
+    {{#if (isDefined touchUi)}}
+                  [startView]="{{touchUi}}"
+    {{/if}}
+    {{#if (isDefined xPosition)}}
+                  [xPosition]="{{xPosition}}"
+    {{/if}}/>
+  {{#if (isDefined hintEnd)}}
+  <mat-hint align="end">{{hintEnd}}</mat-hint>
+  {{/if}}
+  {{#if (isDefined textPrefix)}}
+  <span matTextPrefix>{{textPrefix}}</span>
+  {{/if}}
+  {{#if (isDefined textSuffix)}}
+  <span matTextSuffix>{{textSuffix}}</span>
+  {{/if}}
+</mat-form-field>

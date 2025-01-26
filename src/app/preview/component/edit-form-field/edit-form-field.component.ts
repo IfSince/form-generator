@@ -53,7 +53,7 @@ export class EditFormFieldComponent extends AbstractFormComponent<FormField> imp
     const previousValue = changes['rawValue'].previousValue
 
     if (currentValue && previousValue && previousFormGroup.dirty) {
-      previousFormGroup.setValue(previousValue)
+      previousFormGroup.patchValue(previousValue)
     }
   }
 

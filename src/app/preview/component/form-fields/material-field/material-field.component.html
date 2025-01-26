@@ -15,9 +15,7 @@
              [readonly]="matField.readonly"
              [required]="matField.required"
              [disabled]="matField.disabled"
-             [hidden]="matField.hidden"
-      />
-
+             [hidden]="matField.hidden"/>
       @if (matField.hintEnd) {
         <mat-hint align="end">{{ matField.hintEnd }}</mat-hint>
       }
@@ -28,7 +26,6 @@
       @if (matField.textSuffix) {
         <span matTextSuffix>{{ matField.textSuffix }}</span>
       }
-
     </mat-form-field>
   }
   @case (RenderableMatComponent.TEXTAREA) {
@@ -49,9 +46,7 @@
                 [hidden]="matField.hidden"
                 [cdkTextareaAutosize]="matField.textareaAutosize"
                 [cdkAutosizeMinRows]="matField.autosizeMinRows"
-                [cdkAutosizeMaxRows]="matField.autosizeMaxRows"
-      ></textarea>
-
+                [cdkAutosizeMaxRows]="matField.autosizeMaxRows"></textarea>
       @if (matField.hintEnd) {
         <mat-hint align="end">{{ matField.hintEnd }}</mat-hint>
       }
@@ -117,8 +112,7 @@
       <mat-datepicker-toggle matIconSuffix
                              [for]="picker"
                              [disableRipple]="matField.disableRipple"
-                             [disabled]="matField.disableDateButton"
-      />
+                             [disabled]="matField.disableDateButton"/>
       <mat-datepicker #picker
                       [panelClass]="matField.panelClass"
                       [restoreFocus]="matField.restoreFocus"
@@ -126,8 +120,7 @@
                       [startView]="matField.startView"
                       [touchUi]="matField.touchUi"
                       [xPosition]="matField.xPosition"
-                      [yPosition]="matField.yPosition"
-      />
+                      [yPosition]="matField.yPosition"/>
 
       @if (matField.hintEnd) {
         <mat-hint align="end">{{ matField.hintEnd }}</mat-hint>
@@ -159,7 +152,9 @@
     <mat-form-field [appearance]="matField.formFieldAppearance"
                     [hideRequiredMarker]="matField.hideRequiredMarker"
                     [floatLabel]="matField.floatLabel"
-                    [hintLabel]="matField.hintStart">
+                    [hintLabel]="matField.hintStart"
+                    [subscriptSizing]="matField.subscriptSizing"
+    >
       <mat-label>{{ matField.label }}</mat-label>
       @if (matField.multiple) {
         <mat-select [value]="matField.defaultValue"
@@ -170,7 +165,7 @@
                     [disableOptionCentering]="matField.selectDisableOptionCentering"
                     [hideSingleSelectionIndicator]="matField.hideSingleSelectionIndicator"
                     [panelClass]="matField.panelClass"
-                    [panelWidth]="matField.selectPanelWidth"
+                    [panelWidth]="matField.selectPanelWidth ?? 'auto'"
                     [typeaheadDebounceInterval]="matField.typeaheadDebounceInterval"
                     multiple>
           @if (matField.selectAddNullOption) {
@@ -189,7 +184,7 @@
                     [disableOptionCentering]="matField.selectDisableOptionCentering"
                     [hideSingleSelectionIndicator]="matField.hideSingleSelectionIndicator"
                     [panelClass]="matField.panelClass"
-                    [panelWidth]="matField.selectPanelWidth"
+                    [panelWidth]="matField.selectPanelWidth || 'auto'"
                     [typeaheadDebounceInterval]="matField.typeaheadDebounceInterval">
           @if (matField.selectAddNullOption) {
             <mat-option>None</mat-option>

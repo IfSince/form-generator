@@ -1,0 +1,24 @@
+<mat-radio-group formControlName="{{name}}"
+  {{#if (isDefined required)}}
+                 [required]="{{required}}"
+  {{/if}}
+  {{#if (isDefined disabled)}}
+                 [disabled]="{{disabled}}"
+  {{/if}}
+  {{#if (isDefined disabledInteractive)}}
+                 [disabledInteractive]="{{disabledInteractive}}"
+  {{/if}}>
+  {{#each fieldSelectOptions}}
+  <mat-radio-button value="{{this.selectableValue}}"
+    {{#if (isDefined this.disableRipple)}}
+                    [disableRipple]="{{this.disableRipple}}"
+    {{/if}}
+    {{#if (isDefined this.labelPosition)}}
+                    [labelPosition]="{{this.labelPosition}}"
+    {{/if}}>
+    {{~this.displayName~}}
+  </mat-radio-button>
+  {{else}}
+  <mat-radio-button>No options provided</mat-radio-button>
+  {{/each}}
+</mat-radio-group>

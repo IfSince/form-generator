@@ -1,0 +1,64 @@
+<mat-form-field {{#if (isDefined formFieldAppearance)}}[appearance]="{{formFieldAppearance}}"{{/if}}
+  {{#if (isDefined hideRequiredMarker)}}
+                [hideRequiredMarker]="{{hideRequiredMarker}}"
+  {{/if}}
+  {{#if (isDefined floatLabel)}}
+                [floatLabel]="{{floatLabel}}"
+  {{/if}}
+  {{#if (isDefined hintStart)}}
+                [hintLabel]="'{{hintStart}}'"
+  {{/if}}
+  {{#if (isDefined subscriptSizing)}}
+                [subscriptSizing]="{{subscriptSizing}}"
+  {{/if}}>
+  {{#if label}}
+  <mat-label>{{ label }}</mat-label>
+  {{/if}}
+  <mat-select formControlName="{{name}}"
+    {{#if (isDefined required)}}
+              [required]="{{required}}"
+    {{/if}}
+    {{#if (isDefined disabled)}}
+              [disabled]="{{disabled}}"
+    {{/if}}
+    {{#if (isDefined placeholder)}}
+              placeholder="{{placeholder}}"
+    {{/if}}
+    {{#if (isDefined disableRipple)}}
+              disableRipple="{{disableRipple}}"
+    {{/if}}
+    {{#if (isDefined selectDisableOptionCentering)}}
+              disableOptionCentering="{{selectDisableOptionCentering}}"
+    {{/if}}
+    {{#if (isDefined hideSingleSelectionIndicator)}}
+              hideSingleSelectionIndicator="{{hideSingleSelectionIndicator}}"
+    {{/if}}
+    {{#if (isDefined panelClass)}}
+              panelClass="{{panelClass}}"
+    {{/if}}
+    {{#if (isDefined panelWidth)}}
+              panelWidth="{{panelWidth}}"
+    {{/if}}
+    {{#if (isDefined typeaheadDebounceInterval)}}
+              typeaheadDebounceInterval="{{typeaheadDebounceInterval}}"
+    {{/if}}
+    {{#if (isDefined multiple)}}
+              multiple
+    {{/if}}>
+    {{#if selectAddNullOption}}
+    <mat-option>None</mat-option>
+    {{/if}}
+    {{#each fieldSelectOptions}}
+    <mat-option value="{{this.selectableValue}}">{{~this.displayName~}}</mat-option>
+    {{/each}}
+  </mat-select>
+  {{#if (isDefined hintEnd)}}
+  <mat-hint align="end">{{hintEnd}}</mat-hint>
+  {{/if}}
+  {{#if (isDefined textPrefix)}}
+  <span matTextPrefix>{{textPrefix}}</span>
+  {{/if}}
+  {{#if (isDefined textSuffix)}}
+  <span matTextSuffix>{{textSuffix}}</span>
+  {{/if}}
+</mat-form-field>

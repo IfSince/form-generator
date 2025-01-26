@@ -100,8 +100,6 @@ export class FormDataCreateByTypeScriptService {
       componentType: this.getDefaultComponent(fieldType),
       required: !symbol.isOptional() && !structure.hasQuestionToken && !propertyType.isNullable(), // Node.isPropertyDeclaration(property) && property.getStructure().hasExclamationToken
       readonly: structure.isReadonly || propertyType.isReadonlyArray(), // ReadonlyArray<T> gets converted to "readonly T[]" and won't be "isReadonly" anymore, therefore we also check for isReadonlyArray()
-      disabled: false,
-      hidden: false,
       fields: this.getFieldsForType(propertyType, sourceFile, analysedClassesAndInterfaces),
       defaultValue: structure.initializer ?? propertyType.getLiteralValue() ?? (propertyType.isBooleanLiteral() ? propertyType.getText() : null), // Boolean Literals (True, False) also act as unique type and therefore are not returned as "Literal Value", which is why we have to check manually
       fieldSelectOptions: options,

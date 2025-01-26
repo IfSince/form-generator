@@ -16,13 +16,11 @@
         <mat-radio-button [value]="'always'">Always</mat-radio-button>
       </mat-radio-group>
 
-      @if (componentType != MaterialComponentType.SELECT) {
-        <label>Subscript sizing</label>
-        <mat-radio-group formControlName="subscriptSizing" class="mb-2">
-          <mat-radio-button [value]="'fixed'">Fixed</mat-radio-button>
-          <mat-radio-button [value]="'dynamic'">Dynamic</mat-radio-button>
-        </mat-radio-group>
-      }
+      <label>Subscript sizing</label>
+      <mat-radio-group formControlName="subscriptSizing" class="mb-2">
+        <mat-radio-button [value]="'fixed'">Fixed</mat-radio-button>
+        <mat-radio-button [value]="'dynamic'">Dynamic</mat-radio-button>
+      </mat-radio-group>
 
       <mat-checkbox formControlName="hideRequiredMarker">Hide required marker (asteriks)</mat-checkbox>
     </div>
