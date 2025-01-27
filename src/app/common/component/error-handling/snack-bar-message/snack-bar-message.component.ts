@@ -3,7 +3,7 @@ import { MAT_SNACK_BAR_DATA, MatSnackBarAction, MatSnackBarActions, MatSnackBarL
 import { MatButton } from '@angular/material/button'
 
 @Component({
-  selector: 'app-snack-bar-error-component',
+  selector: 'app-snack-bar-message-component',
   standalone: true,
   imports: [
     MatSnackBarLabel,

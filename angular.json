@@ -95,6 +95,17 @@
             ],
             "scripts": []
           }
+        },
+        "e2e": {
+          "builder": "playwright-ng-schematics:playwright",
+          "options": {
+            "devServerTarget": "form-generator:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "form-generator:serve:production"
+            }
+          }
         }
       }
     }

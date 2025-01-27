@@ -14,12 +14,13 @@
     <mat-card-content>
       <div class="mat-tab__content">
         <mat-form-field>
-    <textarea matInput
-              cdkTextareaAutosize
-              cdkAutosizeMinRows="5"
-              cdkAutosizeMaxRows="25"
-              [formControl]="_formGroup.controls.text"
-              placeholder="class Address {
+          <mat-label>Type definition</mat-label>
+          <textarea matInput
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="5"
+                    cdkAutosizeMaxRows="25"
+                    [formControl]="_formGroup.controls.text"
+                    placeholder="class Address {
   street: string
   country: number
 }
@@ -27,7 +28,8 @@
 interface Person {
   name: string
   address: Address
-}"></textarea>
+}">
+          </textarea>
           @if (_formGroup.controls.text.invalid) {
             <mat-error>This field is required</mat-error>
           }

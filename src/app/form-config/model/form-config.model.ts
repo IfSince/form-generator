@@ -1,6 +1,4 @@
 export interface FormConfig {
-  test: string
-
   // Form Field Defaults
   formFieldAppearance?: 'fill' | 'outline'
   hideRequiredMarker?: boolean

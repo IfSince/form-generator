@@ -1,0 +1,25 @@
+import { FormConfig } from '../../src/app/form-config/model/form-config.model'
+
+export const testFormConfig = (): FormConfig => ({
+  formFieldAppearance: 'fill',
+  hideRequiredMarker: null,
+  floatLabel: 'auto',
+  subscriptSizing: null,
+  disableRipple: null,
+  disabledInteractive: null,
+  labelPosition: null,
+  hideSingleSelectionIndicator: null,
+  panelClass: 'test',
+  textareaAutosize: null,
+  textareaMinRows: null,
+  textareaMaxRows: null,
+  sliderDiscrete: null,
+  sliderShowTickMarks: null,
+  slideToggleHideIcon: null,
+  selectDisableOptionCentering: null,
+  selectAddNullOption: null,
+  datepickerRestoreFocus: null,
+  datepickerTouchUi: null,
+  buttonToggleHideMultiSelectionIndicator: null,
+  buttonToggleAppearance: null,
+})

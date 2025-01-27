@@ -13,8 +13,6 @@ export class FormConfigFormBuilderService {
 
   buildFormConfig(config: FormConfig): FormGroup<ReactiveForm<FormConfig>> {
     return this.fb.group({
-      test: [config?.test],
-
       formFieldAppearance: [config?.formFieldAppearance],
       hideRequiredMarker: [config?.hideRequiredMarker],
       floatLabel: [config?.floatLabel],
@@ -45,7 +43,7 @@ export class FormConfigFormBuilderService {
       datepickerTouchUi: [config?.datepickerTouchUi],
 
       buttonToggleHideMultiSelectionIndicator: [config?.buttonToggleHideMultiSelectionIndicator],
-      buttonToggleAppearance: [config?.buttonToggleAppearance ?? 'standard'],
+      buttonToggleAppearance: [config?.buttonToggleAppearance],
     }) as FormGroup<ReactiveForm<FormConfig>>
   }
 }

@@ -88,14 +88,10 @@ export const MATERIAL_INPUT_COMPONENT_TYPES = [
 
 export interface FormField {
   name: string
-  label: string
+  label?: string
   fieldType: FieldType,
-  componentType: MaterialComponentType
+  componentType?: MaterialComponentType // null if wrapper field (nested fields, e.g.)
   fields?: FormField[],
-
-
-  // id?: string
-  // class?: string // idea: only able to be set through configurations (classes to be applied to all fields)
 
   defaultValue?: any
   placeholder?: string

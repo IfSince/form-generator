@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, Signal, signal } from '@angular/core'
+import { Component, computed, inject, OnInit, Signal, signal } from '@angular/core'
 import { takeUntil } from 'rxjs'
 import { FormConfig } from '../../model/form-config.model'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
@@ -16,6 +16,7 @@ import { provideNativeDateAdapter } from '@angular/material/core'
 import { MatCheckbox } from '@angular/material/checkbox'
 import { ListItemButtonToggleComponent } from './list-item-button-toggle/list-item-button-toggle.component'
 import { FieldSelectOption } from '../../../formdata/model/form-field-select-option.model'
+import { FormConfigFormBuilderService } from '../../service/form-config-form-builder.service'
 
 @Component({
   selector: 'app-form-config-form',
@@ -48,6 +49,8 @@ import { FieldSelectOption } from '../../../formdata/model/form-field-select-opt
   styleUrls: ['./form-config-form.component.css'],
 })
 export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> implements OnInit {
+  private formConfigFormBuilderService = inject(FormConfigFormBuilderService)
+
   formFieldAppearanceOptions: FieldSelectOption[] = [
     { displayName: 'Fill', selectableValue: 'fill' },
     { displayName: 'Outline', selectableValue: 'outline' },
@@ -82,14 +85,14 @@ export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> i
   jsonBlobUrl: Signal<string> = computed(() => this.jsonBlob() ? window.URL.createObjectURL(this.jsonBlob()) : null)
 
   ngOnInit(): void {
-    this.jsonData.set(this._formGroup.getRawValue())
+    this.jsonData.set(this.removeNullFields(this._formGroup.getRawValue()))
 
     this.file.valueChanges.subscribe(value => {
       if (this.file.valid && value instanceof File) {
         this.readJsonFile(value)
       } else {
         this.file.setValue(null, { emitEvent: false })
-        this.globalMessageStore.addError('An error occurred while trying to import the file.')
+        this.globalMessageStore.addError('Only files of type json are allowed.')
       }
     })
   }
@@ -108,11 +111,11 @@ export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> i
         const parsedData = JSON.parse(e.target?.result as string)
 
         if (this.isFormConfig(parsedData)) {
-          this._formGroup.setValue(parsedData)
+          this._formGroup.setValue(this.formConfigFormBuilderService.buildFormConfig(parsedData).getRawValue())
           this.onSubmit(false, 'none')
           this.globalMessageStore.addSuccess('The form data was imported successfully.')
         } else {
-          this.globalMessageStore.addError('The uploaded data does not match the structure of form data and therefore was not imported.')
+          this.globalMessageStore.addError('The imported json data could not be converted to form data.')
           this.file.setValue(null, { emitEvent: false })
         }
       } catch (error) {
@@ -124,6 +127,51 @@ export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> i
   }
 
   private isFormConfig(data: any): data is FormConfig {
-    return data != null && typeof data == 'object'
+    const formConfigKeys: Record<keyof FormConfig, true> = {
+      formFieldAppearance: true,
+      hideRequiredMarker: true,
+      floatLabel: true,
+      subscriptSizing: true,
+      disableRipple: true,
+      disabledInteractive: true,
+      labelPosition: true,
+      hideSingleSelectionIndicator: true,
+      panelClass: true,
+      textareaAutosize: true,
+      textareaMinRows: true,
+      textareaMaxRows: true,
+      sliderDiscrete: true,
+      sliderShowTickMarks: true,
+      slideToggleHideIcon: true,
+      selectDisableOptionCentering: true,
+      selectAddNullOption: true,
+      datepickerRestoreFocus: true,
+      datepickerTouchUi: true,
+      buttonToggleHideMultiSelectionIndicator: true,
+      buttonToggleAppearance: true,
+    };
+    const allowedKeys = new Set(Object.keys(formConfigKeys));
+    return data != null && typeof data == 'object' && Object.keys(data).every(key => allowedKeys.has(key))
+  }
+
+  private removeNullFields(obj: any): any {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.removeNullFields(item)).filter(item => item !== null);
+    }
+
+    const cleanedObject: any = {};
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        const value = this.removeNullFields(obj[key]);
+        if (value !== null) {
+          cleanedObject[key] = value;
+        }
+      }
+    }
+    return cleanedObject;
   }
 }

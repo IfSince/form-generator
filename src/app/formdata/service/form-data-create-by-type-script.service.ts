@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core'
 import { Node, ParameterDeclaration, PropertyDeclaration, PropertySignature, SourceFile, Type } from 'ts-morph'
-import { CustomFormData, InputType } from '../model/custom-form-data.model'
+import { CustomFormData } from '../model/custom-form-data.model'
 import { createTempSourceFile } from '../../ts-morph.utils'
 import { formatLabel } from '../../common/utils'
 import { FieldSelectOption } from '../model/form-field-select-option.model'
-import { FieldType, FIELD_TYPE_TO_MATERIAL_FIELD_DEFAULTS, FormField, MaterialComponentType } from '../model/form-field.model'
+import { FIELD_TYPE_TO_MATERIAL_FIELD_DEFAULTS, FieldType, FormField, MaterialComponentType } from '../model/form-field.model'
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +20,6 @@ export class FormDataCreateByTypeScriptService {
     return {
       name: selectedType,
       originalText: text,
-      inputType: InputType.TYPESCRIPT,
       fields: this.getFieldsForType(targetType.getType(), sourceFile, new Set()),
     }
   }
