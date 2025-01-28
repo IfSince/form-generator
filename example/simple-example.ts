@@ -1,11 +1,11 @@
 enum Country {
-  GERMANY = 'GERMANY',
-  FOREIGN = 'FOREIGN'
+  Germany = 'Germany',
+  Foreign = 'Foreign',
 }
 
 class Address {
   street: string
-  houseNumber?: string
+  houseNumber?: number
   country: Country
 }
 
