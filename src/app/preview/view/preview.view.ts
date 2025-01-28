@@ -11,7 +11,6 @@ import { FormDataStore } from '../../formdata/service/form-data.store'
 import { FormField } from '../../formdata/model/form-field.model'
 import { AsFieldsFormGroupPipe } from '../../formdata/as-form-data-form-group.pipe'
 import { ClearDialogDirective } from '../../common/directive/clear-dialog.directive'
-import { MatCard, MatCardHeader, MatCardTitle } from '@angular/material/card'
 import Handlebars from 'handlebars'
 import { HttpClient } from '@angular/common/http'
 import { forkJoin } from 'rxjs'
@@ -33,9 +32,7 @@ import { GlobalMessageStore } from '../../common/service/global-message.store'
     AsFieldsFormGroupPipe,
     MatAnchor,
     ClearDialogDirective,
-    MatCard,
-    MatCardTitle,
-    MatCardHeader,
+
   ],
   templateUrl: './preview.view.html',
 })

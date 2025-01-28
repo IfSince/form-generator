@@ -3,21 +3,16 @@ enum Country {
   FOREIGN = 'FOREIGN'
 }
 
-interface Address {
+class Address {
   street: string
   houseNumber?: string
   country: Country
 }
 
-export class Person {
+export interface Person {
   firstName?: string
   lastName: string
-  age: number
+  dateOfBirth: Date
   readonly isVerified: boolean
   address: Address
 }
-
-// class DateTestClass {
-//   dateField?: Date
-//   dateTimeField: string = '2023-01-02T10:00:00Z'
-// }

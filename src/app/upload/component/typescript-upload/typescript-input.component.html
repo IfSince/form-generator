@@ -43,7 +43,6 @@ interface Person {
           <mat-select [formControl]="_formGroup.controls.selectedType">
             @if (!!selectableTypes().interfaces.length) {
               <mat-optgroup label="Interfaces">
-                <mat-option>None</mat-option>
                 @for (type of selectableTypes().interfaces; track type) {
                   <mat-option [value]="type">{{ type }}</mat-option>
                 }
@@ -75,7 +74,7 @@ interface Person {
 
   <mat-card>
     <mat-card-actions>
-      <ng-content/>
+    <ng-content/>
     </mat-card-actions>
   </mat-card>
 </form>

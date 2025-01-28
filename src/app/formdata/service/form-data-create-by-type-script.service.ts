@@ -27,7 +27,7 @@ export class FormDataCreateByTypeScriptService {
   private getFieldsForType(type: Type, sourceFile: SourceFile, analysedClassesAndInterfaces: Set<string>): FormField[] | null {
     switch (true) {
       case analysedClassesAndInterfaces.has(type.getText()):
-        console.log(`Cyclic reference detected for type ${ type.getText() }, adding placeholder instead of continuing analysis for this tree node`)
+        console.error(`Cyclic reference detected for type ${ type.getText() }, adding placeholder instead of continuing analysis for this tree node`)
         return null
       case this.isDate(type):
         return null
