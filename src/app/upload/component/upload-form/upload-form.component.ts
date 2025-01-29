@@ -7,7 +7,7 @@ import { MatTooltip } from '@angular/material/tooltip'
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs'
 import { ClassDeclaration, InterfaceDeclaration, SourceFile, TypeAliasDeclaration } from 'ts-morph'
 import { map } from 'rxjs/operators'
-import { isTypeNode, parseAsSourceFileWithAvailableTypes } from '../../../ts-morph.utils'
+import { isTypeNode, createSourceFileAndGetAvailableTypes } from '../../../ts-morph.utils'
 import { CdkTextareaAutosize } from '@angular/cdk/text-field'
 import { DropzoneCdkModule } from '@ngx-dropzone/cdk'
 import { MatCardModule } from '@angular/material/card'
@@ -21,7 +21,7 @@ export interface TypeScriptInput {
 }
 
 @Component({
-  selector: 'app-typescript-input',
+  selector: 'app-upload-form-component',
   standalone: true,
   imports: [
     FormsModule,
@@ -38,10 +38,10 @@ export interface TypeScriptInput {
     MatCardModule,
     MatError,
   ],
-  templateUrl: './typescript-input.component.html',
-  styleUrl: './typescript-input.component.css',
+  templateUrl: './upload-form.component.html',
+  styleUrl: './upload-form.component.css',
 })
-export class TypescriptInputComponent extends AbstractFormComponent<TypeScriptInput> implements OnInit {
+export class UploadFormComponent extends AbstractFormComponent<TypeScriptInput> implements OnInit {
   _formGroup: FormGroup<ReactiveForm<TypeScriptInput>>
 
   selectableTypes = signal<{ interfaces: string[], classes: string[], typeAliases: string[] }>({
@@ -51,14 +51,14 @@ export class TypescriptInputComponent extends AbstractFormComponent<TypeScriptIn
   })
 
   ngOnInit(): void {
-    const { interfaces, classes, typeAliases } = parseAsSourceFileWithAvailableTypes(this._formGroup.getRawValue().text)
+    const { interfaces, classes, typeAliases } = createSourceFileAndGetAvailableTypes(this._formGroup.getRawValue().text)
     this.setSelectableTypes(interfaces, classes, typeAliases)
   }
 
   override valueChangesSubscription() {
     return this._formGroup.controls.text.valueChanges.pipe(
       filter(Boolean),
-      map(parseAsSourceFileWithAvailableTypes),
+      map(createSourceFileAndGetAvailableTypes),
       distinctUntilChanged(),
       takeUntil(this.destroy$),
     ).subscribe(({ classes, interfaces, sourceFile, typeAliases }) => {

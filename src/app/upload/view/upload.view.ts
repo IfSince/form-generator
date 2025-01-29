@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core'
 import { MatCardModule } from '@angular/material/card'
 import { ReactiveFormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
-import { TypescriptInputComponent } from '../component/typescript-upload/typescript-input.component'
+import { UploadFormComponent } from '../component/upload-form/upload-form.component'
 import { FormDataCreateByTypeScriptService } from '../../formdata/service/form-data-create-by-type-script.service'
 import { FormDataStore } from '../../formdata/service/form-data.store'
 import { MatButton } from '@angular/material/button'
@@ -20,7 +20,7 @@ import { GlobalMessageStore } from '../../common/service/global-message.store'
   imports: [
     MatCardModule,
     ReactiveFormsModule,
-    TypescriptInputComponent,
+    UploadFormComponent,
     MatButton,
     AsyncPipe,
     AsTypeScriptInputFormGroupPipe,
@@ -30,15 +30,11 @@ import { GlobalMessageStore } from '../../common/service/global-message.store'
   templateUrl: './upload.view.html',
 })
 export class UploadView {
+  protected formDataStore = inject(FormDataStore)
   private dialog = inject(MatDialog)
   private globalMessageStore = inject(GlobalMessageStore)
-
-  constructor(
-    private formDataCreateByTypeScriptService: FormDataCreateByTypeScriptService,
-    protected formDataStore: FormDataStore,
-    private router: Router,
-  ) {
-  }
+  private formDataCreateByTypeScriptService = inject(FormDataCreateByTypeScriptService)
+  private router = inject(Router)
 
   onSubmit(inputString: string, selectedType: string) {
     // Show dialog when an active process already exists that would be overridden

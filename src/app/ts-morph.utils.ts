@@ -7,7 +7,7 @@ export const createTempSourceFile = (text: string) => project.createSourceFile('
 export const isTypeNode = (node: Node): node is TypeAliasDeclaration | ClassDeclaration | InterfaceDeclaration =>
   Node.isTypeAliasDeclaration(node) || Node.isClassDeclaration(node) || Node.isInterfaceDeclaration(node)
 
-export const parseAsSourceFileWithAvailableTypes = (text: string) => {
+export const createSourceFileAndGetAvailableTypes = (text: string) => {
   const sourceFile = createTempSourceFile(text)
   const interfaces = sourceFile.getInterfaces()
   const classes = sourceFile.getClasses()
