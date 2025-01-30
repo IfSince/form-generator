@@ -99,7 +99,7 @@ export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> i
 
   override valueChangesSubscription() {
     return this._formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.jsonData.set(this._formGroup.getRawValue())
+      this.jsonData.set(this.removeNullFields(this._formGroup.getRawValue()))
     })
   }
 
@@ -115,7 +115,7 @@ export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> i
           this.onSubmit(false, 'none')
           this.globalMessageStore.addSuccess('The form data was imported successfully.')
         } else {
-          this.globalMessageStore.addError('The imported json data could not be converted to form data.')
+          this.globalMessageStore.addError('The imported json data could not be converted to form config.')
           this.file.setValue(null, { emitEvent: false })
         }
       } catch (error) {
@@ -149,29 +149,29 @@ export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> i
       datepickerTouchUi: true,
       buttonToggleHideMultiSelectionIndicator: true,
       buttonToggleAppearance: true,
-    };
-    const allowedKeys = new Set(Object.keys(formConfigKeys));
+    }
+    const allowedKeys = new Set(Object.keys(formConfigKeys))
     return data != null && typeof data == 'object' && Object.keys(data).every(key => allowedKeys.has(key))
   }
 
   private removeNullFields(obj: any): any {
     if (obj === null || typeof obj !== 'object') {
-      return obj;
+      return obj
     }
 
     if (Array.isArray(obj)) {
-      return obj.map(item => this.removeNullFields(item)).filter(item => item !== null);
+      return obj.map(item => this.removeNullFields(item)).filter(item => item !== null)
     }
 
-    const cleanedObject: any = {};
+    const cleanedObject: any = {}
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
-        const value = this.removeNullFields(obj[key]);
+        const value = this.removeNullFields(obj[key])
         if (value !== null) {
-          cleanedObject[key] = value;
+          cleanedObject[key] = value
         }
       }
     }
-    return cleanedObject;
+    return cleanedObject
   }
 }

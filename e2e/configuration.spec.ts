@@ -29,7 +29,7 @@ test.describe('Configuration Page', () => {
     test('shows error if imported json data could not be converted to form data', async ({ page }) => {
       await page.locator('input[type="file"]').setInputFiles('e2e/testdata/files/invalidFormData.json')
 
-      await expectGlobalMessage(page, 'The imported json data could not be converted to form data.')
+      await expectGlobalMessage(page, 'The imported json data could not be converted to form config.')
 
       const formConfig = await getFormConfigInLocalStorage(page)
       expect(formConfig).toBeNull()
