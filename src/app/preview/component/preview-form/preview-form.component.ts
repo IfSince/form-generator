@@ -20,11 +20,11 @@ import { GetRawValuePipe } from '../../../common/get-raw-value.pipe'
 import { takeUntil } from 'rxjs'
 
 export const Breakpoints = [
-  { name: 'XSmall', width: '600px'},
-  { name: 'Small', width: '960px'},
-  { name: 'Medium', width: '1280px'},
-  { name: 'Large', width: '1920px'},
-  { name: 'Responsive', width: '100%'},
+  { name: 'XSmall', width: '600px' },
+  { name: 'Small', width: '960px' },
+  { name: 'Medium', width: '1280px' },
+  { name: 'Large', width: '1920px' },
+  { name: 'Responsive', width: '100%' },
 ]
 
 @Component({
@@ -77,7 +77,6 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
 
   override valueChangesSubscription() {
     return this._formGroup.controls.entries.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      // console.log('change', this._formGroup.controls.entries.getRawValue())
       this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
     })
   }

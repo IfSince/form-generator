@@ -92,9 +92,7 @@ export class PreviewView {
       const sourceCode = template({ fields })
 
       this.clipboard.copy(sourceCode)
-      this.globalMessageStore.addSuccess('Source code copied to clipboard successfully.')
-
-      console.log(sourceCode)
+      this.globalMessageStore.addSuccess('Source code copied to clipboard.')
     })
   }
 }
