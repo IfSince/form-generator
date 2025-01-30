@@ -1,15 +1,15 @@
-<mat-form-field {{#if (isDefined formFieldAppearance)}}[appearance]="{{formFieldAppearance}}"{{/if}}
+<mat-form-field {{#if (isDefined formFieldAppearance)}}appearance="{{formFieldAppearance}}"{{/if}}
   {{#if (isDefined hideRequiredMarker)}}
                 [hideRequiredMarker]="{{hideRequiredMarker}}"
   {{/if}}
   {{#if (isDefined floatLabel)}}
-                [floatLabel]="{{floatLabel}}"
+                floatLabel="{{floatLabel}}"
   {{/if}}
   {{#if (isDefined hintStart)}}
-                [hintLabel]="'{{hintStart}}'"
+                hintLabel="{{hintStart}}"
   {{/if}}
   {{#if (isDefined subscriptSizing)}}
-                [subscriptSizing]="{{subscriptSizing}}"
+                subscriptSizing="{{subscriptSizing}}"
   {{/if}}>
   {{#if label}}
   <mat-label>{{ label }}</mat-label>
@@ -48,22 +48,25 @@
     {{/if}}/>
   <mat-datepicker #datepicker
     {{#if (isDefined panelClass)}}
-                  [panelClass]="{{panelClass}}"
+                  panelClass="{{panelClass}}"
     {{/if}}
     {{#if (isDefined restoreFocus)}}
                   [restoreFocus]="{{restoreFocus}}"
     {{/if}}
     {{#if (isDefined startAt)}}
-                  [startAt]="{{startAt}}"
+                  [startAt]="'{{startAt}}'"
     {{/if}}
     {{#if (isDefined startView)}}
-                  [startView]="{{startView}}"
+                  startView="{{startView}}"
     {{/if}}
     {{#if (isDefined touchUi)}}
-                  [startView]="{{touchUi}}"
+                  [touchUi]="{{touchUi}}"
     {{/if}}
     {{#if (isDefined xPosition)}}
-                  [xPosition]="{{xPosition}}"
+                  xPosition="{{xPosition}}"
+    {{/if}}
+    {{#if (isDefined yPosition)}}
+                  yPosition="{{yPosition}}"
     {{/if}}/>
   {{#if (isDefined hintEnd)}}
   <mat-hint align="end">{{hintEnd}}</mat-hint>

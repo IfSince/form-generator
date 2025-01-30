@@ -12,25 +12,25 @@
                          [vertical]="{{orientateVertical}}"
   {{/if}}
   {{#if (isDefined buttonToggleAppearance)}}
-                         [appearance]="{{buttonToggleAppearance}}"
+                         appearance="{{buttonToggleAppearance}}"
   {{/if}}
   {{#if (isDefined multiple)}}
                          multiple
   {{/if}}>
   {{#each fieldSelectOptions}}
-  <mat-button-toggle value="{{this.selectableValue}}"
-    {{#if (isDefined this.disableRipple)}}
-                     [disableRipple]="{{this.disableRipple}}"
+  <mat-button-toggle [value]="'{{this.selectableValue}}'"
+    {{#if (isDefined ../disableRipple)}}
+                     [disableRipple]="{{../disableRipple}}"
     {{/if}}
-    {{#if (isDefined this.disabledInteractive)}}
-                     [disabledInteractive]="{{this.disabledInteractive}}"
+    {{#if (isDefined ../disabledInteractive)}}
+                     [disabledInteractive]="{{../disabledInteractive}}"
     {{/if}}>
     {{~this.displayName~}}
   </mat-button-toggle>
   {{else}}
-  <mat-button-toggle {{#if (isDefined this.disableRipple)}} [disableRipple]="{{this.disableRipple}}"{{/if}}
-    {{#if (isDefined this.disabledInteractive)}}
-                     [disabledInteractive]="{{this.disabledInteractive}}"
+  <mat-button-toggle {{#if (isDefined ../disableRipple)}} [disableRipple]="{{../disableRipple}}"{{/if}}
+    {{#if (isDefined ../disabledInteractive)}}
+                     [disabledInteractive]="{{../disabledInteractive}}"
     {{/if}}>No options provided</mat-button-toggle>
   {{/each}}
 </mat-button-toggle-group>

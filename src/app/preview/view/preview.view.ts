@@ -8,7 +8,7 @@ import { MatIcon } from '@angular/material/icon'
 import { AsyncPipe } from '@angular/common'
 import { PreviewFormComponent } from '../component/preview-form/preview-form.component'
 import { FormDataStore } from '../../formdata/service/form-data.store'
-import { FormField } from '../../formdata/model/form-field.model'
+import { FormField, MATERIAL_INPUT_COMPONENT_TYPES, MaterialComponentType } from '../../formdata/model/form-field.model'
 import { AsFieldsFormGroupPipe } from '../../formdata/as-form-data-form-group.pipe'
 import { ClearDialogDirective } from '../../common/directive/clear-dialog.directive'
 import Handlebars from 'handlebars'
@@ -16,10 +16,14 @@ import { HttpClient } from '@angular/common/http'
 import { forkJoin } from 'rxjs'
 import { Clipboard } from '@angular/cdk/clipboard'
 import { GlobalMessageStore } from '../../common/service/global-message.store'
+import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle'
+import { GetInputTypePipe } from '../component/form-fields/material-field/get-input-type.pipe'
+import { FormDataFormBuilderService } from '../../formdata/service/form-data-form-builder.service'
 
 @Component({
   selector: 'app-preview-view',
   standalone: true,
+  providers: [GetInputTypePipe],
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -32,6 +36,8 @@ import { GlobalMessageStore } from '../../common/service/global-message.store'
     AsFieldsFormGroupPipe,
     MatAnchor,
     ClearDialogDirective,
+    MatButtonToggleGroup,
+    MatButtonToggle,
 
   ],
   templateUrl: './preview.view.html',
@@ -42,6 +48,8 @@ export class PreviewView {
   private httpClient = inject(HttpClient)
   private clipboard = inject(Clipboard)
   private globalMessageStore = inject(GlobalMessageStore)
+  private getInputTypePipe = inject(GetInputTypePipe)
+  private formDataFormBuilderService = inject(FormDataFormBuilderService)
 
   onSubmit(data: { entries: FormField[] }): void {
     this.formDataStore.updateState({ data: { ...this.formDataStore.state.data, fields: data.entries } })
@@ -53,7 +61,9 @@ export class PreviewView {
   }
 
   generateCode() {
-    const fields = this.formDataStore.state.data.fields
+    const fields: FormField[] = this.formDataStore.state.data.fields.map(field => {
+      return this.formDataFormBuilderService.buildFormField(field).getRawValue()
+    })
 
     forkJoin({
       formTemplate: this.httpClient.get('templates/form.hbs', { responseType: 'text' }),
@@ -66,6 +76,7 @@ export class PreviewView {
       radioButtonTemplate: this.httpClient.get('templates/radio-button.hbs', { responseType: 'text' }),
       selectTemplate: this.httpClient.get('templates/select.hbs', { responseType: 'text' }),
       buttonToggleTemplate: this.httpClient.get('templates/button-toggle.hbs', { responseType: 'text' }),
+      wrapperTemplate: this.httpClient.get('templates/wrapper.hbs', { responseType: 'text' }),
     }).subscribe(({
       formTemplate,
       inputFieldTemplate,
@@ -77,7 +88,12 @@ export class PreviewView {
       radioButtonTemplate,
       selectTemplate,
       buttonToggleTemplate,
+      wrapperTemplate
     }) => {
+      Handlebars.registerHelper('isDefined', (value: any) => value != null && value != '')
+      Handlebars.registerHelper('inputType', (value: MaterialComponentType) => this.getInputTypePipe.transform(value))
+      Handlebars.registerHelper('getComponentTemplate', (componentType: MaterialComponentType) => this.getComponentToRender(componentType))
+
       Handlebars.registerPartial('inputField', inputFieldTemplate)
       Handlebars.registerPartial('textareaField', textareaTemplate)
       Handlebars.registerPartial('checkboxField', checkboxTemplate)
@@ -87,6 +103,7 @@ export class PreviewView {
       Handlebars.registerPartial('radioButtonField', radioButtonTemplate)
       Handlebars.registerPartial('selectField', selectTemplate)
       Handlebars.registerPartial('buttonToggleField', buttonToggleTemplate)
+      Handlebars.registerPartial('wrapperField', wrapperTemplate)
 
       const template = Handlebars.compile(formTemplate)
       const sourceCode = template({ fields })
@@ -94,5 +111,34 @@ export class PreviewView {
       this.clipboard.copy(sourceCode)
       this.globalMessageStore.addSuccess('Source code copied to clipboard.')
     })
+  }
+
+
+
+  private getComponentToRender(matComponentType: MaterialComponentType): string {
+    switch (true) {
+      case MATERIAL_INPUT_COMPONENT_TYPES.includes(matComponentType):
+        return 'inputField'
+      case matComponentType === MaterialComponentType.TEXTAREA:
+        return 'textareaField'
+      case matComponentType === MaterialComponentType.CHECKBOX:
+        return 'checkboxField'
+      case matComponentType === MaterialComponentType.SLIDE_TOGGLE:
+        return 'slideToggleField'
+      case matComponentType === MaterialComponentType.SLIDER:
+        return 'sliderField'
+      case matComponentType === MaterialComponentType.DATE:
+        return 'datepickerField'
+      case matComponentType === MaterialComponentType.RADIO_BUTTON:
+        return 'radioButtonField'
+      case matComponentType === MaterialComponentType.SELECT:
+        return 'selectField'
+      case matComponentType === MaterialComponentType.BUTTON_TOGGLE:
+        return 'buttonToggleField'
+      case matComponentType === null:
+        return 'wrapperField'
+      default:
+        return 'inputField'
+    }
   }
 }

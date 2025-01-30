@@ -1,15 +1,15 @@
-<mat-form-field {{#if (isDefined formFieldAppearance)}}[appearance]="{{formFieldAppearance}}"{{/if}}
+<mat-form-field {{#if (isDefined formFieldAppearance)}}appearance="{{formFieldAppearance}}"{{/if}}
   {{#if (isDefined hideRequiredMarker)}}
                 [hideRequiredMarker]="{{hideRequiredMarker}}"
   {{/if}}
   {{#if (isDefined floatLabel)}}
-                [floatLabel]="{{floatLabel}}"
+                floatLabel="{{floatLabel}}"
   {{/if}}
   {{#if (isDefined hintStart)}}
-                [hintLabel]="'{{hintStart}}'"
+                hintLabel="{{hintStart}}"
   {{/if}}
   {{#if (isDefined subscriptSizing)}}
-                [subscriptSizing]="{{subscriptSizing}}"
+                subscriptSizing="{{subscriptSizing}}"
   {{/if}}>
   {{#if label}}
   <mat-label>{{ label }}</mat-label>
@@ -25,13 +25,13 @@
               placeholder="{{placeholder}}"
     {{/if}}
     {{#if (isDefined disableRipple)}}
-              disableRipple="{{disableRipple}}"
+              [disableRipple]="{{disableRipple}}"
     {{/if}}
     {{#if (isDefined selectDisableOptionCentering)}}
-              disableOptionCentering="{{selectDisableOptionCentering}}"
+              [disableOptionCentering]="{{selectDisableOptionCentering}}"
     {{/if}}
     {{#if (isDefined hideSingleSelectionIndicator)}}
-              hideSingleSelectionIndicator="{{hideSingleSelectionIndicator}}"
+              [hideSingleSelectionIndicator]="{{hideSingleSelectionIndicator}}"
     {{/if}}
     {{#if (isDefined panelClass)}}
               panelClass="{{panelClass}}"
@@ -49,7 +49,7 @@
     <mat-option>None</mat-option>
     {{/if}}
     {{#each fieldSelectOptions}}
-    <mat-option value="{{this.selectableValue}}">{{~this.displayName~}}</mat-option>
+    <mat-option [value]="'{{this.selectableValue}}'">{{~this.displayName~}}</mat-option>
     {{/each}}
   </mat-select>
   {{#if (isDefined hintEnd)}}

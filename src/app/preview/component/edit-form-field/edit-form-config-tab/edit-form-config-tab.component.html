@@ -103,6 +103,7 @@
       </div>
     }
     @case (RenderableMatComponent.DATEPICKER) {
+      <ng-container *ngTemplateOutlet="defaultConfigs"/>
       <div class="form-container">
         <mat-form-field>
           <mat-label>Initial date</mat-label>

@@ -10,11 +10,11 @@
   {{/if}}>
   {{#each fieldSelectOptions}}
   <mat-radio-button value="{{this.selectableValue}}"
-    {{#if (isDefined this.disableRipple)}}
-                    [disableRipple]="{{this.disableRipple}}"
+    {{#if (isDefined ../disableRipple)}}
+                    [disableRipple]="{{../disableRipple}}"
     {{/if}}
-    {{#if (isDefined this.labelPosition)}}
-                    [labelPosition]="{{this.labelPosition}}"
+    {{#if (isDefined ../labelPosition)}}
+                    [labelPosition]="{{../labelPosition}}"
     {{/if}}>
     {{~this.displayName~}}
   </mat-radio-button>

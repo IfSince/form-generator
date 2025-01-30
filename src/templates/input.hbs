@@ -1,15 +1,15 @@
-<mat-form-field {{#if (isDefined formFieldAppearance)}}[appearance]="{{formFieldAppearance}}"{{/if}}
+<mat-form-field {{#if (isDefined formFieldAppearance)}}appearance="{{formFieldAppearance}}"{{/if}}
   {{#if (isDefined hideRequiredMarker)}}
                 [hideRequiredMarker]="{{hideRequiredMarker}}"
   {{/if}}
   {{#if (isDefined floatLabel)}}
-                [floatLabel]="{{floatLabel}}"
+                floatLabel="{{floatLabel}}"
   {{/if}}
   {{#if (isDefined hintStart)}}
-                [hintLabel]="'{{hintStart}}'"
+                hintLabel="{{hintStart}}"
   {{/if}}
   {{#if (isDefined subscriptSizing)}}
-                [subscriptSizing]="{{subscriptSizing}}"
+                subscriptSizing="{{subscriptSizing}}"
   {{/if}}>
   {{#if label}}
   <mat-label>{{ label }}</mat-label>
