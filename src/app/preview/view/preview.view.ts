@@ -16,7 +16,6 @@ import { HttpClient } from '@angular/common/http'
 import { forkJoin } from 'rxjs'
 import { Clipboard } from '@angular/cdk/clipboard'
 import { GlobalMessageStore } from '../../common/service/global-message.store'
-import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle'
 import { GetInputTypePipe } from '../component/form-fields/material-field/get-input-type.pipe'
 import { FormDataFormBuilderService } from '../../formdata/service/form-data-form-builder.service'
 
@@ -36,9 +35,6 @@ import { FormDataFormBuilderService } from '../../formdata/service/form-data-for
     AsFieldsFormGroupPipe,
     MatAnchor,
     ClearDialogDirective,
-    MatButtonToggleGroup,
-    MatButtonToggle,
-
   ],
   templateUrl: './preview.view.html',
 })
