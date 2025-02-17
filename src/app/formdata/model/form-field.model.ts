@@ -54,22 +54,6 @@ export enum MaterialComponentType {
   // CHIPS = 'Chips',
 }
 
-export const FIELD_TYPE_TO_MATERIAL_FIELD_DEFAULTS: Record<FieldType, MaterialComponentType | null> = {
-  [FieldType.STRING]: MaterialComponentType.TEXT,
-  [FieldType.NUMBER]: MaterialComponentType.NUMBER,
-  [FieldType.BOOLEAN]: MaterialComponentType.CHECKBOX,
-  [FieldType.ENUM]: MaterialComponentType.SELECT,
-  [FieldType.DATE]: MaterialComponentType.DATE,
-  [FieldType.ARRAY]: MaterialComponentType.BUTTON_TOGGLE,
-
-  [FieldType.INTERFACE]: null,
-  [FieldType.CLASS]: null,
-  [FieldType.OBJECT]: null,
-  [FieldType.INTERSECTION]: null,
-  [FieldType.CYCLIC_REFERENCE]: null,
-  [FieldType.UNSUPPORTED]: null,
-}
-
 export const MATERIAL_INPUT_COMPONENT_TYPES = [
   MaterialComponentType.COLOR,
   MaterialComponentType.DATETIME_LOCAL,

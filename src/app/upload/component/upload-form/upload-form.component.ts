@@ -16,7 +16,7 @@ import { ReactiveForm } from '../../../formdata/model/reactive-form-control.mode
 import { MatOptgroup, MatOption } from '@angular/material/core'
 
 export interface TypeScriptInput {
-  text: string | null
+  typeDefinition: string | null
   selectedType: string | null
 }
 
@@ -51,12 +51,12 @@ export class UploadFormComponent extends AbstractFormComponent<TypeScriptInput> 
   })
 
   ngOnInit(): void {
-    const { interfaces, classes, typeAliases } = createSourceFileAndGetAvailableTypes(this._formGroup.getRawValue().text)
+    const { interfaces, classes, typeAliases } = createSourceFileAndGetAvailableTypes(this._formGroup.getRawValue().typeDefinition)
     this.setSelectableTypes(interfaces, classes, typeAliases)
   }
 
   override valueChangesSubscription() {
-    return this._formGroup.controls.text.valueChanges.pipe(
+    return this._formGroup.controls.typeDefinition.valueChanges.pipe(
       filter(Boolean),
       map(createSourceFileAndGetAvailableTypes),
       distinctUntilChanged(),

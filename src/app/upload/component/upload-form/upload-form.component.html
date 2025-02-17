@@ -19,7 +19,7 @@
                     cdkTextareaAutosize
                     cdkAutosizeMinRows="5"
                     cdkAutosizeMaxRows="25"
-                    [formControl]="_formGroup.controls.text"
+                    [formControl]="_formGroup.controls.typeDefinition"
                     placeholder="class Address {
   street: string
   country: number
@@ -30,7 +30,7 @@ interface Person {
   address: Address
 }">
           </textarea>
-          @if (_formGroup.controls.text.invalid) {
+          @if (_formGroup.controls.typeDefinition.invalid) {
             <mat-error>This field is required</mat-error>
           }
         </mat-form-field>
@@ -74,7 +74,7 @@ interface Person {
 
   <mat-card>
     <mat-card-actions>
-    <ng-content/>
+      <ng-content/>
     </mat-card-actions>
   </mat-card>
 </form>

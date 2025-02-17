@@ -13,7 +13,7 @@ export class AsTypeScriptInputFormGroupPipe implements PipeTransform {
 
   transform(input?: CustomFormData): FormGroup<ReactiveForm<TypeScriptInput>> {
     return this.fb.group({
-      text: [input?.originalText, Validators.required],
+      typeDefinition: [input?.originalText, Validators.required],
       selectedType: [input?.name, Validators.required],
     });
   }

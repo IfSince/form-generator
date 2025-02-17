@@ -32,7 +32,7 @@
           <div class="form-container flex-layout-container flex-layout-container__wrap"
                [ngStyle]="{ 'width': breakpointControl.value }">
             @for (field of flattenedFields(); track $index) {
-              @if (![FieldType.INTERFACE, FieldType.OBJECT, FieldType.CLASS].includes(field.controls.fieldType.value)) {
+              @if (![FieldType.INTERFACE, FieldType.OBJECT, FieldType.CLASS, FieldType.INTERSECTION].includes(field.controls.fieldType.value)) {
                 <app-selectable-form-field [selected]="selectedField() === field"
                                            (select)="selectedField.set(field)">
                   <app-material-field [matField]="field.getRawValue()"/>
