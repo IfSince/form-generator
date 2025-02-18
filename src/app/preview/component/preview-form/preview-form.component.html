@@ -27,11 +27,9 @@
     </mat-card>
 
     <mat-card class="content">
-      <mat-card-content class="scrollable-container">
-
+      <mat-card-content>
         @if (flattenedFields().length > 0) {
-          <div class="form-container flex-layout-container flex-layout-container__wrap"
-               [ngStyle]="{ 'width': breakpointControl.value }">
+          <div class="flex-layout-container flex-layout-container__wrap">
             @for (field of flattenedFields(); track $index) {
               @if (![FieldType.INTERFACE, FieldType.OBJECT, FieldType.CLASS, FieldType.INTERSECTION].includes(field.controls.fieldType.value)) {
                 <app-selectable-form-field [selected]="selectedField() === field"
@@ -39,6 +37,11 @@
                   <app-material-field [matField]="field.getRawValue()"/>
                 </app-selectable-form-field>
               }
+            }
+            @if (inCreationMode()) {
+              <app-selectable-form-field [selected]="true">
+                <app-material-field [matField]="selectedField().getRawValue()"/>
+              </app-selectable-form-field>
             }
           </div>
         } @else {
@@ -58,12 +61,11 @@
   </form>
   @if (selectedField() != null) {
     <app-edit-form-field class="supporting-pane__support"
-                         [rawValue]="selectedField() | getRawValue"
                          [formGroup]="selectedField()"
                          [inCreationMode]="inCreationMode()"
                          (submitForm)="saveFormDataAndResetEditing()"
                          (remove)="removeSelectedField()"
-                         (close)="onClose($event)">
+                         (close)="onClose()">
     </app-edit-form-field>
   }
 </div>

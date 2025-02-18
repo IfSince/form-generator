@@ -13,7 +13,7 @@
       </mat-card-title>
       <mat-card-subtitle>Type: {{ _formGroup.controls.componentType.value }}</mat-card-subtitle>
       <div class="btn-group">
-        <button mat-icon-button (click)="onClose()" type="button">
+        <button mat-icon-button (click)="close.emit()" type="button">
           <mat-icon>close</mat-icon>
         </button>
       </div>
@@ -36,11 +36,11 @@
 
   <mat-card class="action-card">
     <mat-card-actions class="btn-group btn-group__between">
-      <button mat-stroked-button type="button" (click)="onClose()">Cancel</button>
+      <button mat-stroked-button type="button" (click)="close.emit()">Cancel</button>
 
       <div class="btn-group">
         @if (!inCreationMode) {
-          <button mat-stroked-button type="button" (click)="onRemove()">Remove</button>
+          <button mat-stroked-button type="button" (click)="remove.emit()">Remove</button>
         }
         <button mat-flat-button type="submit">Save</button>
       </div>

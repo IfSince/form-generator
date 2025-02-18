@@ -1,6 +1,6 @@
-import { Component, EventEmitter, inject, OnInit, Output, signal } from '@angular/core'
+import { Component, EventEmitter, inject, OnChanges, OnInit, Output, signal } from '@angular/core'
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card'
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { MatButton } from '@angular/material/button'
 import { EditFormFieldComponent } from '../edit-form-field/edit-form-field.component'
 import { MaterialFieldComponent } from '../form-fields/material-field/material-field.component'
@@ -10,20 +10,13 @@ import { FieldType, FormField, MaterialComponentType } from '../../../formdata/m
 import { getFieldsAsFlatList } from '../../get-fields-as-flat-list'
 import { SelectableFormFieldComponent } from '../form-fields/selectable-form-field/selectable-form-field.component'
 import { MatIcon } from '@angular/material/icon'
-import { NgStyle } from '@angular/common'
 import { AbstractFormComponent } from '../../../common/component/abstract-form.component'
 import { RouterLink } from '@angular/router'
+import { filter, pairwise } from 'rxjs'
+import { toObservable } from '@angular/core/rxjs-interop'
 import { GetRawValuePipe } from '../../../common/get-raw-value.pipe'
 import { takeUntil } from 'rxjs'
 import { DragDropComponent } from '../drag-drop/drag-drop.component'
-
-export const Breakpoints = [
-  { name: 'XSmall', width: '600px' },
-  { name: 'Small', width: '960px' },
-  { name: 'Medium', width: '1280px' },
-  { name: 'Large', width: '1920px' },
-  { name: 'Responsive', width: '100%' },
-]
 
 @Component({
   selector: 'app-preview-form',
@@ -42,44 +35,56 @@ export const Breakpoints = [
     SelectableFormFieldComponent,
     SelectableFormFieldComponent,
     MatIcon,
-    NgStyle,
     MatCardSubtitle,
     RouterLink,
-    GetRawValuePipe,
     DragDropComponent,
-
   ],
   templateUrl: './preview-form.component.html',
   styleUrl: './preview-form.component.css',
 })
-export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormField[] }> implements OnInit {
-  protected readonly Breakpoints = Breakpoints
+export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormField[] }> implements OnInit, OnChanges {
   protected readonly FieldType = FieldType
   private formDataFormBuilderService = inject(FormDataFormBuilderService)
 
-  @Output() select = new EventEmitter()
-
   _formGroup: FormGroup<{ entries: FormArray<FormGroup<ReactiveForm<FormField>>> }>
-  breakpointControl = new FormControl('100%')
 
-  selectedField = signal<FormGroup<ReactiveForm<FormField>> | null>(null)
   flattenedFields = signal<FormGroup<ReactiveForm<FormField>>[]>([])
-
+  selectedField = signal<FormGroup<ReactiveForm<FormField>> | null>(null)
   inCreationMode = signal(false)
+  previousRawValue: FormField = null
+
+  constructor() {
+    super()
+
+    toObservable(this.selectedField).pipe(
+      pairwise(),
+      filter(([prev, curr]) => prev?.getRawValue().name !== curr?.getRawValue().name)
+    ).subscribe(([prevSelectedField, currSelectedField]) => {
+      if (prevSelectedField != null && currSelectedField != null) {
+        this.resetFormField(prevSelectedField)
+
+        // only possible if new field was added instead of different selection, because name is required and cant be saved as null
+        if (currSelectedField.getRawValue().name == null) {
+          this.inCreationMode.set(true)
+        } else {
+          this.inCreationMode.set(false)
+        }
+      }
+      this.previousRawValue = currSelectedField?.getRawValue()
+    })
+  }
 
   ngOnInit(): void {
     this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
   }
 
-  // override valueChangesSubscription() {
-  //   return this._formGroup.controls.entries.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-  //     this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
-  //   })
-  // }
+  ngOnChanges(): void {
+    this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
+  }
 
   addField() {
     const newField: FormField = {
-      name: '',
+      name: null,
       label: '',
       fieldType: FieldType.STRING,
       componentType: MaterialComponentType.TEXT,
@@ -92,7 +97,6 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
     }
     const newFieldControl = this.formDataFormBuilderService.buildFormField(newField)
 
-    this._formGroup.controls.entries.push(newFieldControl)
     this.inCreationMode.set(true)
     this.selectedField.set(newFieldControl)
   }
@@ -105,7 +109,7 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
 
       if (index != -1) {
         parent.removeAt(index)
-        this.checkAndRemoveParentIfEmpty(parent)
+        this.removeParentIfEmpty(parent)
       }
     }
 
@@ -115,29 +119,35 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
     this.saveFormDataAndResetEditing()
   }
 
-  onClose(originalField: FormField) {
+  onClose() {
+    this.resetFormField()
     this.inCreationMode.set(false)
-    this.selectedField().patchValue(originalField)
-
-    // patchValue does not override the formArrays itself but only the underlying matching form controls, which is why we have to override it manually every time the length changes (created/deleted)
-    if (originalField.fieldSelectOptions?.length !== this.selectedField().getRawValue().fieldSelectOptions?.length) {
-      this.selectedField().controls.fieldSelectOptions.clear({ emitEvent: false })
-      originalField.fieldSelectOptions.forEach(option => {
-        this.selectedField().controls.fieldSelectOptions.push(this.formDataFormBuilderService.buildFieldSelectOptionFormGroup(option), { emitEvent: false })
-      })
-    }
-
-    // this.updateField(originalField) // revert potential changes made
     this.selectedField.set(null)
   }
 
   protected saveFormDataAndResetEditing() {
+    if (this.inCreationMode()) {
+      this._formGroup.controls.entries.push(this.selectedField())
+    }
+
     this.onSubmit(false, 'none')
     this.inCreationMode.set(false)
     this.selectedField.set(null)
   }
 
-  private checkAndRemoveParentIfEmpty(parentArray: FormArray) {
+  private resetFormField(formField = this.selectedField()) {
+    formField.patchValue(this.previousRawValue)
+
+    // patchValue does not override the formArrays itself but only the underlying matching form controls, which is why we have to override it manually every time the length changes (created/deleted)
+    if (this.previousRawValue.fieldSelectOptions?.length !== formField.getRawValue().fieldSelectOptions?.length) {
+      formField.controls.fieldSelectOptions.clear({ emitEvent: false })
+      this.previousRawValue.fieldSelectOptions.forEach(option => {
+        formField.controls.fieldSelectOptions.push(this.formDataFormBuilderService.buildFieldSelectOptionFormGroup(option), { emitEvent: false })
+      })
+    }
+  }
+
+  private removeParentIfEmpty(parentArray: FormArray) {
     if (parentArray.controls.length === 0) {
       const grandParentArray = parentArray.parent?.parent
       if (grandParentArray instanceof FormArray) {
@@ -145,7 +155,7 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
 
         if (index != -1) {
           grandParentArray.removeAt(index)
-          this.checkAndRemoveParentIfEmpty(grandParentArray)
+          this.removeParentIfEmpty(grandParentArray)
         }
       }
     }

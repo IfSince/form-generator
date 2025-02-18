@@ -7,7 +7,7 @@ export const testFormData = (
   name: string = 'TestClass',
   originalText: string = 'export class TestClass { testField: string }',
 ): CustomFormData => ({
-  name,
-  originalText,
+  selectedType: name,
+  typeDefinition: originalText,
   fields,
 })

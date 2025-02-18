@@ -8,9 +8,9 @@ test.describe('Upload Page', () => {
 
     await routeAndValidateTitle(page, '/', 'Upload')
 
-    await page.getByRole('textbox', { name: 'Type definition' }).fill(testData.originalText)
+    await page.getByRole('textbox', { name: 'Type definition' }).fill(testData.typeDefinition)
 
-    await expect(page.getByRole('combobox', { name: 'Selected Type' })).toContainText(testData.name)
+    await expect(page.getByRole('combobox', { name: 'Selected Type' })).toContainText(testData.selectedType)
 
     await page.getByRole('button', { name: 'Create form data' }).click()
 
