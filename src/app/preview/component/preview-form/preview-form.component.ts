@@ -12,12 +12,10 @@ import { SelectableFormFieldComponent } from '../form-fields/selectable-form-fie
 import { MatIcon } from '@angular/material/icon'
 import { NgStyle } from '@angular/common'
 import { AbstractFormComponent } from '../../../common/component/abstract-form.component'
-import { MatFormField, MatLabel } from '@angular/material/form-field'
-import { MatOption } from '@angular/material/core'
-import { MatSelect } from '@angular/material/select'
 import { RouterLink } from '@angular/router'
 import { GetRawValuePipe } from '../../../common/get-raw-value.pipe'
 import { takeUntil } from 'rxjs'
+import { DragDropComponent } from '../drag-drop/drag-drop.component'
 
 export const Breakpoints = [
   { name: 'XSmall', width: '600px' },
@@ -46,12 +44,10 @@ export const Breakpoints = [
     MatIcon,
     NgStyle,
     MatCardSubtitle,
-    MatFormField,
-    MatLabel,
-    MatOption,
-    MatSelect,
     RouterLink,
     GetRawValuePipe,
+    DragDropComponent,
+
   ],
   templateUrl: './preview-form.component.html',
   styleUrl: './preview-form.component.css',
@@ -75,11 +71,11 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
     this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
   }
 
-  override valueChangesSubscription() {
-    return this._formGroup.controls.entries.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
-    })
-  }
+  // override valueChangesSubscription() {
+  //   return this._formGroup.controls.entries.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+  //     this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
+  //   })
+  // }
 
   addField() {
     const newField: FormField = {

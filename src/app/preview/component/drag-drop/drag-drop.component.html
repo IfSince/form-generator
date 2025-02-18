@@ -1,0 +1,56 @@
+<div class="example-list"
+     cdkDropList
+     cdkDropListOrientation="mixed"
+     (cdkDropListDropped)="drop($event)">
+  @for (field of fieldsTest; track field.name) {
+
+    @if (field.fields?.length > 0) {
+      <div class="example-list" cdkDrag>
+        {{ field.label }}
+        <app-drag-drop [fields]="field.fields"></app-drag-drop>
+      </div>
+    } @else {
+      <div class="example-box" cdkDrag>{{ field.label }}</div>
+    }
+  }
+</div>
+
+
+<!--<div cdkDropList-->
+<!--     cdkDropListOrientation="mixed"-->
+<!--     class="example-list"-->
+<!--     (cdkDropListDropped)="drop($event)">-->
+<!--  @for (field of formDataFormGroup.controls; track field) {-->
+<!--    @let fields = field.get('fields');-->
+
+<!--    @if (fields.value.length > 0) {-->
+<!--      <div class="example-list">-->
+<!--        test-->
+<!--&lt;!&ndash;        <app-drag-drop [formDataFormGroup]="fields"></app-drag-drop>&ndash;&gt;-->
+<!--      </div>-->
+<!--    }-->
+
+<!--    <div class="example-box" cdkDrag>{{field.getRawValue().name}}</div>-->
+<!--  }-->
+<!--</div>-->
+
+
+<!--<div cdkDropList (cdkDropListDropped)="onDrop($event)">-->
+<!--  @for (entryGroup of formDataFormGroup.controls; track entryGroup) {-->
+<!--    <div class="example-box" cdkDrag>-->
+<!--      {{field.getRawValue().name}}-->
+<!--    </div>-->
+
+<!--    <div [formGroup]="entryGroup" cdkDrag>-->
+<!--      <div>-->
+<!--        <input formControlName="name" placeholder="Name" />-->
+<!--        <input formControlName="label" placeholder="Label" />-->
+
+<!--&lt;!&ndash;        &lt;!&ndash; Nested Fields (rekursiv) &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        @if (entryGroup.get('fields')) {&ndash;&gt;-->
+<!--&lt;!&ndash;          <app-drag-drop [formDataFormGroup]="entryGroup"></app-drag-drop>&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  }-->
+<!--</div>-->
