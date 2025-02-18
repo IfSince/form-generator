@@ -5,16 +5,16 @@ import { ReactiveForm } from '../formdata/model/reactive-form-control.model'
 import { CustomFormData } from '../formdata/model/custom-form-data.model'
 
 @Pipe({
-  name: 'asTypeScriptInputFormGroup',
+  name: 'asTypeDefinitionFormGroup',
   standalone: true
 })
-export class AsTypeScriptInputFormGroupPipe implements PipeTransform {
+export class AsTypeDefinitionFormGroupPipe implements PipeTransform {
   private fb = inject(FormBuilder)
 
   transform(input?: CustomFormData): FormGroup<ReactiveForm<TypeScriptInput>> {
     return this.fb.group({
-      typeDefinition: [input?.originalText, Validators.required],
-      selectedType: [input?.name, Validators.required],
+      typeDefinition: [input?.typeDefinition, Validators.required],
+      selectedType: [input?.selectedType, Validators.required],
     });
   }
 }

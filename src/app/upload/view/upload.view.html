@@ -1,8 +1,9 @@
 <h1>Upload</h1>
 <div class="flex-layout-container flex-layout-container__column">
   @if (formDataStore.state$ | async; as state) {
-    <app-upload-form-component [formGroup]="state.data | asTypeScriptInputFormGroup"
-                               (submitForm)="onSubmit($event.typeDefinition, $event.selectedType)">
+    <app-upload-form-component
+      [formGroup]="state.data | asTypeDefinitionFormGroup"
+      (submitForm)="onSubmit($event.typeDefinition, $event.selectedType)">
       <div class="btn-group btn-group__between">
         <button mat-stroked-button
                 type="button"

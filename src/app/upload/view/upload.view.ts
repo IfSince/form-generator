@@ -7,7 +7,7 @@ import { FormDataCreateByTypeScriptService } from '../../formdata/service/form-d
 import { FormDataStore } from '../../formdata/service/form-data.store'
 import { MatButton } from '@angular/material/button'
 import { AsyncPipe } from '@angular/common'
-import { AsTypeScriptInputFormGroupPipe } from '../as-type-script-input-form-group.pipe'
+import { AsTypeDefinitionFormGroupPipe } from '../as-type-definition-form-group.pipe'
 import { MatIcon } from '@angular/material/icon'
 import { ClearDialogDirective } from '../../common/directive/clear-dialog.directive'
 import { DialogComponent } from '../../common/component/clear-dialog/dialog.component'
@@ -23,7 +23,7 @@ import { GlobalMessageStore } from '../../common/service/global-message.store'
     UploadFormComponent,
     MatButton,
     AsyncPipe,
-    AsTypeScriptInputFormGroupPipe,
+    AsTypeDefinitionFormGroupPipe,
     MatIcon,
     ClearDialogDirective,
   ],

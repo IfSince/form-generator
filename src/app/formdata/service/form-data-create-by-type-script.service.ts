@@ -18,8 +18,8 @@ export class FormDataCreateByTypeScriptService {
     const targetType = sourceFile.getInterface(selectedType) ?? sourceFile.getClass(selectedType) ?? sourceFile.getTypeAlias(selectedType)
 
     return {
-      name: selectedType,
-      originalText: text,
+      selectedType: selectedType,
+      typeDefinition: text,
       fields: this.getFieldsForType(targetType.getType(), sourceFile, new Set()),
     }
   }
