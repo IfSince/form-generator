@@ -7,15 +7,6 @@
         <mat-card-subtitle>Select a form field to edit</mat-card-subtitle>
 
         <div class="header-actions">
-          <mat-form-field [subscriptSizing]="'dynamic'">
-            <mat-label>Layout screen size</mat-label>
-            <mat-select [formControl]="breakpointControl">
-              @for (breakpoint of Breakpoints; track breakpoint.name) {
-                <mat-option [value]="breakpoint.width">{{ breakpoint.name }} ({{ breakpoint.width }})</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-
           <button mat-stroked-button
                   type="button"
                   (click)="addField()">
@@ -27,10 +18,9 @@
     </mat-card>
 
     <mat-card class="content">
-      <mat-card-content class="scrollable-container">
+      <mat-card-content>
         @if (flattenedFields().length > 0) {
-          <div class="form-container flex-layout-container flex-layout-container__wrap"
-               [ngStyle]="{ 'width': breakpointControl.value }">
+          <div class="flex-layout-container flex-layout-container__wrap">
             @for (field of flattenedFields(); track $index) {
               @if (![FieldType.INTERFACE, FieldType.OBJECT, FieldType.CLASS, FieldType.INTERSECTION].includes(field.controls.fieldType.value)) {
                 <app-selectable-form-field [selected]="selectedField() === field"
