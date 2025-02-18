@@ -42,8 +42,6 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
   protected readonly FieldType = FieldType
   private formDataFormBuilderService = inject(FormDataFormBuilderService)
 
-  @Output() select = new EventEmitter()
-
   _formGroup: FormGroup<{ entries: FormArray<FormGroup<ReactiveForm<FormField>>> }>
 
   flattenedFields = signal<FormGroup<ReactiveForm<FormField>>[]>([])
