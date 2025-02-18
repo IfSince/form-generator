@@ -58,7 +58,6 @@ export class AddOptionDialogComponent {
     this.optionFormGroup?.updateValueAndValidity()
 
     if (this.optionFormGroup?.valid) {
-      this.globalMessageStore.addSuccess('The option was added successfully.')
       this.dialogRef.close(this.optionFormGroup.getRawValue())
     }
   }

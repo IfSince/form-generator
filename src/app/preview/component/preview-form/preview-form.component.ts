@@ -12,8 +12,7 @@ import { SelectableFormFieldComponent } from '../form-fields/selectable-form-fie
 import { MatIcon } from '@angular/material/icon'
 import { AbstractFormComponent } from '../../../common/component/abstract-form.component'
 import { RouterLink } from '@angular/router'
-import { GetRawValuePipe } from '../../../common/get-raw-value.pipe'
-import { pairwise } from 'rxjs'
+import { filter, pairwise } from 'rxjs'
 import { toObservable } from '@angular/core/rxjs-interop'
 
 @Component({
@@ -35,7 +34,6 @@ import { toObservable } from '@angular/core/rxjs-interop'
     MatIcon,
     MatCardSubtitle,
     RouterLink,
-    GetRawValuePipe,
   ],
   templateUrl: './preview-form.component.html',
   styleUrl: './preview-form.component.css',
@@ -58,16 +56,19 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
 
     toObservable(this.selectedField).pipe(
       pairwise(),
-    ).subscribe(([prev, curr]) => {
-      // reset unsaved changes of previously selected field on selection of another field
-      if (prev != null && curr != null) {
-        prev.setValue(this.previousRawValue)
-      }
+      filter(([prev, curr]) => prev?.getRawValue().name !== curr?.getRawValue().name)
+    ).subscribe(([prevSelectedField, currSelectedField]) => {
+      if (prevSelectedField != null && currSelectedField != null) {
+        this.resetFormField(prevSelectedField)
 
-      // remember originalValue to be able to reset
-      if (curr != null) {
-        this.previousRawValue = curr.getRawValue()
+        // only possible if new field was added instead of different selection, because name is required and cant be saved as null
+        if (currSelectedField.getRawValue().name == null) {
+          this.inCreationMode.set(true)
+        } else {
+          this.inCreationMode.set(false)
+        }
       }
+      this.previousRawValue = currSelectedField?.getRawValue()
     })
   }
 
@@ -81,7 +82,7 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
 
   addField() {
     const newField: FormField = {
-      name: '',
+      name: null,
       label: '',
       fieldType: FieldType.STRING,
       componentType: MaterialComponentType.TEXT,
@@ -94,7 +95,6 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
     }
     const newFieldControl = this.formDataFormBuilderService.buildFormField(newField)
 
-    this._formGroup.controls.entries.push(newFieldControl)
     this.inCreationMode.set(true)
     this.selectedField.set(newFieldControl)
   }
@@ -107,7 +107,7 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
 
       if (index != -1) {
         parent.removeAt(index)
-        this.checkAndRemoveParentIfEmpty(parent)
+        this.removeParentIfEmpty(parent)
       }
     }
 
@@ -117,29 +117,35 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
     this.saveFormDataAndResetEditing()
   }
 
-  onClose(originalField: FormField) {
+  onClose() {
+    this.resetFormField()
     this.inCreationMode.set(false)
-    this.selectedField().patchValue(originalField)
-
-    // patchValue does not override the formArrays itself but only the underlying matching form controls, which is why we have to override it manually every time the length changes (created/deleted)
-    if (originalField.fieldSelectOptions?.length !== this.selectedField().getRawValue().fieldSelectOptions?.length) {
-      this.selectedField().controls.fieldSelectOptions.clear({ emitEvent: false })
-      originalField.fieldSelectOptions.forEach(option => {
-        this.selectedField().controls.fieldSelectOptions.push(this.formDataFormBuilderService.buildFieldSelectOptionFormGroup(option), { emitEvent: false })
-      })
-    }
-
-    // this.updateField(originalField) // revert potential changes made
     this.selectedField.set(null)
   }
 
   protected saveFormDataAndResetEditing() {
+    if (this.inCreationMode()) {
+      this._formGroup.controls.entries.push(this.selectedField())
+    }
+
     this.onSubmit(false, 'none')
     this.inCreationMode.set(false)
     this.selectedField.set(null)
   }
 
-  private checkAndRemoveParentIfEmpty(parentArray: FormArray) {
+  private resetFormField(formField = this.selectedField()) {
+    formField.patchValue(this.previousRawValue)
+
+    // patchValue does not override the formArrays itself but only the underlying matching form controls, which is why we have to override it manually every time the length changes (created/deleted)
+    if (this.previousRawValue.fieldSelectOptions?.length !== formField.getRawValue().fieldSelectOptions?.length) {
+      formField.controls.fieldSelectOptions.clear({ emitEvent: false })
+      this.previousRawValue.fieldSelectOptions.forEach(option => {
+        formField.controls.fieldSelectOptions.push(this.formDataFormBuilderService.buildFieldSelectOptionFormGroup(option), { emitEvent: false })
+      })
+    }
+  }
+
+  private removeParentIfEmpty(parentArray: FormArray) {
     if (parentArray.controls.length === 0) {
       const grandParentArray = parentArray.parent?.parent
       if (grandParentArray instanceof FormArray) {
@@ -147,7 +153,7 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
 
         if (index != -1) {
           grandParentArray.removeAt(index)
-          this.checkAndRemoveParentIfEmpty(grandParentArray)
+          this.removeParentIfEmpty(grandParentArray)
         }
       }
     }

@@ -4,7 +4,7 @@ import { AbstractControl, FormGroup } from '@angular/forms'
 import { Subject, Subscription } from 'rxjs'
 import { GlobalMessageStore } from '../service/global-message.store'
 
-export type SubmitMessageMode = 'all' | 'submit' | 'error' | 'none'
+export type MessageMode = 'all' | 'submit' | 'error' | 'none'
 
 @Component({template: ''})
 export abstract class AbstractFormComponent<T> implements OnDestroy {
@@ -15,12 +15,10 @@ export abstract class AbstractFormComponent<T> implements OnDestroy {
   protected destroy$ = new Subject<void>()
   protected _valueChangesSubscription: Subscription
   abstract _formGroup: AbstractControl
-  protected originalValue: T
 
   @Input() set formGroup(formGroup: FormGroup<ReactiveForm<T>>) {
     this._valueChangesSubscription?.unsubscribe()
     this._formGroup = formGroup
-    this.originalValue = formGroup.getRawValue() as T // remember original value to be able to reset
 
     this.valueChangesSubscription()
   }
@@ -39,7 +37,7 @@ export abstract class AbstractFormComponent<T> implements OnDestroy {
     this._valueChangesSubscription = null
   }
 
-  onSubmit(shouldValidate = true, messageMode: SubmitMessageMode = 'all'): void {
+  onSubmit(shouldValidate = true, messageMode: MessageMode = 'all'): void {
     if (!shouldValidate) {
       this.submit(messageMode)
       return
@@ -50,21 +48,20 @@ export abstract class AbstractFormComponent<T> implements OnDestroy {
     if (this._formGroup?.valid) {
       this.submit(messageMode)
     } else {
-      this.showErrorMessage(messageMode) && this.globalMessageStore.addError(this.errorMessage)
+      this.showErrorMessage(messageMode)
     }
   }
 
-  submit(messageMode: SubmitMessageMode) {
-    this.originalValue = this._formGroup.getRawValue()
+  submit(messageMode: MessageMode) {
     this.submitForm.emit(this._formGroup.getRawValue())
-    this.showSubmitMessage(messageMode) && this.globalMessageStore.addSuccess(this.successMessage)
+    this.showSubmitMessage(messageMode)
   }
 
-  private showSubmitMessage(messageMode: SubmitMessageMode): boolean {
-    return messageMode == 'all' || messageMode == 'submit'
+  private showSubmitMessage(messageMode: MessageMode): void {
+    (messageMode == 'all' || messageMode == 'submit') && this.globalMessageStore.addSuccess(this.successMessage)
   }
 
-  private showErrorMessage(messageMode: SubmitMessageMode): boolean {
-    return messageMode == 'all' || messageMode == 'error'
+  private showErrorMessage(messageMode: MessageMode): void {
+    (messageMode == 'all' || messageMode == 'error') && this.globalMessageStore.addError(this.errorMessage)
   }
 }
