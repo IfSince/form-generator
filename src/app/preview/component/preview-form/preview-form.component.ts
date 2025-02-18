@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnInit, Output, signal } from '@angular/core'
+import { Component, EventEmitter, inject, OnChanges, OnInit, Output, signal } from '@angular/core'
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card'
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { MatButton } from '@angular/material/button'
@@ -17,7 +17,8 @@ import { MatOption } from '@angular/material/core'
 import { MatSelect } from '@angular/material/select'
 import { RouterLink } from '@angular/router'
 import { GetRawValuePipe } from '../../../common/get-raw-value.pipe'
-import { takeUntil } from 'rxjs'
+import { pairwise } from 'rxjs'
+import { toObservable } from '@angular/core/rxjs-interop'
 
 export const Breakpoints = [
   { name: 'XSmall', width: '600px' },
@@ -56,7 +57,7 @@ export const Breakpoints = [
   templateUrl: './preview-form.component.html',
   styleUrl: './preview-form.component.css',
 })
-export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormField[] }> implements OnInit {
+export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormField[] }> implements OnInit, OnChanges {
   protected readonly Breakpoints = Breakpoints
   protected readonly FieldType = FieldType
   private formDataFormBuilderService = inject(FormDataFormBuilderService)
@@ -66,19 +67,35 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
   _formGroup: FormGroup<{ entries: FormArray<FormGroup<ReactiveForm<FormField>>> }>
   breakpointControl = new FormControl('100%')
 
-  selectedField = signal<FormGroup<ReactiveForm<FormField>> | null>(null)
   flattenedFields = signal<FormGroup<ReactiveForm<FormField>>[]>([])
-
+  selectedField = signal<FormGroup<ReactiveForm<FormField>> | null>(null)
   inCreationMode = signal(false)
+  previousRawValue: FormField = null
+
+  constructor() {
+    super()
+
+    toObservable(this.selectedField).pipe(
+      pairwise(),
+    ).subscribe(([prev, curr]) => {
+      // reset unsaved changes of previously selected field on selection of another field
+      if (prev != null && curr != null) {
+        prev.setValue(this.previousRawValue)
+      }
+
+      // remember originalValue to be able to reset
+      if (curr != null) {
+        this.previousRawValue = curr.getRawValue()
+      }
+    })
+  }
 
   ngOnInit(): void {
     this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
   }
 
-  override valueChangesSubscription() {
-    return this._formGroup.controls.entries.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
-    })
+  ngOnChanges(): void {
+    this.flattenedFields.set(getFieldsAsFlatList(this._formGroup.controls.entries))
   }
 
   addField() {
