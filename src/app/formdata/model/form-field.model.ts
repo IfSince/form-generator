@@ -54,6 +54,59 @@ export enum MaterialComponentType {
   // CHIPS = 'Chips',
 }
 
+export const MATERIAL_COMPONENT_OPT_GROUPS = [
+  {
+    groupName: 'String',
+    components: [
+      MaterialComponentType.TEXT,
+      MaterialComponentType.TEXTAREA,
+      MaterialComponentType.EMAIL,
+      MaterialComponentType.COLOR,
+      MaterialComponentType.PASSWORD,
+      MaterialComponentType.TELEPHONE,
+      MaterialComponentType.URL,
+    ],
+  },
+  {
+    groupName: 'Number',
+    components: [
+      MaterialComponentType.NUMBER,
+      MaterialComponentType.SLIDER,
+    ],
+  },
+  {
+    groupName: 'Boolean',
+    components: [
+      MaterialComponentType.CHECKBOX,
+      MaterialComponentType.SLIDE_TOGGLE,
+    ],
+  },
+  {
+    groupName: 'Enum',
+    components: [
+      MaterialComponentType.SELECT,
+      MaterialComponentType.RADIO_BUTTON,
+    ],
+  },
+  {
+    groupName: 'Date / Time',
+    components: [
+      MaterialComponentType.DATE,
+      MaterialComponentType.DATETIME_LOCAL,
+      MaterialComponentType.TIME,
+      MaterialComponentType.WEEK,
+      MaterialComponentType.MONTH,
+    ],
+  },
+  {
+    groupName: 'Array',
+    components: [
+      MaterialComponentType.BUTTON_TOGGLE,
+      // MaterialComponentType.CHIPS,
+    ],
+  },
+]
+
 export const MATERIAL_INPUT_COMPONENT_TYPES = [
   MaterialComponentType.COLOR,
   MaterialComponentType.DATETIME_LOCAL,

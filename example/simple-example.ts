@@ -20,4 +20,5 @@ export interface Person {
   dateOfBirth: Date
   readonly isVerified: boolean
   address: Address
+  unsupportedField: any
 }

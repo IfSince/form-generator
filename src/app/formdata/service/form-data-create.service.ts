@@ -5,12 +5,13 @@ import { createTempSourceFile } from '../../ts-morph.utils'
 import { formatLabel } from '../../common/utils'
 import { FieldSelectOption } from '../model/form-field-select-option.model'
 import { FieldType, FormField, MaterialComponentType } from '../model/form-field.model'
+import { FormConfigStore } from '../../form-config/service/form-config.store'
 
 @Injectable({
   providedIn: 'root',
 })
-export class FormDataCreateByTypeScriptService {
-  constructor() {
+export class FormDataCreateService {
+  constructor(private formConfigStore: FormConfigStore) {
   }
 
   create(text: string, selectedType: string): CustomFormData {
@@ -136,20 +137,22 @@ export class FormDataCreateByTypeScriptService {
   }
 
   private getDefaultComponent(fieldType: FieldType): MaterialComponentType | null {
+    const defaultComponents = this.formConfigStore.state.data.defaultComponents
+
     return {
-      [FieldType.STRING]: MaterialComponentType.TEXT,
-      [FieldType.NUMBER]: MaterialComponentType.NUMBER,
-      [FieldType.BOOLEAN]: MaterialComponentType.CHECKBOX,
-      [FieldType.ENUM]: MaterialComponentType.SELECT,
-      [FieldType.DATE]: MaterialComponentType.DATE,
-      [FieldType.ARRAY]: MaterialComponentType.BUTTON_TOGGLE,
+      [FieldType.STRING]: defaultComponents?.string ?? MaterialComponentType.TEXT,
+      [FieldType.NUMBER]: defaultComponents?.number ?? MaterialComponentType.NUMBER,
+      [FieldType.BOOLEAN]: defaultComponents?.boolean ?? MaterialComponentType.CHECKBOX,
+      [FieldType.ENUM]: defaultComponents?.enum ?? MaterialComponentType.SELECT,
+      [FieldType.DATE]: defaultComponents?.date ?? MaterialComponentType.DATE,
+      [FieldType.ARRAY]: defaultComponents?.array ?? MaterialComponentType.BUTTON_TOGGLE,
+      [FieldType.UNSUPPORTED]: defaultComponents?.unsupported ?? MaterialComponentType.TEXT,
 
       [FieldType.INTERFACE]: null,
       [FieldType.CLASS]: null,
       [FieldType.OBJECT]: null,
       [FieldType.INTERSECTION]: null,
       [FieldType.CYCLIC_REFERENCE]: null,
-      [FieldType.UNSUPPORTED]: null,
     }[fieldType]
   }
 

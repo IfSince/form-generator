@@ -44,8 +44,6 @@ export class GetComponentToRenderPipe implements PipeTransform {
         return RenderableMatComponent.SELECT
       case matComponentType === MaterialComponentType.BUTTON_TOGGLE:
         return RenderableMatComponent.BUTTON_TOGGLE
-      // case matComponentType === MaterialComponentType.CHIPS:
-      //   return RenderableMatComponent.CHIPS
       default:
         return RenderableMatComponent.INPUT
     }

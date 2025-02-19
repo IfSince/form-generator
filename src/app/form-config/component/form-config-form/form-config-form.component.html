@@ -1,44 +1,88 @@
+<div class="header">
+  <h1>Configuration</h1>
+
+  <div class="btn-group">
+    <app-dropzone text="Import"
+                  icon="upload">
+      <input type="file"
+             fileInput
+             [formControl]="file"
+             [multiple]="false"
+             [mode]="'replace'"/>
+    </app-dropzone>
+
+    <a mat-stroked-button
+       [disabled]="jsonBlobUrl() === null"
+       [href]="jsonBlobUrl()"
+       [attr.download]="'formConfig.json'">
+      <mat-icon>download</mat-icon>
+      Export
+    </a>
+  </div>
+</div>
+
 <form class="flex-layout-container flex-layout-container__column"
       [formGroup]="_formGroup"
       (ngSubmit)="onSubmit()">
   <mat-card>
     <mat-card-header class="btn-group">
-      <mat-card-title>Default values</mat-card-title>
-      <mat-card-subtitle>Configure default values for different field types</mat-card-subtitle>
-      <div class="btn-group">
-        <app-dropzone text="Import"
-                      icon="upload">
-          <input type="file"
-                 fileInput
-                 [formControl]="file"
-                 [multiple]="false"
-                 [mode]="'replace'"/>
-        </app-dropzone>
+      <mat-card-title>Default Components</mat-card-title>
+      <mat-card-subtitle>Configure the default rendered component when analyzing type definition and creating form data</mat-card-subtitle>
+    </mat-card-header>
 
-        <a mat-stroked-button
-           [disabled]="jsonBlobUrl() === null"
-           [href]="jsonBlobUrl()"
-           [attr.download]="'formConfig.json'">
-          <mat-icon>download</mat-icon>
-          Export
-        </a>
-      </div>
+    <mat-card-content>
+      <mat-list>
+        <app-list-item-select [fieldControl]="_formGroup.controls.defaultComponents.controls.string"
+                              label="String"
+                              description="Default component for attributes of type string"/>
+
+        <app-list-item-select [fieldControl]="_formGroup.controls.defaultComponents.controls.number"
+                              label="Number"
+                              description="Default component for attributes of type number"/>
+
+        <app-list-item-select [fieldControl]="_formGroup.controls.defaultComponents.controls.boolean"
+                              label="Boolean"
+                              description="Default component for attributes of type boolean"/>
+
+        <app-list-item-select [fieldControl]="_formGroup.controls.defaultComponents.controls.enum"
+                              label="Enum"
+                              description="Default component for attributes of type enum"/>
+
+        <app-list-item-select [fieldControl]="_formGroup.controls.defaultComponents.controls.date"
+                              label="Date"
+                              description="Default component for attributes of type date"/>
+
+        <app-list-item-select [fieldControl]="_formGroup.controls.defaultComponents.controls.array"
+                              label="Array"
+                              description="Default component for attributes of type array"/>
+
+        <app-list-item-select [fieldControl]="_formGroup.controls.defaultComponents.controls.unsupported"
+                              label="Unsupported"
+                              description="Default component for unsupported types"/>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Default Values</mat-card-title>
+      <mat-card-subtitle>Configure default values of form fields</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
       <mat-list>
         <div mat-subheader>Form Field</div>
-        <app-list-item-toggle [field]="_formGroup.controls.formFieldAppearance"
+        <app-list-item-toggle [fieldControl]="_formGroup.controls.formFieldAppearance"
                               label="Appearance"
                               description="Default appearance of form fields"
                               [options]="formFieldAppearanceOptions"/>
 
-        <app-list-item-toggle [field]="_formGroup.controls.floatLabel"
+        <app-list-item-toggle [fieldControl]="_formGroup.controls.floatLabel"
                               label="Float label"
                               description="Floating behavior of form field labels"
                               [options]="floatLabelOptions"/>
 
-        <app-list-item-toggle [field]="_formGroup.controls.subscriptSizing"
+        <app-list-item-toggle [fieldControl]="_formGroup.controls.subscriptSizing"
                               label="Subscript sizing"
                               description="Behavior of space for hint/error text below form fields"
                               [options]="subscriptSizingOptions"/>
@@ -68,7 +112,7 @@
           </div>
         </mat-list-item>
 
-        <app-list-item-toggle [field]="_formGroup.controls.labelPosition"
+        <app-list-item-toggle [fieldControl]="_formGroup.controls.labelPosition"
                               label="Label position"
                               description="Default position of labels (e.g. for checkboxes)"
                               [options]="labelPositionOptions"/>
@@ -191,7 +235,7 @@
           </div>
         </mat-list-item>
 
-        <app-list-item-toggle [field]="_formGroup.controls.buttonToggleAppearance"
+        <app-list-item-toggle [fieldControl]="_formGroup.controls.buttonToggleAppearance"
                               label="Appearance"
                               description="Default appearance of button toggle components"
                               [options]="buttonToggleAppearanceOptions"/>

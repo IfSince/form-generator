@@ -4,7 +4,7 @@
     <mat-form-field>
       <mat-label>Component</mat-label>
       <mat-select formControlName="componentType">
-        @for (optGroup of materialComponentOptGroups; track optGroup.groupName) {
+        @for (optGroup of MATERIAL_COMPONENT_OPT_GROUPS; track optGroup.groupName) {
           <mat-optgroup [label]="optGroup.groupName">
             @for (component of optGroup.components; track component) {
               <mat-option [value]="component">{{ component }}</mat-option>

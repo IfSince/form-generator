@@ -1,0 +1,17 @@
+<mat-list-item>
+  <span matListItemTitle>{{ label }}</span>
+  <span matListItemLine>{{ description }}</span>
+  <div matListItemMeta>
+    <mat-form-field>
+      <mat-select [formControl]="fieldControl">
+        @for (optGroup of MATERIAL_COMPONENT_OPT_GROUPS; track optGroup.groupName) {
+          <mat-optgroup [label]="optGroup.groupName">
+            @for (component of optGroup.components; track component) {
+              <mat-option [value]="component">{{ component }}</mat-option>
+            }
+          </mat-optgroup>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+</mat-list-item>

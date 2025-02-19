@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core'
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { ReactiveForm } from '../../../../formdata/model/reactive-form-control.model'
-import { FormField, MATERIAL_INPUT_COMPONENT_TYPES, MaterialComponentType } from '../../../../formdata/model/form-field.model'
+import { FormField, MATERIAL_COMPONENT_OPT_GROUPS, MATERIAL_INPUT_COMPONENT_TYPES, MaterialComponentType } from '../../../../formdata/model/form-field.model'
 import { MatCheckbox } from '@angular/material/checkbox'
 import { MatDivider } from '@angular/material/divider'
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field'
@@ -40,57 +40,6 @@ export class EditFormFieldTabComponent {
     MaterialComponentType.SELECT,
   ]
 
-  protected readonly materialComponentOptGroups = [
-    {
-      groupName: 'String',
-      components: [
-        MaterialComponentType.TEXT,
-        MaterialComponentType.TEXTAREA,
-        MaterialComponentType.EMAIL,
-        MaterialComponentType.COLOR,
-        MaterialComponentType.PASSWORD,
-        MaterialComponentType.TELEPHONE,
-        MaterialComponentType.URL,
-      ],
-    },
-    {
-      groupName: 'Number',
-      components: [
-        MaterialComponentType.NUMBER,
-        MaterialComponentType.SLIDER,
-      ],
-    },
-    {
-      groupName: 'Boolean',
-      components: [
-        MaterialComponentType.CHECKBOX,
-        MaterialComponentType.SLIDE_TOGGLE,
-      ],
-    },
-    {
-      groupName: 'Enum',
-      components: [
-        MaterialComponentType.SELECT,
-        MaterialComponentType.RADIO_BUTTON,
-      ],
-    },
-    {
-      groupName: 'Date / Time',
-      components: [
-        MaterialComponentType.DATE,
-        MaterialComponentType.DATETIME_LOCAL,
-        MaterialComponentType.TIME,
-        MaterialComponentType.WEEK,
-        MaterialComponentType.MONTH,
-      ],
-    },
-    {
-      groupName: 'Array',
-      components: [
-        MaterialComponentType.BUTTON_TOGGLE,
-        // MaterialComponentType.CHIPS,
-      ],
-    },
-  ]
   protected readonly MaterialComponentType = MaterialComponentType
+  protected readonly MATERIAL_COMPONENT_OPT_GROUPS = MATERIAL_COMPONENT_OPT_GROUPS
 }

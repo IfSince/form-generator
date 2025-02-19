@@ -4,7 +4,7 @@
     <span matListItemLine>{{ description }}</span>
   }
   <div matListItemMeta>
-    <mat-button-toggle-group [formControl]="field"
+    <mat-button-toggle-group [formControl]="fieldControl"
                              [hideSingleSelectionIndicator]="true">
       <ng-content/>
       @for (option of options; track option.selectableValue) {

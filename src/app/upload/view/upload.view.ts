@@ -3,7 +3,7 @@ import { MatCardModule } from '@angular/material/card'
 import { ReactiveFormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
 import { UploadFormComponent } from '../component/upload-form/upload-form.component'
-import { FormDataCreateByTypeScriptService } from '../../formdata/service/form-data-create-by-type-script.service'
+import { FormDataCreateService } from '../../formdata/service/form-data-create.service'
 import { FormDataStore } from '../../formdata/service/form-data.store'
 import { MatButton } from '@angular/material/button'
 import { AsyncPipe } from '@angular/common'
@@ -33,7 +33,7 @@ export class UploadView {
   protected formDataStore = inject(FormDataStore)
   private dialog = inject(MatDialog)
   private globalMessageStore = inject(GlobalMessageStore)
-  private formDataCreateByTypeScriptService = inject(FormDataCreateByTypeScriptService)
+  private formDataCreateByTypeScriptService = inject(FormDataCreateService)
   private router = inject(Router)
 
   onSubmit(inputString: string, selectedType: string) {

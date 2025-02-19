@@ -17,6 +17,7 @@ import { MatCheckbox } from '@angular/material/checkbox'
 import { ListItemButtonToggleComponent } from './list-item-button-toggle/list-item-button-toggle.component'
 import { FieldSelectOption } from '../../../formdata/model/form-field-select-option.model'
 import { FormConfigFormBuilderService } from '../../service/form-config-form-builder.service'
+import { ListItemSelectComponent } from './list-item-select/list-item-select.component'
 
 @Component({
   selector: 'app-form-config-form',
@@ -44,6 +45,7 @@ import { FormConfigFormBuilderService } from '../../service/form-config-form-bui
     MatCardSubtitle,
     MatCheckbox,
     ListItemButtonToggleComponent,
+    ListItemSelectComponent,
   ],
   templateUrl: './form-config-form.component.html',
   styleUrls: ['./form-config-form.component.css'],
@@ -149,6 +151,7 @@ export class FormConfigFormComponent extends AbstractFormComponent<FormConfig> i
       datepickerTouchUi: true,
       buttonToggleHideMultiSelectionIndicator: true,
       buttonToggleAppearance: true,
+      defaultComponents: true,
     }
     const allowedKeys = new Set(Object.keys(formConfigKeys))
     return data != null && typeof data == 'object' && Object.keys(data).every(key => allowedKeys.has(key))
