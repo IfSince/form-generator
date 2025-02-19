@@ -1,6 +1,6 @@
-import { Component, EventEmitter, inject, OnChanges, OnInit, Output, signal } from '@angular/core'
+import { Component, inject, OnChanges, OnInit, signal } from '@angular/core'
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card'
-import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { MatButton } from '@angular/material/button'
 import { EditFormFieldComponent } from '../edit-form-field/edit-form-field.component'
 import { MaterialFieldComponent } from '../form-fields/material-field/material-field.component'
@@ -13,10 +13,12 @@ import { MatIcon } from '@angular/material/icon'
 import { AbstractFormComponent } from '../../../common/component/abstract-form.component'
 import { RouterLink } from '@angular/router'
 import { filter, pairwise } from 'rxjs'
-import { toObservable } from '@angular/core/rxjs-interop'
-import { GetRawValuePipe } from '../../../common/get-raw-value.pipe'
-import { takeUntil } from 'rxjs'
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop'
 import { DragDropComponent } from '../drag-drop/drag-drop.component'
+import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle'
+import { MatDivider } from '@angular/material/divider'
+
+type PreviewMode = 'edit' | 'arrange'
 
 @Component({
   selector: 'app-preview-form',
@@ -38,6 +40,11 @@ import { DragDropComponent } from '../drag-drop/drag-drop.component'
     MatCardSubtitle,
     RouterLink,
     DragDropComponent,
+    MatButtonToggle,
+    MatButtonToggleGroup,
+    FormsModule,
+    MatDivider,
+
   ],
   templateUrl: './preview-form.component.html',
   styleUrl: './preview-form.component.css',
@@ -48,6 +55,9 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
 
   _formGroup: FormGroup<{ entries: FormArray<FormGroup<ReactiveForm<FormField>>> }>
 
+
+  previewModeControl = new FormControl<PreviewMode>('edit')
+
   flattenedFields = signal<FormGroup<ReactiveForm<FormField>>[]>([])
   selectedField = signal<FormGroup<ReactiveForm<FormField>> | null>(null)
   inCreationMode = signal(false)
@@ -56,7 +66,10 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
   constructor() {
     super()
 
+    this.previewModeControl.valueChanges.pipe(takeUntilDestroyed()).subscribe(previewMode => previewMode === 'arrange' && this.onClose())
+
     toObservable(this.selectedField).pipe(
+      takeUntilDestroyed(),
       pairwise(),
       filter(([prev, curr]) => prev?.getRawValue().name !== curr?.getRawValue().name)
     ).subscribe(([prevSelectedField, currSelectedField]) => {

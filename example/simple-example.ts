@@ -12,7 +12,6 @@ class Address {
   street: string
   houseNumber?: number
   country: Country
-  other: Other
 }
 
 export interface Person {

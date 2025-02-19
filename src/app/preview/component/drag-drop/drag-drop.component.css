@@ -1,26 +1,16 @@
-.example-list {
+.drag-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  padding: 15px;
-  border: solid 1px #ccc;
-  min-height: 60px;
-  border-radius: 4px;
+  gap: 1rem;
   overflow: hidden;
 }
 
-.example-box {
-  padding: 20px 10px;
+.draggable-item {
   border: solid 1px #ccc;
-  border-radius: 4px;
-  color: rgba(0, 0, 0, 0.87);
-  display: inline-block;
-  box-sizing: border-box;
   cursor: move;
-  background: white;
-  text-align: center;
-  font-size: 14px;
-  min-width: 115px;
+  padding: 12px;
+  border-radius: 4px;
+  background: var(--mdc-elevated-card-container-color);
 }
 
 .cdk-drag-preview {
