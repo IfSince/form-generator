@@ -66,12 +66,16 @@ export class PreviewFormComponent extends AbstractFormComponent<{ entries: FormF
   constructor() {
     super()
 
-    this.previewModeControl.valueChanges.pipe(takeUntilDestroyed()).subscribe(previewMode => previewMode === 'arrange' && this.onClose())
+    this.previewModeControl.valueChanges.pipe(takeUntilDestroyed()).subscribe(previewMode => {
+      if (previewMode === 'arrange' && this.selectedField() != null) {
+        this.onClose()
+      }
+    })
 
     toObservable(this.selectedField).pipe(
       takeUntilDestroyed(),
       pairwise(),
-      filter(([prev, curr]) => prev?.getRawValue().name !== curr?.getRawValue().name)
+      filter(([prev, curr]) => prev?.getRawValue().name !== curr?.getRawValue().name),
     ).subscribe(([prevSelectedField, currSelectedField]) => {
       if (prevSelectedField != null && currSelectedField != null) {
         this.resetFormField(prevSelectedField)

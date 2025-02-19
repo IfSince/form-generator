@@ -24,7 +24,7 @@
                                  [hideSingleSelectionIndicator]="true"
                                  appearance="standard">
           <mat-button-toggle [value]="'edit'">Edit</mat-button-toggle>
-          <mat-button-toggle [value]="'arrange'">Arrange</mat-button-toggle>
+          <mat-button-toggle [value]="'arrange'" [disabled]="flattenedFields().length == 0">Arrange</mat-button-toggle>
         </mat-button-toggle-group>
       </mat-card-content>
     </mat-card>

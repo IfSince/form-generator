@@ -30,6 +30,7 @@ export default defineConfig({
     trace: 'off', //on-first-retry
     screenshot: 'only-on-failure',
     video: 'on',
+    permissions: ['clipboard-read'],
   },
 
   /* Configure projects for major browsers */

@@ -1,4 +1,4 @@
-import { expect, Page, test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { expectGlobalMessage, getFormDataFromLocalStorage, routeAndValidateTitle, setFormDataInLocalStorage } from './utils/utils'
 import { testFormData } from './testdata/form-data.testdata'
 import { testFormField } from './testdata/form-field.testdata'
@@ -94,7 +94,7 @@ test.describe('Preview Page', () => {
       await page.getByRole('textbox', { name: 'Field name', exact: true }).fill('updatedField')
       await page.getByRole('textbox', { name: 'Label', exact: true }).fill('Updated Label')
 
-      await page.locator('div').filter({ hasText: /^New Label$/ }).first().click();
+      await page.locator('div').filter({ hasText: /^New Label$/ }).first().click()
 
       const formData = await getFormDataFromLocalStorage(page)
       expect(formData.fields[0].name).toEqual(testField.name)
@@ -112,13 +112,20 @@ test.describe('Preview Page', () => {
     })
 
     test('deletes form data and clears form fields when discarding process', async ({ page }) => {
-      await page.getByRole('button', { name: 'Discard process' }).click();
-      await page.getByRole('button', { name: 'Yes' }).click();
+      await page.getByRole('button', { name: 'Discard process' }).click()
+      await page.getByRole('button', { name: 'Yes' }).click()
 
       await expectGlobalMessage(page, 'The data was cleared successfully.')
 
       const formData = await getFormDataFromLocalStorage(page)
       expect(formData).toBeNull()
+    })
+
+    test('creates source code', async ({ page }) => {
+      await page.getByRole('button', { name: 'Generate code' }).click();
+
+      const sourceCode = await page.evaluate(() => navigator.clipboard.readText());
+      expect(sourceCode).toBeDefined()
     })
   })
 })
