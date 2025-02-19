@@ -1,0 +1,18 @@
+<div class="drag-list"
+     cdkDropList
+     cdkDropListOrientation="mixed"
+     (cdkDropListDropped)="drop($event)">
+  @for (field of fieldFormGroups.controls; track field.controls.name) {
+    @if (field.controls.fields.controls?.length > 0) {
+      <div class="drag-list draggable-item" cdkDrag>
+        {{ field.controls.label.value }}
+        <app-drag-drop [fieldFormGroups]="field.controls.fields"
+                       (onDrop)="onDrop.emit()"/>
+      </div>
+    } @else {
+      <div class="draggable-item" cdkDrag>
+        <app-material-field [matField]="field.getRawValue()"/>
+      </div>
+    }
+  }
+</div>

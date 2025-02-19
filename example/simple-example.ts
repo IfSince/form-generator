@@ -3,6 +3,11 @@ enum Country {
   Foreign = 'Foreign',
 }
 
+interface Other {
+  field1: string;
+  field2: string;
+}
+
 class Address {
   street: string
   houseNumber?: number

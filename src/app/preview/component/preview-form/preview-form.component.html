@@ -9,40 +9,62 @@
         <div class="header-actions">
           <button mat-stroked-button
                   type="button"
+                  [disabled]="previewModeControl.value === 'arrange'"
                   (click)="addField()">
             <mat-icon>add</mat-icon>
             Add field
           </button>
         </div>
       </mat-card-header>
-    </mat-card>
 
-    <mat-card class="content">
+      <mat-divider class="divider"/>
+
       <mat-card-content>
-        @if (flattenedFields().length > 0) {
-          <div class="flex-layout-container flex-layout-container__wrap">
-            @for (field of flattenedFields(); track $index) {
-              @if (![FieldType.INTERFACE, FieldType.OBJECT, FieldType.CLASS, FieldType.INTERSECTION].includes(field.controls.fieldType.value)) {
-                <app-selectable-form-field [selected]="selectedField() === field"
-                                           (select)="selectedField.set(field)">
-                  <app-material-field [matField]="field.getRawValue()"/>
-                </app-selectable-form-field>
-              }
-            }
-            @if (inCreationMode()) {
-              <app-selectable-form-field [selected]="true">
-                <app-material-field [matField]="selectedField().getRawValue()"/>
-              </app-selectable-form-field>
-            }
-          </div>
-        } @else {
-          <div class="empty-placeholder">
-            No fields provided in the form data. Add a field to preview and edit the form, or&nbsp;<a [routerLink]="'/upload'">upload a
-            typescript type definition</a>.
-          </div>
-        }
+        <mat-button-toggle-group [formControl]="previewModeControl"
+                                 [hideSingleSelectionIndicator]="true"
+                                 appearance="standard">
+          <mat-button-toggle [value]="'edit'">Edit</mat-button-toggle>
+          <mat-button-toggle [value]="'arrange'">Arrange</mat-button-toggle>
+        </mat-button-toggle-group>
       </mat-card-content>
     </mat-card>
+
+    @if (previewModeControl.value === 'edit') {
+      <mat-card class="content">
+        <mat-card-content>
+          @if (flattenedFields().length > 0) {
+            <div class="flex-layout-container flex-layout-container__wrap">
+              @for (field of flattenedFields(); track $index) {
+                @if (![FieldType.INTERFACE, FieldType.OBJECT, FieldType.CLASS, FieldType.INTERSECTION].includes(field.controls.fieldType.value)) {
+                  <app-selectable-form-field [selected]="selectedField() === field"
+                                             (select)="selectedField.set(field)">
+                    <app-material-field [matField]="field.getRawValue()"/>
+                  </app-selectable-form-field>
+                }
+              }
+              @if (inCreationMode()) {
+                <app-selectable-form-field [selected]="true">
+                  <app-material-field [matField]="selectedField().getRawValue()"/>
+                </app-selectable-form-field>
+              }
+            </div>
+          } @else {
+            <div class="empty-placeholder">
+              No fields provided in the form data. Add a field to preview and edit the form, or&nbsp;<a [routerLink]="'/upload'">upload a
+              typescript type definition</a>.
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+    } @else {
+      <mat-card class="content">
+        <mat-card-content>
+          <app-drag-drop [fieldFormGroups]="_formGroup.controls.entries"
+                         (onDrop)="onSubmit(false, 'none')"
+          />
+        </mat-card-content>
+      </mat-card>
+    }
 
     <mat-card class="action-card">
       <mat-card-actions>
