@@ -2,23 +2,7 @@ import { expect, Page, test } from '@playwright/test'
 import { expectGlobalMessage, getFormDataFromLocalStorage, routeAndValidateTitle, setFormDataInLocalStorage } from './utils/utils'
 import { testFormData } from './testdata/form-data.testdata'
 import { testFormField } from './testdata/form-field.testdata'
-
-const selectFormField = async (page: Page, label: string) => {
-  await page.locator('div').filter({ hasText: new RegExp(`^${label}$`) }).nth(1).click()
-  await expect(page.getByText('Update field')).toBeVisible()
-}
-
-const addNewFormField = async (page: Page, name: string, label: string) => {
-  await page.getByRole('button', { name: 'Add field' }).click()
-  await expect(page.getByText('Add new field')).toBeVisible()
-
-  await page.getByRole('textbox', { name: 'Field name' }).fill(name)
-  await page.getByRole('textbox', { name: 'Label' }).fill(label)
-  await page.getByRole('button', { name: 'Save' }).click()
-
-  await expect(page.getByText('Add new field')).not.toBeVisible()
-  await expectGlobalMessage(page, 'The form field was saved successfully.')
-}
+import { addNewFormField, selectFormField } from './utils/preview.util'
 
 test.describe('Preview Page', () => {
   const testField = testFormField('testField', 'Test Field')
@@ -27,8 +11,7 @@ test.describe('Preview Page', () => {
   test('shows empty placeholder if no data is set in localStorage', async ({ page }) => {
     await routeAndValidateTitle(page, '/preview', 'Preview')
 
-    await expect(page.locator('mat-card-content')).not.toContainText(testField.label)
-    await expect(page.locator('mat-card-content'))
+    await expect(page.getByTestId('preview-placeholder'))
       .toContainText('No fields provided in the form data. Add a field to preview and edit the form, or upload a typescript type definition.')
   })
 

@@ -29,13 +29,18 @@
       </mat-card-content>
     </mat-card>
 
-    @if (previewModeControl.value === 'edit') {
-      <mat-card class="content">
-        <mat-card-content>
-          @if (flattenedFields().length > 0) {
+    @if (flattenedFields().length > 0) {
+      @if (previewModeControl.value === 'edit') {
+        <mat-card class="content">
+          <mat-card-content>
             <div class="flex-layout-container flex-layout-container__wrap">
               @for (field of flattenedFields(); track $index) {
-                @if (![FieldType.INTERFACE, FieldType.OBJECT, FieldType.CLASS, FieldType.INTERSECTION].includes(field.controls.fieldType.value)) {
+                @if (![
+                  FieldType.INTERFACE,
+                  FieldType.OBJECT,
+                  FieldType.CLASS,
+                  FieldType.INTERSECTION
+                ].includes(field.controls.fieldType.value)) {
                   <app-selectable-form-field [selected]="selectedField() === field"
                                              (select)="selectedField.set(field)">
                     <app-material-field [matField]="field.getRawValue()"/>
@@ -48,20 +53,26 @@
                 </app-selectable-form-field>
               }
             </div>
-          } @else {
-            <div class="empty-placeholder">
-              No fields provided in the form data. Add a field to preview and edit the form, or&nbsp;<a [routerLink]="'/upload'">upload a
-              typescript type definition</a>.
-            </div>
-          }
-        </mat-card-content>
-      </mat-card>
+          </mat-card-content>
+        </mat-card>
+      } @else {
+        <mat-card class="content">
+          <mat-card-content>
+            <app-drag-drop [fieldFormGroups]="_formGroup.controls.entries"
+                           (onDrop)="onSubmit(false, 'none')"
+            />
+          </mat-card-content>
+        </mat-card>
+      }
     } @else {
-      <mat-card class="content">
+      <mat-card>
         <mat-card-content>
-          <app-drag-drop [fieldFormGroups]="_formGroup.controls.entries"
-                         (onDrop)="onSubmit(false, 'none')"
-          />
+          <div class="empty-placeholder" data-testid="preview-placeholder">
+            <p class="placeholder-text">
+              No fields provided in the form data. Add a field to preview and edit the form, or
+              <a [routerLink]="'/upload'">upload a typescript type definition</a>.
+            </p>
+          </div>
         </mat-card-content>
       </mat-card>
     }

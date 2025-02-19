@@ -137,7 +137,7 @@ export class FormDataCreateService {
   }
 
   private getDefaultComponent(fieldType: FieldType): MaterialComponentType | null {
-    const defaultComponents = this.formConfigStore.state.data.defaultComponents
+    const defaultComponents = this.formConfigStore.state.data?.defaultComponents
 
     return {
       [FieldType.STRING]: defaultComponents?.string ?? MaterialComponentType.TEXT,

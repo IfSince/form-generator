@@ -1,4 +1,5 @@
 import { FormConfig } from '../../src/app/form-config/model/form-config.model'
+import { MaterialComponentType } from '../../src/app/formdata/model/form-field.model'
 
 export const testFormConfig = (): FormConfig => ({
   formFieldAppearance: 'fill',
@@ -22,4 +23,13 @@ export const testFormConfig = (): FormConfig => ({
   datepickerTouchUi: null,
   buttonToggleHideMultiSelectionIndicator: null,
   buttonToggleAppearance: null,
+  defaultComponents: {
+    string: MaterialComponentType.TEXT,
+    number: MaterialComponentType.NUMBER,
+    boolean: MaterialComponentType.CHECKBOX,
+    enum: MaterialComponentType.SELECT,
+    date: MaterialComponentType.DATE,
+    array: MaterialComponentType.BUTTON_TOGGLE,
+    unsupported: MaterialComponentType.TEXT,
+  }
 })

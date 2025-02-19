@@ -18,6 +18,10 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+
+  & .placeholder-text {
+    margin: 0.5rem 0;
+  }
 }
 
 .divider {
