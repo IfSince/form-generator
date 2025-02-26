@@ -42,6 +42,7 @@
                   FieldType.INTERSECTION
                 ].includes(field.controls.fieldType.value)) {
                   <app-selectable-form-field [selected]="selectedField() === field"
+                                             [unsupported]="field.controls.fieldType.value === FieldType.UNSUPPORTED"
                                              (select)="selectedField.set(field)">
                     <app-material-field [matField]="field.getRawValue()"/>
                   </app-selectable-form-field>
