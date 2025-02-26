@@ -42,8 +42,8 @@ export class UploadView {
       const dialogRef = this.dialog.open(DialogComponent, {
         width: '350px',
         data: {
-          title: 'Careful',
-          text: 'There is already an active process. Do you want to re-generate and lose the previous changes, or just continue to the preview?',
+          title: 'Warning',
+          text: 'There is already an active process. Would you like to re-generate and discard the previous changes, or simply continue to the preview?',
           denyText: 'Continue',
           confirmText: 'Re-generate',
         },
