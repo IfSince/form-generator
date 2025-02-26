@@ -2,9 +2,9 @@
      [ngClass]="{'selected': selected}"
      class="field">
   @if (unsupported) {
-    <div class="icon material-icons"
+    <span class="icon material-icons"
          matTooltip="This field type is not supported, so the field was rendered using the configured default component."
-         matTooltipPosition="above">info</div>
+         matTooltipPosition="above">info</span>
   }
   <ng-content/>
 </div>
